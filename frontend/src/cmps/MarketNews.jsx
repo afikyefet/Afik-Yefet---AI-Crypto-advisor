@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { loadNews } from "../store/actions/cryptoPanic.action"
+import { NewsCard } from "./NewsCard"
 export function MarketNews() {
     const { news, isLoading, error } = useSelector(storeState => storeState.cryptoPanicModule)
 
@@ -19,10 +20,7 @@ export function MarketNews() {
             </div>
             <div className="market-news-body">
                 {news && news.results && news.results.map((news, idx) => (
-                    <div className="market-news-item" key={idx}>
-                        <h2>{news.title}</h2>
-                        <p>{news.content}</p>
-                    </div>
+                    <NewsCard key={idx} news={news} />
                 ))}
             </div>
         </div>

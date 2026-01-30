@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt'
-import Cryptr from 'cryptr'
+import jwt from 'jsonwebtoken'
 import { userService } from '../user/user.service.js'
 
-const cryptr = new Cryptr(process.env.SECRET1 || 'secret-123')
+const JWT_SECRET = process.env.JWT_SECRET
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d'
 
 export const authService = {
     getLoginToken,
@@ -12,16 +13,20 @@ export const authService = {
 }
 
 function getLoginToken(user) {
-    const str = JSON.stringify(user)
-    let encryptedStr = cryptr.encrypt(str)
-    return encryptedStr
+    return jwt.sign(
+        {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+        },
+        JWT_SECRET,
+        { expiresIn: JWT_EXPIRES_IN }
+    )
 }
 
 function validateToken(token) {
     try {
-        const json = cryptr.decrypt(token)
-        const loggedinUser = JSON.parse(json)
-        return loggedinUser
+        return jwt.verify(token, JWT_SECRET)
     } catch (err) {
         console.log('Invalid login token')
     }
