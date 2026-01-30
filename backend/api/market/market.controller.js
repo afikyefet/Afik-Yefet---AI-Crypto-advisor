@@ -11,6 +11,15 @@ export async function getCoinPrices(req, res) {
     }
 }
 
+export async function getCoinsMarketData(req, res) {
+    try {
+        const data = await marketService.getCoinsMarketData(req.query)
+        res.send(data)
+    } catch (err) {
+        loggerService.error('Cannot get coins market data', err)
+        res.status(400).send({ err: 'Cannot get coins market data' })
+    }
+}
 export async function getCoinsList(req, res) {
     try {
         const data = await marketService.getCoinsList()

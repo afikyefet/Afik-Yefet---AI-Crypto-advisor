@@ -6,19 +6,6 @@
 
 const COINGECKO_API_BASE_URL = 'https://api.coingecko.com/api/v3';
 
-/**
- * Get coin prices by IDs
- * @param {Object} options - Query options
- * @param {string} options.api_key - API key (optional for free tier, but recommended)
- * @param {string|string[]} options.ids - Coin IDs (e.g., 'bitcoin' or ['bitcoin', 'ethereum'])
- * @param {string|string[]} options.vs_currencies - Target currencies (e.g., 'usd' or ['usd', 'eur']), default: 'usd'
- * @param {boolean} options.include_market_cap - Include market cap data
- * @param {boolean} options.include_24hr_vol - Include 24hr volume data
- * @param {boolean} options.include_24hr_change - Include 24hr change percentage
- * @param {boolean} options.include_last_updated_at - Include last updated timestamp
- * @param {string} options.precision - Decimal precision (full, 0-18)
- * @returns {Promise<Object>} API response with coin prices
- */
 export async function getCoinPrices(options = {}) {
     const {
         api_key,
@@ -126,6 +113,62 @@ export async function getCoinPricesWithMarketData(api_key, ids, vs_currencies = 
 }
 
 /**
+ * Get market data for coins (prices, market cap, etc.)
+ * @param {Object} options - Query options
+ * @param {string} options.api_key - API key (optional)
+ * @param {string} options.vs_currency - Target currency, default: 'usd'
+ * @param {string|string[]} options.ids - Optional coin IDs
+ * @param {string} options.order - Order of results (e.g., 'market_cap_desc')
+ * @param {number} options.per_page - Results per page
+ * @param {number} options.page - Page number
+ * @param {boolean} options.sparkline - Include sparkline data
+ * @returns {Promise<Array>} Array of coin market data
+ */
+export async function getCoinsMarketData(options = {}) {
+    const {
+        api_key,
+        vs_currency = 'usd',
+        ids,
+        order,
+        per_page,
+        page,
+        sparkline
+    } = options;
+
+    const params = new URLSearchParams();
+    params.append('vs_currency', vs_currency);
+
+    if (ids) {
+        const idsParam = Array.isArray(ids) ? ids.join(',') : ids;
+        params.append('ids', idsParam);
+    }
+    if (order) params.append('order', order);
+    if (per_page) params.append('per_page', String(per_page));
+    if (page) params.append('page', String(page));
+    if (sparkline !== undefined) params.append('sparkline', String(sparkline));
+
+    try {
+        const url = `${COINGECKO_API_BASE_URL}/coins/markets?${params.toString()}`;
+        const headers = {};
+
+        if (api_key) {
+            headers['x-cg-demo-api-key'] = api_key;
+        }
+
+        const response = await fetch(url, { headers });
+
+        if (!response.ok) {
+            throw new Error(`CoinGecko API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        throw new Error(`Failed to fetch CoinGecko market data: ${error.message}`);
+    }
+}
+
+/**
  * Get list of all supported coins
  * @param {string} api_key - API key (optional)
  * @returns {Promise<Array>} Array of coins with id, name, and symbol
@@ -210,6 +253,7 @@ export const coinGeckoService = {
     getCoinPrices,
     getCoinPricesBySymbols,
     getCoinPricesWithMarketData,
+    getCoinsMarketData,
     getCoinsList,
     getSupportedCurrencies,
     ping

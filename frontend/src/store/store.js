@@ -1,9 +1,13 @@
 import { combineReducers, compose, legacy_createStore as createStore } from "redux"
+import { coinGeckoReducer } from "./reducers/coinGecko.reducer"
+import { cryptoPanicReducer } from "./reducers/cryptoPanic.reducer"
 import { userReducer } from "./reducers/user.reducer"
 
 
 const rootReducer = combineReducers({
-    userModule: userReducer
+    userModule: userReducer,
+    coinGeckoModule: coinGeckoReducer,
+    cryptoPanicModule: cryptoPanicReducer
 })
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose

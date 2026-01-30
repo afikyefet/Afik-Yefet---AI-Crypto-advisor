@@ -15,6 +15,7 @@ export function Login() {
     const [errorMsg, setErrorMsg] = useState('')
     const navigate = useNavigate()
 
+
     useEffect(() => {
         if (user) navigate('/')
     }, [user, navigate])

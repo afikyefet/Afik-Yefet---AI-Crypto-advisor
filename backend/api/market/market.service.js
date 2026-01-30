@@ -5,6 +5,7 @@ const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY || ''
 const CRYPTOPANIC_AUTH_TOKEN = process.env.CRYPTOPANIC_AUTH_TOKEN || ''
 
 export const marketService = {
+    getCoinsMarketData,
     getCoinPrices,
     getCoinsList,
     getSupportedCurrencies,
@@ -36,6 +37,33 @@ async function getCoinPrices(query = {}) {
         include_24hr_change: toBoolean(include_24hr_change),
         include_last_updated_at: toBoolean(include_last_updated_at),
         precision
+    })
+}
+
+async function getCoinsMarketData(query = {}) {
+    const {
+        ids,
+        vs_currency,
+        vs_currencies,
+        order,
+        per_page,
+        page,
+        sparkline
+    } = query
+
+    const vsCurrency =
+        vs_currency ||
+        (Array.isArray(vs_currencies) ? vs_currencies[0] : vs_currencies) ||
+        'usd'
+
+    return coinGeckoService.getCoinsMarketData({
+        api_key: COINGECKO_API_KEY || undefined,
+        ids: splitList(ids),
+        vs_currency: vsCurrency,
+        order,
+        per_page: per_page ? +per_page : undefined,
+        page: page ? +page : undefined,
+        sparkline: toBoolean(sparkline)
     })
 }
 

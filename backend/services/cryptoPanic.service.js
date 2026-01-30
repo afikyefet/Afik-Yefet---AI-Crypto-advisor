@@ -4,7 +4,7 @@
  * Documentation: https://cryptopanic.com/developers/api/
  */
 
-const CRYPTOPANIC_API_BASE_URL = 'https://cryptopanic.com/api/posts/';
+const CRYPTOPANIC_API_BASE_URL = 'https://cryptopanic.com/api/developer/v2/posts/';
 
 /**
  * Fetch news posts from CryptoPanic API
@@ -17,7 +17,7 @@ const CRYPTOPANIC_API_BASE_URL = 'https://cryptopanic.com/api/posts/';
  * @returns {Promise<Object>} API response with news posts
  */
 export async function getNews(options = {}) {
-    const { auth_token, currencies, filter, region, page } = options;
+    const { auth_token, currencies, filter = 'rising', region, page } = options;
 
     if (!auth_token) {
         throw new Error('CryptoPanic API auth_token is required');
