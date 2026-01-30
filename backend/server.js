@@ -4,7 +4,6 @@ import 'dotenv/config'
 import express from 'express'
 import path from 'path'
 import { authRoutes } from './api/auth/auth.routes.js'
-import { bugRoutes } from './api/bug/bug.routes.js'
 import { marketRoutes } from './api/market/market.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
 import { loggerService } from './services/logger.service.js'
@@ -43,7 +42,6 @@ app.use(express.static('public'))
 app.use(express.json())
 app.use(cookieParser())
 
-app.use('/api/bug', bugRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/market', marketRoutes)
