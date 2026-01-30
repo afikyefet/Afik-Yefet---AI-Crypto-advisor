@@ -1,0 +1,17 @@
+.main-layout{
+    display: grid;
+    grid-template-columns: 1.6rem 1fr 1.6rem;
+
+    &>*{
+        grid-column: 2;
+    }
+
+    & .full{
+        grid-column: 1 / -1;
+    }
+}
+
+footer {
+    padding: 1em;
+    text-align: center;
+  }

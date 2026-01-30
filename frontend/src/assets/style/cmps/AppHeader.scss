@@ -1,0 +1,33 @@
+.app-header-container {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    border-bottom: 1px solid #e0e0e0;
+
+    .app-header-title {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .app-header-user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        button {
+            padding: 6px 16px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background: white;
+
+            &:hover {
+                background: #f5f5f5;
+            }
+        }
+    }
+}

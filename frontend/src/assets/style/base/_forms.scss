@@ -1,0 +1,54 @@
+@use '../setup/vars';
+
+button, input{
+    cursor: pointer;
+    padding: 0.25em 0.5em;
+    margin: 0.1em;
+    border: none;
+    background-color: vars.$hover-effect ;
+    border-radius: 0.5em;
+    border: 1px solid vars.$border-color-light;
+    color: vars.$text-primary;
+    font-weight: 500;
+
+    // box-shadow: vars.$box-shadow-light;
+    &.btn-main{
+        color: vars.$text-primary;
+    }
+
+    &.btn-secondary{
+        color: vars.$text-primary;
+        background-color: vars.$pastel-white;
+        border: 1px solid vars.$pastel-blue;
+    }
+
+    &.btn-text{
+        // text-decoration: underline;
+        background-color: vars.$pastel-white;
+    }
+
+    &:hover, &:focus, &:active{
+        border: 1px solid transparent;
+        background-color: vars.$pastel-blue;
+    }
+    
+    &.btn-text:hover, &.btn-text:focus{
+        text-decoration: underline;
+        background-color: vars.$pastel-white;
+    }
+
+}
+
+textarea{
+    cursor: pointer;
+    padding: 0.25em 0.5em;
+    margin: 0.1em;
+    border: none;
+    background-color: vars.$hover-effect ;
+    border-radius: 0.5em;
+    border: 1px solid vars.$border-color-light;
+    color: vars.$text-primary;
+    font-weight: 500;
+    font-family: 'Roboto', sans-serif;
+
+}

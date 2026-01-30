@@ -1,0 +1,27 @@
+{
+  "name": "express-bugs",
+  "version": "1.0.0",
+  "description": "Afik's first express proj",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --ignore \".data\" server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "server:dev": "nodemon server.js",
+    "server:prod": "set NODE_ENV=production&node server.js"
+  },
+  "author": "Afik",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "cryptr": "^6.3.0",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "express-bugs": "file:",
+    "http": "^0.0.1-security",
+    "mongodb": "^6.14.0"
+  }
+}

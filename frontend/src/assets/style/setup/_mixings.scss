@@ -1,0 +1,25 @@
+@use "./vars";
+
+$color-pool: (
+    vars.$pastel-pink: #f8bbd0,
+    vars.$pastel-blue: #b3e5fc,
+    vars.$pastel-green: #c8e6c9,
+    vars.$pastel-yellow: #fff9c4,
+    vars.$pastel-purple: #d1c4e9,
+    vars.$pastel-orange: #ffe0b2
+);
+
+@function random-color($index) {
+    @return nth($color-pool, ($index % length($color-pool)) + 1);
+}
+
+// Mixin to apply random colors to child elements
+@mixin random-child-colors($parent-selector) {
+    #{$parent-selector} > * {
+        @for $i from 1 through 20 {
+            &:nth-child(#{$i}) {
+                background-color: random-color($i);
+            }
+        }
+    }
+}

@@ -1,0 +1,48 @@
+@use '../setup/vars';
+
+.user-msg {
+    position: fixed;
+    bottom: 30px; // Flush slightly above the bottom
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 200px;
+    max-width: 300px;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: vars.$box-shadow-light;
+    background-color: vars.$pastel-white;
+    color: vars.$text-primary;
+    text-align: center;
+    font-size: 0.875rem;
+    z-index: 1100;
+
+    &.success {
+        background-color: vars.$pastel-green;
+        border: 1px solid lighten(vars.$pastel-green, 10%);
+        color: vars.$text-primary;
+    }
+
+    &.error {
+        background-color: vars.$pastel-pink;
+        border: 1px solid lighten(vars.$pastel-pink, 10%);
+        color: vars.$text-primary;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 5px;
+        // padding: 0;
+        // margin: 0;
+        right: 8px;
+        background: none;
+        border: none;
+        font-size: 1rem;
+        color: vars.$text-secondary;
+        cursor: pointer;
+
+        &:hover {
+            color: lighten(vars.$text-secondary, 20%);
+        }
+    }
+
+}

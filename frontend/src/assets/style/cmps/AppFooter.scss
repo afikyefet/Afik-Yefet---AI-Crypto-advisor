@@ -1,0 +1,83 @@
+@use '../setup/vars';
+ footer {
+  margin: 0;
+  padding: 0;
+  background-color:vars.$pastel-green;
+     .footer-container {
+        /* Use your green pastel for the footer background */
+         color:vars.$pastel-white;
+        /* White text for contrast */
+         padding:2rem 1rem;
+         font-family:Arial,sans-serif;
+         .app-Footer {
+             display:grid;
+             grid-template-columns:repeat(3,minmax(200px,1fr));
+             gap:1.5rem;
+             text-align:left;
+             h4 {
+                 font-size:1.2rem;
+                 margin-bottom:1rem;
+                 color:vars.$pastel-white;
+                /* Add a subtle purple accent for headings */
+                 text-shadow:vars.$box-shadow-dark;
+            }
+             p,li {
+                 font-size:0.9rem;
+                 line-height:1.5;
+            }
+             a {
+                 text-decoration:none;
+                 color:vars.$text-primary;
+                /* Use yellow for links */
+                 transition:color 0.3s;
+                 &:hover {
+                     color:vars.$text-secondary;
+                    /* Orange for hover effect */
+                }
+            }
+            ul {
+                 list-style-type:none;
+                 padding:0;
+                 li {
+                     margin-bottom:0.5rem;
+                }
+            }
+            .footer-links,.footer-contact,.footer-social {
+                 p{
+                    margin:0.5rem 0;
+                }
+            }
+            .footer-social {
+                 ul {
+                     display:flex;
+                     flex-wrap:wrap;
+                     gap:0.5rem;
+                     li {
+                         margin:0;
+                         a {
+                             display:inline-block;
+                             padding:0.2rem 0.5rem;
+                             background-color:vars.$pastel-pink;
+                            /* Subtle purple background for social links */
+                            /* White text for readability */
+                             transition:background-color 0.3s;
+                             &:hover {
+                                 background-color:vars.$pastel-orange;
+                                /* Orange hover effect */
+                            }
+                        }
+                    }
+                }
+            }
+            .footer-bottom {
+                 grid-column:1 / -1;
+                 text-align:center;
+                 font-size:0.8rem;
+                 color:vars.$pastel-purple;
+                 border-top:1px solid vars.$border-color-light;
+                 padding-top:1rem;
+            }
+        }
+    }
+}
+ 
