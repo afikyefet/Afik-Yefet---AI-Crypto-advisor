@@ -46,6 +46,12 @@ async function login(email, password) {
         _id: user._id?.toString ? user._id.toString() : user._id,
         name: user.name,
         email: user.email,
+        preferences: user.preferences || {
+            'fav-coins': [],
+            'investor-type': '',
+            'content-type': []
+        },
+        hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false
     }
     return miniUser
 }
@@ -64,6 +70,12 @@ async function signup({ email, password, name }) {
         email,
         password: hash,
         name,
+        preferences: {
+            'fav-coins': [],
+            'investor-type': '',
+            'content-type': []
+        },
+        hasCompletedOnboarding: false
     })
 
     // Return user without password
@@ -72,5 +84,7 @@ async function signup({ email, password, name }) {
         _id: savedUser._id?.toString ? savedUser._id.toString() : savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
+        preferences: savedUser.preferences,
+        hasCompletedOnboarding: savedUser.hasCompletedOnboarding
     }
 }

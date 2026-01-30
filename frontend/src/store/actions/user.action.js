@@ -45,3 +45,27 @@ export function setIsSignup(isSignup) {
 export function toggleIsSignup() {
     store.dispatch({ type: TOGGLE_ISSIGNUP })
 }
+
+export function updatePreferences(userId, preferences) {
+    return userService.updatePreferences(userId, preferences)
+        .then((user) => {
+            store.dispatch({ type: SET_USER, user })
+            return user
+        })
+        .catch((err) => {
+            console.log('user actions -> Cannot update preferences', err)
+            throw err
+        })
+}
+
+export function completeOnboarding(userId) {
+    return userService.completeOnboarding(userId)
+        .then((user) => {
+            store.dispatch({ type: SET_USER, user })
+            return user
+        })
+        .catch((err) => {
+            console.log('user actions -> Cannot complete onboarding', err)
+            throw err
+        })
+}

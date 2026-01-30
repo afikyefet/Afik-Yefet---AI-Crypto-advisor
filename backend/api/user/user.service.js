@@ -9,7 +9,9 @@ export const userService = {
     getById,
     save,
     remove,
-    getByEmail
+    getByEmail,
+    updatePreferences,
+    markOnboardingComplete
 };
 
 async function query(filterBy = {}) {
@@ -77,6 +79,40 @@ async function save(user) {
         }
     } catch (error) {
         loggerService.error(`Error in userService.save: ${error}`)
+        throw error
+    }
+}
+
+async function updatePreferences(userId, preferences) {
+    try {
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+        const result = await collection.updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: { preferences } }
+        )
+        if (result.matchedCount === 0) throw new Error(`Bad user id: ${userId}`)
+
+        const updatedUser = await collection.findOne({ _id: new ObjectId(userId) })
+        return updatedUser
+    } catch (error) {
+        loggerService.error(`Error in userService.updatePreferences: ${error}`)
+        throw error
+    }
+}
+
+async function markOnboardingComplete(userId) {
+    try {
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+        const result = await collection.updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: { hasCompletedOnboarding: true } }
+        )
+        if (result.matchedCount === 0) throw new Error(`Bad user id: ${userId}`)
+
+        const updatedUser = await collection.findOne({ _id: new ObjectId(userId) })
+        return updatedUser
+    } catch (error) {
+        loggerService.error(`Error in userService.markOnboardingComplete: ${error}`)
         throw error
     }
 }

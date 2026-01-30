@@ -1,0 +1,55 @@
+{
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "title": "Banks to lose up to $500B by 2028 as Fidelity’s digital dollar launches on Ethereum with freeze powers",
+            "description": "Fidelity announced the launch of a stablecoin on the Ethereum mainnet, positioning the token as a compliance-wrapped settlement dollar distributed through the firm's brokerage, custody, and wealth management channels. The move lands amid what looks like a stablecoin sprawl, as estimates suggest 59 new major stablecoins launched in 2025 alone, per third-party tracker Stablewatch.",
+            "published_at": "2026-01-29T12:55:20Z",
+            "created_at": "2026-01-29T12:55:20+00:00",
+            "kind": "news"
+        },
+        {
+            "title": "Tether Launches USA₮, a Regulated Dollar-Backed Stablecoin",
+            "description": "Tether has announced the launch of USA₮, a U. S. dollar-backed stablecoin described as federally regulated and issued under a U. S",
+            "published_at": "2026-01-27T14:03:33Z",
+            "created_at": "2026-01-27T14:03:33+00:00",
+            "kind": "news"
+        },
+        {
+            "title": "Smart Money Buys Cardano as Retail Capitulates",
+            "description": "The price of Cardano (ADA) remains under pressure, but it seems that its largest holders, also known as ‘smart money,’ are moving the other way. com.",
+            "published_at": "2026-01-27T13:55:16Z",
+            "created_at": "2026-01-27T13:55:16+00:00",
+            "kind": "news"
+        },
+        {
+            "title": "Traders Face Rare Opportunity Zone as Crypto Pullback Persists",
+            "description": "After weeks of retracement, cryptocurrency valuations are quietly resetting, with new on-chain data showing many major crypto assets slipping into historically safer accumulation zones. com.",
+            "published_at": "2026-01-26T15:27:24Z",
+            "created_at": "2026-01-26T15:27:24+00:00",
+            "kind": "news"
+        },
+        {
+            "title": "Oklahoma Legislature Introduces Bitcoin Payment Bill",
+            "description": "Oklahoma lawmakers have introduced Senate Bill 2064, a proposal that would allow state employees, private businesses, and individuals to accept and make payments in Bitcoin under defined conditions. The bill was introduced on January 15 and is currently under consideration in committee. com",
+            "published_at": "2026-01-23T21:08:30Z",
+            "created_at": "2026-01-23T21:08:30+00:00",
+            "kind": "news"
+        },
+        {
+            "title": "What Ethereum Needs to Do Before Capital Rotates Beyond Bitcoin",
+            "description": "Ethereum&#8217;s price action has remained restrained through January, even as several on-chain indicators show improving network engagement. Moreover, with renewed discussion around a shift toward altcoins, the data suggests the market remains in a transitional phase. com",
+            "published_at": "2026-01-23T19:37:33Z",
+            "created_at": "2026-01-23T19:37:33+00:00",
+            "kind": "news"
+        },
+        {
+            "title": "Solana Price Compresses, Big Move Incoming",
+            "description": "Solana (SOL) is approaching a critical inflection point as price action compresses into a tightening triangle on the hourly chart. According to popular crypto trading expert Ali Martinez, SOL is consolidating between $127 and $129, with a close outside that range likely to determine the asset’s next directional move. com",
+            "published_at": "2026-01-23T15:04:00Z",
+            "created_at": "2026-01-23T15:04:00+00:00",
+            "kind": "news"
+        }
+    ]
+}

@@ -222,3 +222,46 @@
 30.1.2026, 23:44:07 - INFO - Server ready at port 3333
 30.1.2026, 23:47:18 - INFO - Server ready at port 3333
 30.1.2026, 23:49:05 - INFO - User login:  | {"_id":"697c83e8f6c63ad68457fa2d","name":"123","email":"123@123.com"}
+31.1.2026, 0:00:37 - INFO - User login:  | {"_id":"697c83e8f6c63ad68457fa2d","name":"123","email":"123@123.com"}
+31.1.2026, 0:04:30 - INFO - User login:  | {"_id":"697c83e8f6c63ad68457fa2d","name":"123","email":"123@123.com"}
+31.1.2026, 0:08:16 - INFO - User login:  | {"_id":"697c83e8f6c63ad68457fa2d","name":"123","email":"123@123.com"}
+31.1.2026, 0:08:40 - INFO - User signup: | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com"}
+31.1.2026, 0:11:21 - INFO - Server ready at port 3333
+31.1.2026, 0:11:22 - INFO - Server ready at port 3333
+31.1.2026, 0:11:25 - INFO - Server ready at port 3333
+31.1.2026, 0:11:29 - INFO - Server ready at port 3333
+31.1.2026, 0:11:30 - INFO - Server ready at port 3333
+31.1.2026, 0:11:34 - INFO - Server ready at port 3333
+31.1.2026, 0:12:35 - INFO - Server ready at port 3333
+31.1.2026, 0:12:50 - INFO - Server ready at port 3333
+31.1.2026, 0:12:54 - INFO - Server ready at port 3333
+31.1.2026, 0:17:00 - INFO - User login:  | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com","preferences":{"fav-coins":[],"investor-type":"","content-type":[]}}
+31.1.2026, 0:18:16 - INFO - User login:  | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com","preferences":{"fav-coins":[],"investor-type":"","content-type":[]}}
+31.1.2026, 0:18:55 - INFO - User login:  | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com","preferences":{"fav-coins":[],"investor-type":"","content-type":[]}}
+31.1.2026, 0:21:33 - INFO - Server ready at port 3333
+31.1.2026, 0:21:35 - INFO - Server ready at port 3333
+31.1.2026, 0:21:38 - INFO - Server ready at port 3333
+31.1.2026, 0:21:45 - INFO - Server ready at port 3333
+31.1.2026, 0:21:46 - INFO - Server ready at port 3333
+31.1.2026, 0:21:52 - INFO - Server ready at port 3333
+31.1.2026, 0:30:24 - INFO - User login:  | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com","preferences":{"fav-coins":[],"investor-type":"","content-type":[]},"hasCompletedOnboarding":false}
+31.1.2026, 0:43:48 - INFO - User login:  | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com","preferences":{"fav-coins":["bitcoin","etherium"],"investor-type":"aggressive","content-type":["news","memes"]},"hasCompletedOnboarding":false}
+31.1.2026, 0:45:52 - INFO - Server ready at port 3333
+31.1.2026, 0:45:53 - INFO - Server ready at port 3333
+31.1.2026, 0:45:55 - INFO - Server ready at port 3333
+31.1.2026, 0:46:56 - INFO - Server ready at port 3333
+31.1.2026, 0:46:57 - INFO - Server ready at port 3333
+31.1.2026, 0:46:58 - INFO - Server ready at port 3333
+31.1.2026, 0:46:59 - INFO - Server ready at port 3333
+31.1.2026, 0:47:02 - INFO - Server ready at port 3333
+31.1.2026, 0:48:49 - INFO - Server ready at port 3333
+31.1.2026, 0:51:20 - INFO - Server ready at port 3333
+31.1.2026, 0:51:36 - INFO - Server ready at port 3333
+31.1.2026, 0:51:37 - INFO - Server ready at port 3333
+31.1.2026, 0:51:47 - INFO - Server ready at port 3333
+31.1.2026, 0:54:17 - INFO - Server ready at port 3333
+31.1.2026, 0:54:38 - INFO - Server ready at port 3333
+31.1.2026, 0:54:42 - INFO - Server ready at port 3333
+31.1.2026, 0:54:56 - INFO - Server ready at port 3333
+31.1.2026, 1:03:58 - INFO - User login:  | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com","preferences":{"fav-coins":["bitcoin","etherium"],"investor-type":"conservative","content-type":["analysis"]},"hasCompletedOnboarding":true}
+31.1.2026, 1:04:56 - INFO - User login:  | {"_id":"697c83e8f6c63ad68457fa2d","name":"123","email":"123@123.com","preferences":{"fav-coins":[],"investor-type":"","content-type":[]},"hasCompletedOnboarding":false}

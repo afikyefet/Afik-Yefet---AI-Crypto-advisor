@@ -19,6 +19,8 @@ export const userService = {
     logout,
     getEmptyCredentials,
     getLoggedinUser,
+    updatePreferences,
+    completeOnboarding,
 }
 
 async function getById(userId) {
@@ -35,7 +37,11 @@ async function login({ email, password }) {
     try {
         const response = await axiosInstance.post('/api/auth/login', { email, password })
         const user = response.data
-        _setLoggedinUser(user)
+        _setLoggedinUser({
+            ...user,
+            preferences: user.preferences || { 'fav-coins': [], 'investor-type': '', 'content-type': [] },
+            hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false
+        })
         return user
     } catch (err) {
         const errorMsg = err.response?.data?.err || err.message || 'Invalid email or password'
@@ -47,7 +53,11 @@ async function signup({ email, password, name }) {
     try {
         const response = await axiosInstance.post('/api/auth/signup', { email, password, name })
         const user = response.data
-        _setLoggedinUser(user)
+        _setLoggedinUser({
+            ...user,
+            preferences: user.preferences || { 'fav-coins': [], 'investor-type': '', 'content-type': [] },
+            hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false
+        })
         return user
     } catch (err) {
         const errorMsg = err.response?.data?.err || err.message || 'Failed to signup'
@@ -72,7 +82,13 @@ function getLoggedinUser() {
 }
 
 function _setLoggedinUser(user) {
-    const userToSave = { _id: user._id, name: user.name, email: user.email }
+    const userToSave = {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        preferences: user.preferences,
+        hasCompletedOnboarding: user.hasCompletedOnboarding
+    }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN, JSON.stringify(userToSave))
     return userToSave
 }
@@ -82,5 +98,29 @@ function getEmptyCredentials() {
         email: '',
         password: '',
         name: ''
+    }
+}
+
+async function updatePreferences(userId, preferences) {
+    try {
+        const response = await axiosInstance.put(`/api/user/${userId}/preferences`, { preferences })
+        const user = response.data
+        _setLoggedinUser(user)
+        return user
+    } catch (err) {
+        const errorMsg = err.response?.data?.err || err.message || 'Failed to update preferences'
+        throw errorMsg
+    }
+}
+
+async function completeOnboarding(userId) {
+    try {
+        const response = await axiosInstance.put(`/api/user/${userId}/complete-onboarding`)
+        const user = response.data
+        _setLoggedinUser(user)
+        return user
+    } catch (err) {
+        const errorMsg = err.response?.data?.err || err.message || 'Failed to complete onboarding'
+        throw errorMsg
     }
 }
