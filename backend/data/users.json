@@ -30,5 +30,11 @@
     "score": 1000,
     "isAdmin": false,
     "_id": "TUsTP5"
+  },
+  {
+    "email": "afik.yefet@gmail.com",
+    "password": "$2b$10$gyFwNXmSyINdqnTuiQbZz.uDzDjFA6jaP1BjtUDen/T/eedF2bOyy",
+    "name": "Afik Yefet",
+    "_id": "Z8k2I9"
   }
 ]

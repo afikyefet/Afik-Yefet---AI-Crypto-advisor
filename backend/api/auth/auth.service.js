@@ -36,8 +36,9 @@ async function login(email, password) {
     if (!match) throw 'Invalid email or password'
 
     //* Removing password and returning safe user data
+    // Convert MongoDB ObjectId to string if needed
     const miniUser = {
-        _id: user._id,
+        _id: user._id?.toString ? user._id.toString() : user._id,
         name: user.name,
         email: user.email,
     }
@@ -61,8 +62,9 @@ async function signup({ email, password, name }) {
     })
 
     // Return user without password
+    // Convert MongoDB ObjectId to string if needed
     return {
-        _id: savedUser._id,
+        _id: savedUser._id?.toString ? savedUser._id.toString() : savedUser._id,
         name: savedUser.name,
         email: savedUser.email,
     }

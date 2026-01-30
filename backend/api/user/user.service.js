@@ -1,6 +1,8 @@
-import fs from 'fs';
+import { ObjectId } from 'mongodb';
+import { dbService } from "../../services/db.service.js";
 import { loggerService } from "../../services/logger.service.js";
-import { makeId, readJsonFile, writeJsonFile } from "../../services/utils.js";
+
+const COLLECTION_NAME = 'user'
 
 export const userService = {
     query,
@@ -10,16 +12,10 @@ export const userService = {
     getByEmail
 };
 
-let users;
-try {
-    users = readJsonFile('./data/users.json');
-} catch (error) {
-    loggerService.error(`Failed to read users.json: ${error}`);
-    users = [];
-}
-
 async function query(filterBy = {}) {
     try {
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+        const users = await collection.find({}).toArray()
         return users
     } catch (error) {
         loggerService.error(`Couldn't get users: ${error}`)
@@ -29,7 +25,8 @@ async function query(filterBy = {}) {
 
 async function getByEmail(email) {
     try {
-        const user = users.find(user => user.email === email)
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+        const user = await collection.findOne({ email })
         return user
     } catch (err) {
         loggerService.error('userService[getByEmail] : ', err)
@@ -39,55 +36,47 @@ async function getByEmail(email) {
 
 async function getById(userId) {
     try {
-        const user = users.find(user => user._id === userId);
-        if (!user) throw new Error(`Bad user id: ${userId}`);
-
-        return user;
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+        const user = await collection.findOne({ _id: new ObjectId(userId) })
+        if (!user) throw new Error(`Bad user id: ${userId}`)
+        return user
     } catch (error) {
-        loggerService.error(`Couldn't get user with id ${userId}: ${error}`);
-        throw error;
+        loggerService.error(`Couldn't get user with id ${userId}: ${error}`)
+        throw error
     }
 }
 
 async function remove(userId) {
     try {
-        const idx = users.findIndex(user => user._id === userId);
-        if (idx === -1) throw new Error(`Bad user id: ${userId}`);
-        users.splice(idx, 1);
-        await writeJsonFile('./data/users.json', users);
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+        const result = await collection.deleteOne({ _id: new ObjectId(userId) })
+        if (result.deletedCount === 0) throw new Error(`Bad user id: ${userId}`)
     } catch (error) {
-        loggerService.error(`Error in userService.remove: ${error}`);
-        throw error;
+        loggerService.error(`Error in userService.remove: ${error}`)
+        throw error
     }
 }
 
 async function save(user) {
     try {
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+
         if (user._id) {
-            const idx = users.findIndex(currUser => currUser._id === user._id);
-            if (idx === -1) throw new Error(`Bad user id: ${user._id}`);
-            users[idx] = user;
+            // Update existing user
+            const { _id, ...userData } = user
+            const result = await collection.updateOne(
+                { _id: new ObjectId(_id) },
+                { $set: userData }
+            )
+            if (result.matchedCount === 0) throw new Error(`Bad user id: ${user._id}`)
+            return user
         } else {
-            user._id = makeId();
-            users.push(user);
+            // Insert new user
+            const result = await collection.insertOne(user)
+            return { ...user, _id: result.insertedId.toString() }
         }
-        await _saveUsersToFile();
-        return user;
     } catch (error) {
-        loggerService.error(`Error in userService.save: ${error}`);
-        throw error;
+        loggerService.error(`Error in userService.save: ${error}`)
+        throw error
     }
-}
-
-function _saveUsersToFile() {
-    return new Promise((resolve, reject) => {
-
-        const usersStr = JSON.stringify(users, null, 2)
-        fs.writeFile('data/users.json', usersStr, (err) => {
-            if (err) {
-                return console.log(err);
-            }
-            resolve()
-        })
-    })
 }

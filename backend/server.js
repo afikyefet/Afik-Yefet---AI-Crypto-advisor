@@ -5,24 +5,38 @@ import express from 'express'
 import path from 'path'
 import { authRoutes } from './api/auth/auth.routes.js'
 import { bugRoutes } from './api/bug/bug.routes.js'
+import { marketRoutes } from './api/market/market.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
 import { loggerService } from './services/logger.service.js'
 
 const app = express()
 
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.resolve('public')))
-} else {
-    const corsOptions = {
-        origin: [
+// CORS configuration - must be before other middleware
+const corsOptions = {
+    origin: function (origin, callback) {
+        const allowedOrigins = [
             'http://localhost:5173',
             'http://localhost:5174',
             'http://127.0.0.1:5173',
-        ],
-        credentials: true,
-        methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    }
-    app.use(cors(corsOptions))
+        ]
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    optionsSuccessStatus: 200
+}
+
+// Apply CORS to all routes
+app.use(cors(corsOptions))
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.resolve('public')))
 }
 
 app.use(express.static('public'))
@@ -32,6 +46,7 @@ app.use(cookieParser())
 app.use('/api/bug', bugRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/market', marketRoutes)
 
 
 app.get('/**', (req, res) => {

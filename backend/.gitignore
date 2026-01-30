@@ -3,3 +3,5 @@ api/api.postman.json
 .env
 .env.local
 .env.*.local
+.claude
+logs/backend.log

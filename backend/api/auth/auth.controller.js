@@ -14,7 +14,8 @@ export async function login(req, res) {
         res.json(user)
     } catch (err) {
         loggerService.error('Failed to Login ' + err)
-        res.status(401).send({ err: 'Failed to Login' })
+        const errorMsg = typeof err === 'string' ? err : 'Failed to Login'
+        res.status(401).send({ err: errorMsg })
     }
 }
 
@@ -31,7 +32,8 @@ export async function signup(req, res) {
         res.json(user)
     } catch (err) {
         loggerService.error('Failed to signup ' + err)
-        res.status(400).send({ err: 'Failed to signup' })
+        const errorMsg = typeof err === 'string' ? err : 'Failed to signup'
+        res.status(400).send({ err: errorMsg })
     }
 }
 

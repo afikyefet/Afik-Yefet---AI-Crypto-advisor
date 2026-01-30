@@ -1,8 +1,16 @@
-import { storageService } from "./async-storage.service"
+import axios from 'axios'
 
-const STORAGE_KEY = "userDB"
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3333'
 const STORAGE_KEY_LOGGEDIN = 'loggedinUser'
 
+// Configure axios to send credentials (cookies) with requests
+const axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
 
 export const userService = {
     getById,
@@ -13,37 +21,50 @@ export const userService = {
     getLoggedinUser,
 }
 
-function getById(userId) {
-    return storageService.get(STORAGE_KEY, userId)
-        .then(user => {
-            delete user.password
-            return user
-        })
-        .catch(err => {
-            console.error('could not get user by id', err)
-            throw err
-        })
+async function getById(userId) {
+    try {
+        const response = await axiosInstance.get(`/api/user/${userId}`)
+        return response.data
+    } catch (err) {
+        console.error('could not get user by id', err)
+        throw err
+    }
 }
 
-function login({ email, password }) {
-    return storageService.query(STORAGE_KEY)
-        .then(users => {
-            const user = users.find(user => user.email === email)
-            if (user && user.password !== password) return Promise.reject('Incorrect Password')
-            if (user) return _setLoggedinUser(user)
-            else return Promise.reject('Invalid login')
-        })
+async function login({ email, password }) {
+    try {
+        const response = await axiosInstance.post('/api/auth/login', { email, password })
+        const user = response.data
+        _setLoggedinUser(user)
+        return user
+    } catch (err) {
+        const errorMsg = err.response?.data?.err || err.message || 'Invalid email or password'
+        throw errorMsg
+    }
 }
 
-function signup({ email, password, name }) {
-    const user = { email, password, name }
-    return storageService.post(STORAGE_KEY, user)
-        .then(_setLoggedinUser)
+async function signup({ email, password, name }) {
+    try {
+        const response = await axiosInstance.post('/api/auth/signup', { email, password, name })
+        const user = response.data
+        _setLoggedinUser(user)
+        return user
+    } catch (err) {
+        const errorMsg = err.response?.data?.err || err.message || 'Failed to signup'
+        throw errorMsg
+    }
 }
 
-function logout() {
-    sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN)
-    return Promise.resolve()
+async function logout() {
+    try {
+        await axiosInstance.post('/api/auth/logout')
+        sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN)
+        return Promise.resolve()
+    } catch (err) {
+        // Even if backend call fails, clear local storage
+        sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN)
+        return Promise.resolve()
+    }
 }
 
 function getLoggedinUser() {
