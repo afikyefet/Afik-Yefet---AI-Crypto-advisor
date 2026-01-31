@@ -54,7 +54,7 @@ export function CoinRow({ coin }) {
             <span className="cell coin">
                 <img src={coin.image} alt={coin.name} />
                 <span className="coin-meta">
-                    <span className="coin-name">{coin.name}</span>
+                    <span className="coin-name" title={coin.name}>{coin.name}</span>
                     <span className="coin-symbol">{coin.symbol ? coin.symbol.toUpperCase() : '--'}</span>
                 </span>
             </span>

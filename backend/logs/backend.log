@@ -273,3 +273,91 @@
 31.1.2026, 1:23:59 - INFO - Server ready at port 3333
 31.1.2026, 1:24:05 - INFO - Server ready at port 3333
 31.1.2026, 1:24:09 - INFO - Server ready at port 3333
+31.1.2026, 2:27:47 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:27:47 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:27:56 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:27:56 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:27:58 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:27:58 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:28:17 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:28:17 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:28:18 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:28:18 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:28:20 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:28:20 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:28:29 - INFO - Server ready at port 3333
+31.1.2026, 2:28:33 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:28:33 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:28:36 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:28:36 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:28:56 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:28:56 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:29:01 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:29:01 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:29:03 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:29:03 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:29:20 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:29:20 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:29:21 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:29:21 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:30:04 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:30:04 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:30:06 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:30:06 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:30:07 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:30:07 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:30:07 - ERROR - Error in userService.addVote: Error: Bad user id: 697c83e8f6c63ad68457fa2d
+31.1.2026, 2:30:07 - ERROR - Cannot add vote | Error: Bad user id: 697c83e8f6c63ad68457fa2d
+    at Object.addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.service.js:125:26)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async addVote (file:///D:/%D7%90%D7%A4%D7%99%D7%A7/%D7%90%D7%A4%D7%99%D7%A7%20%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA/moveo/Afik%20Yefet%20-%20AI%20Crypto%20advisor/backend/api/user/user.controller.js:145:25)
+31.1.2026, 2:31:50 - INFO - User signup: | {"_id":"697d4d76072578ea335ed70d","name":"123 123","email":"123@123.com","preferences":{"fav-coins":[],"investor-type":"","content-type":[]},"hasCompletedOnboarding":false,"votes":[]}
+31.1.2026, 2:41:59 - INFO - Server ready at port 3333

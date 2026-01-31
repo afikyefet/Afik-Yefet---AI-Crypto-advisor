@@ -17,6 +17,7 @@ const corsOptions = {
             'http://localhost:5173',
             'http://localhost:5174',
             'http://127.0.0.1:5173',
+            'https://afik-yefet-ai-crypto-advisor.onrender.com'
         ]
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin || allowedOrigins.indexOf(origin) !== -1) {

@@ -19,17 +19,20 @@
 }
 
 .coin-table {
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 33, 0.6);
-    box-shadow: var(--shadow);
+    border: none;
+    background: transparent;
+    box-shadow: none;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
 }
 
 .coin-table-body {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
     min-width: fit-content;
+    width: 100%;
 }
 
 .coin-row {
@@ -37,10 +40,15 @@
     grid-template-columns: 40px minmax(180px, 1.6fr) 1fr 0.8fr 1.2fr 1fr 1fr;
     align-items: center;
     gap: 14px;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
+    padding: 14px 16px;
+    border: 1px solid var(--border);
     font-size: 14px;
     min-width: 900px;
+    border-radius: 16px;
+    background: rgba(16, 23, 32, 0.78);
+    box-shadow: 0 14px 28px rgba(5, 10, 16, 0.35);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 
     &:has(.cell.votes) {
         grid-template-columns: 40px minmax(180px, 1.6fr) 1fr 0.8fr 1.2fr 1fr 1fr 80px;
@@ -48,16 +56,15 @@
     }
 }
 
-.coin-row:last-child {
-    border-bottom: none;
-}
-
 .coin-row--head {
-    background: rgba(8, 12, 18, 0.9);
+    border-radius: 16px;
+    background: rgba(12, 18, 26, 0.92);
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--muted);
+    border-color: rgba(34, 211, 238, 0.25);
+    box-shadow: 0 10px 20px rgba(4, 8, 14, 0.35);
 }
 
 .coin-row .cell {
@@ -68,6 +75,13 @@
 
 .coin-row .coin {
     gap: 12px;
+    // position: sticky;
+    // left: 0;
+    // z-index: 10;
+    // background: inherit;
+    // padding-right: 14px;
+    // margin-left: -16px;
+    // padding-left: 16px;
 }
 
 .coin-row img {
@@ -86,6 +100,11 @@
 .coin-name {
     font-weight: 600;
     color: var(--text);
+    max-width: 10ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
 }
 
 .coin-symbol {
@@ -119,7 +138,9 @@
 }
 
 .coin-row:not(.coin-row--head):hover {
-    background: rgba(18, 30, 44, 0.7);
+    border-color: rgba(34, 211, 238, 0.5);
+    transform: translateY(-1px);
+    transition: transform 0.2s ease, border-color 0.2s ease;
 }
 
 .cell.votes {
