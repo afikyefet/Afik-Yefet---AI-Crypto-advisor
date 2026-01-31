@@ -13,7 +13,7 @@ export function AppHeader() {
 
     return (
         <div className="app-header-container">
-            <Link to="/"><h1 className="app-header-title">Afik's ai crypto advisor</h1></Link>
+            <Link to="/"><h1 className="app-header-title">Afik's AI Crypto Advisor</h1></Link>
             <div className="app-header-user">
                 {user ? (
                     <>

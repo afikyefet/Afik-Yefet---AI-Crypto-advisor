@@ -1,6 +1,7 @@
 import { Provider } from 'react-redux'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AppHeader } from './cmps/AppHeader'
+import { AppFooter } from './cmps/AppFooter'
 import { Preferences } from './cmps/Preferences'
 import { ProtectedRoute } from './cmps/ProtectedRoute'
 import { Dashboard } from './pages/Dashboard'
@@ -13,20 +14,25 @@ function App() {
     <>
       <Provider store={store}>
         <BrowserRouter>
-          <AppHeader />
-          <Routes>
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/preferences" element={
-              <ProtectedRoute>
-                <Preferences />
-              </ProtectedRoute>
-            } />
-            <Route path="/login" element={<Login />} />
-          </Routes>
+          <div className="app-layout">
+            <AppHeader />
+            <main className="app-main">
+              <Routes>
+                <Route path="/" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/preferences" element={
+                  <ProtectedRoute>
+                    <Preferences />
+                  </ProtectedRoute>
+                } />
+                <Route path="/login" element={<Login />} />
+              </Routes>
+            </main>
+            <AppFooter />
+          </div>
         </BrowserRouter>
       </Provider>
 

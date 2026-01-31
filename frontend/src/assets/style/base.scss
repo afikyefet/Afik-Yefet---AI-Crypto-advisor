@@ -49,6 +49,16 @@ body::before {
     min-height: 100vh;
 }
 
+.app-layout {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-main {
+    flex: 1;
+}
+
 img {
     max-width: 100%;
     display: block;
