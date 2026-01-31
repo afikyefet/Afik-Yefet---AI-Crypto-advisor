@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { addVote } from '../store/actions/user.action'
 
-export function NewsCard({ news }) {
+export function NewsCard({ news, onSelect }) {
     const { user } = useSelector(storeState => storeState.userModule)
     const description = news.description || news.content || 'No summary available.'
     const publishedAt = news.published_at || news.created_at
@@ -29,14 +29,24 @@ export function NewsCard({ news }) {
     const hasUpVote = newsVote?.vote === 'up'
     const hasDownVote = newsVote?.vote === 'down'
 
-    function handleVote(vote) {
+    function handleVote(vote, e) {
+        e.stopPropagation()
         if (!user?._id || !newsId) return
         // Pass the entire news object
         addVote(user._id, vote, 'news', news)
     }
 
+    function handleCardClick() {
+        if (onSelect) {
+            onSelect(news)
+        }
+    }
+
     return (
-        <article className="news-card">
+        <article 
+            className={`news-card ${onSelect ? 'is-clickable' : ''}`}
+            onClick={handleCardClick}
+        >
             <div className="news-card-header">
                 <span className="news-tag">{news.kind || 'news'}</span>
                 {publishedAt && <span className="news-date">{formatDate(publishedAt)}</span>}
@@ -44,17 +54,17 @@ export function NewsCard({ news }) {
             <h2 className="news-title">{news.title}</h2>
             <p className="news-desc">{description}</p>
             {user && (
-                <div className="news-card-votes">
+                <div className="news-card-votes" onClick={(e) => e.stopPropagation()}>
                     <button
                         className={`vote-btn vote-up ${hasUpVote ? 'active' : ''}`}
-                        onClick={() => handleVote('up')}
+                        onClick={(e) => handleVote('up', e)}
                         title="Thumbs up"
                     >
                         <span className="material-icons">thumb_up</span>
                     </button>
                     <button
                         className={`vote-btn vote-down ${hasDownVote ? 'active' : ''}`}
-                        onClick={() => handleVote('down')}
+                        onClick={(e) => handleVote('down', e)}
                         title="Thumbs down"
                     >
                         <span className="material-icons">thumb_down</span>

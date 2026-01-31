@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { CoinPrices } from "../cmps/CoinPrices";
 import { MarketNews } from "../cmps/MarketNews";
 import { Onboarding } from "../cmps/Onboarding";
+import { MemeButton } from "../cmps/MemeButton";
 
 export function Dashboard() {
     const { user } = useSelector(storeState => storeState.userModule)
@@ -22,6 +23,7 @@ export function Dashboard() {
                     <p className="ai-summary-text">{aiSummary}</p>
                 </div>
             )}
+            <MemeButton />
         </div>
     )
 }

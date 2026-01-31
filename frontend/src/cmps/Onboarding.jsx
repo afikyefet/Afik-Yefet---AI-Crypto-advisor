@@ -1,21 +1,23 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { completeOnboarding, updatePreferences } from '../store/actions/user.action'
+import { QUICK_PICKS, L2_COINS, INVESTOR_TYPES, CONTENT_TYPES, getCoinLabel } from '../constants/preferences.constants'
 
 export function Onboarding() {
     const { user } = useSelector(storeState => storeState.userModule)
     const [currentStep, setCurrentStep] = useState(0)
     const [preferences, setPreferences] = useState({
         'fav-coins': [],
-        'investor-type': '',
+        'investor-type': [],
         'content-type': []
     })
-    const [favCoinInput, setFavCoinInput] = useState('')
+    const [showAdvanced, setShowAdvanced] = useState(false)
+    const [searchInput, setSearchInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
     const steps = [
         {
-            question: 'What are your favorite cryptocurrencies?',
+            question: 'What crypto assets are you interested in?',
             type: 'fav-coins'
         },
         {
@@ -23,26 +25,81 @@ export function Onboarding() {
             type: 'investor-type'
         },
         {
-            question: 'What content types interest you?',
+            question: 'What kind of content would you like to see?',
             type: 'content-type'
         }
     ]
 
-    function handleAddFavCoin() {
-        if (favCoinInput.trim() && !preferences['fav-coins'].includes(favCoinInput.trim())) {
+    function handleToggleCoin(coinId) {
+        setPreferences(prev => {
+            const current = prev['fav-coins']
+            if (current.includes(coinId)) {
+                return { ...prev, 'fav-coins': current.filter(id => id !== coinId) }
+            } else {
+                return { ...prev, 'fav-coins': [...current, coinId] }
+            }
+        })
+    }
+
+    function handleAddCustomCoin() {
+        const coinId = searchInput.trim().toLowerCase()
+        if (coinId && !preferences['fav-coins'].includes(coinId)) {
             setPreferences(prev => ({
                 ...prev,
-                'fav-coins': [...prev['fav-coins'], favCoinInput.trim()]
+                'fav-coins': [...prev['fav-coins'], coinId]
             }))
-            setFavCoinInput('')
+            setSearchInput('')
         }
     }
 
-    function handleRemoveFavCoin(coin) {
+    function handleRemoveCoin(coinId) {
         setPreferences(prev => ({
             ...prev,
-            'fav-coins': prev['fav-coins'].filter(c => c !== coin)
+            'fav-coins': prev['fav-coins'].filter(id => id !== coinId)
         }))
+    }
+
+    function handleToggleInvestorType(type) {
+        setPreferences(prev => {
+            const current = prev['investor-type']
+            if (current.includes(type)) {
+                // Remove if already selected
+                return { ...prev, 'investor-type': current.filter(t => t !== type) }
+            } else {
+                // Add, but limit to 2 selections max
+                const updated = current.length < 2 ? [...current, type] : [current[1], type]
+                return { ...prev, 'investor-type': updated }
+            }
+        })
+    }
+
+    function handleToggleContentType(type) {
+        setPreferences(prev => {
+            const current = prev['content-type']
+            if (current.includes(type)) {
+                return { ...prev, 'content-type': current.filter(t => t !== type) }
+            } else {
+                // Limit to 4 selections max
+                const updated = current.length < 4 ? [...current, type] : current
+                return { ...prev, 'content-type': updated }
+            }
+        })
+    }
+
+    function handleCategorySelect(categoryId) {
+        if (categoryId === 'category-l2') {
+            // Add L2 coins
+            L2_COINS.forEach(coin => {
+                if (!preferences['fav-coins'].includes(coin.id)) {
+                    setPreferences(prev => ({
+                        ...prev,
+                        'fav-coins': [...prev['fav-coins'], coin.id]
+                    }))
+                }
+            })
+        }
+        // For other categories, just add the category ID (can be expanded later)
+        handleToggleCoin(categoryId)
     }
 
     function handleNext() {
@@ -77,13 +134,14 @@ export function Onboarding() {
             return preferences['fav-coins'].length > 0
         }
         if (step.type === 'investor-type') {
-            return preferences['investor-type'] !== ''
+            return preferences['investor-type'].length > 0 && preferences['investor-type'].length <= 2
         }
         if (step.type === 'content-type') {
-            return preferences['content-type'].length > 0
+            return preferences['content-type'].length >= 2 && preferences['content-type'].length <= 4
         }
         return false
     }
+
 
     const currentQuestion = steps[currentStep]
 
@@ -98,99 +156,116 @@ export function Onboarding() {
 
                 {currentQuestion.type === 'fav-coins' && (
                     <div className="onboarding-input-section">
-                        <div className="fav-coins-input">
-                            <input
-                                type="text"
-                                value={favCoinInput}
-                                onChange={(e) => setFavCoinInput(e.target.value)}
-                                placeholder="Enter coin name (e.g., bitcoin)"
-                                onKeyPress={(e) => {
-                                    if (e.key === 'Enter') {
-                                        e.preventDefault()
-                                        handleAddFavCoin()
-                                    }
-                                }}
-                            />
-                            <button type="button" onClick={handleAddFavCoin}>Add</button>
+                        <div className="quick-picks-section">
+                            <p className="section-label">Level 1 (Recommended quick picks)</p>
+                            <div className="quick-picks-grid">
+                                {QUICK_PICKS.map(pick => (
+                                    <button
+                                        key={pick.id}
+                                        type="button"
+                                        className={`quick-pick-btn ${preferences['fav-coins'].includes(pick.id) ? 'active' : ''}`}
+                                        onClick={() => pick.isCategory ? handleCategorySelect(pick.id) : handleToggleCoin(pick.id)}
+                                    >
+                                        {pick.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                        <div className="fav-coins-list">
-                            {preferences['fav-coins'].map((coin, idx) => (
-                                <span key={idx} className="fav-coin-tag">
-                                    {coin}
-                                    <button type="button" onClick={() => handleRemoveFavCoin(coin)}>×</button>
-                                </span>
-                            ))}
+
+                        <div className="advanced-section">
+                            <button
+                                type="button"
+                                className="toggle-advanced"
+                                onClick={() => setShowAdvanced(!showAdvanced)}
+                            >
+                                {showAdvanced ? '▼' : '▶'} Level 2 (Advanced)
+                            </button>
+
+                            {showAdvanced && (
+                                <div className="advanced-options">
+                                    <div className="search-add-section">
+                                        <p className="section-label">Search and add</p>
+                                        <div className="search-input-group">
+                                            <input
+                                                type="text"
+                                                value={searchInput}
+                                                onChange={(e) => setSearchInput(e.target.value)}
+                                                placeholder="Enter coin ID (e.g., bitcoin, ethereum)"
+                                                onKeyPress={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault()
+                                                        handleAddCustomCoin()
+                                                    }
+                                                }}
+                                            />
+                                            <button type="button" onClick={handleAddCustomCoin}>Add</button>
+                                        </div>
+                                        <p className="helper-text">Tip: Use CoinGecko coin IDs (lowercase, e.g., "bitcoin" not "BTC")</p>
+                                    </div>
+                                </div>
+                            )}
                         </div>
+
+                        {preferences['fav-coins'].length > 0 && (
+                            <div className="selected-coins">
+                                <p className="section-label">Selected ({preferences['fav-coins'].length})</p>
+                                <div className="selected-coins-list">
+                                    {preferences['fav-coins'].map(coinId => (
+                                        <span key={coinId} className="selected-coin-tag">
+                                            {getCoinLabel(coinId)}
+                                            <button type="button" onClick={() => handleRemoveCoin(coinId)}>×</button>
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
 
                 {currentQuestion.type === 'investor-type' && (
                     <div className="onboarding-input-section">
-                        <select
-                            value={preferences['investor-type']}
-                            onChange={(e) => setPreferences(prev => ({ ...prev, 'investor-type': e.target.value }))}
-                        >
-                            <option value="">Select investor type</option>
-                            <option value="conservative">Conservative</option>
-                            <option value="moderate">Moderate</option>
-                            <option value="aggressive">Aggressive</option>
-                        </select>
+                        <p className="section-label">Select 1-2 options</p>
+                        <div className="options-grid">
+                            {INVESTOR_TYPES.map(type => (
+                                <button
+                                    key={type.value}
+                                    type="button"
+                                    className={`option-btn ${preferences['investor-type'].includes(type.value) ? 'active' : ''}`}
+                                    onClick={() => handleToggleInvestorType(type.value)}
+                                >
+                                    {type.label}
+                                </button>
+                            ))}
+                        </div>
+                        {preferences['investor-type'].length > 0 && (
+                            <p className="selection-count">
+                                Selected: {preferences['investor-type'].length} / 2 max
+                            </p>
+                        )}
                     </div>
                 )}
 
                 {currentQuestion.type === 'content-type' && (
                     <div className="onboarding-input-section">
-                        <label>
-                            <input
-                                type="checkbox"
-                                value="news"
-                                checked={preferences['content-type'].includes('news')}
-                                onChange={(e) => {
-                                    const checked = e.target.checked
-                                    setPreferences(prev => ({
-                                        ...prev,
-                                        'content-type': checked
-                                            ? [...prev['content-type'], 'news']
-                                            : prev['content-type'].filter(type => type !== 'news')
-                                    }))
-                                }}
-                            />
-                            News
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                value="analysis"
-                                checked={preferences['content-type'].includes('analysis')}
-                                onChange={(e) => {
-                                    const checked = e.target.checked
-                                    setPreferences(prev => ({
-                                        ...prev,
-                                        'content-type': checked
-                                            ? [...prev['content-type'], 'analysis']
-                                            : prev['content-type'].filter(type => type !== 'analysis')
-                                    }))
-                                }}
-                            />
-                            Analysis
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                value="memes"
-                                checked={preferences['content-type'].includes('memes')}
-                                onChange={(e) => {
-                                    const checked = e.target.checked
-                                    setPreferences(prev => ({
-                                        ...prev,
-                                        'content-type': checked
-                                            ? [...prev['content-type'], 'memes']
-                                            : prev['content-type'].filter(type => type !== 'memes')
-                                    }))
-                                }}
-                            />
-                            Memes
-                        </label>
+                        <p className="section-label">Select 2-4 options</p>
+                        <div className="options-grid">
+                            {CONTENT_TYPES.map(type => (
+                                <button
+                                    key={type.value}
+                                    type="button"
+                                    className={`option-btn ${preferences['content-type'].includes(type.value) ? 'active' : ''}`}
+                                    onClick={() => handleToggleContentType(type.value)}
+                                    disabled={!preferences['content-type'].includes(type.value) && preferences['content-type'].length >= 4}
+                                >
+                                    {type.label}
+                                </button>
+                            ))}
+                        </div>
+                        {preferences['content-type'].length > 0 && (
+                            <p className="selection-count">
+                                Selected: {preferences['content-type'].length} / 4 max (minimum 2 required)
+                            </p>
+                        )}
                     </div>
                 )}
 
