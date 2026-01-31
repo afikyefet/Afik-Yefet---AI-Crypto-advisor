@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 // import { aiService } from "../service/ai.service"; // AI BYPASSED
 import { LineChart } from "@mui/x-charts/LineChart";
 import { loadCoinsMarketData } from "../store/actions/coinGecko.action";
+import { addVote } from "../store/actions/user.action";
 import { CoinRow } from "./CoinRow";
 import { DetailsModal } from "./DetailsModal";
 
@@ -106,6 +107,22 @@ export function CoinPrices({ onSummaryChange }) {
         })
     }
 
+    // Check if user has voted for this coin (check by coin.id)
+    const coinVote = user?.votes?.length > 0 && user?.votes?.find(v => {
+        if (v.type !== 'coin') return false
+        // Handle both old format (string) and new format (object)
+        const contentId = typeof v.content === 'object' ? v.content?.id : v.content
+        return contentId === selectedCoin?.id
+    })
+    const hasUpVote = coinVote?.vote === 'up'
+    const hasDownVote = coinVote?.vote === 'down'
+
+    function handleVote(vote) {
+        if (!user?._id) return
+        // Pass the entire coin object
+        addVote(user._id, vote, 'coin', selectedCoin)
+    }
+
     return (
         <div className="coin-prices-container">
             <div className="section-header">
@@ -113,15 +130,20 @@ export function CoinPrices({ onSummaryChange }) {
                     <h1>Coin Prices</h1>
                     <span className="section-subtitle">Real-time market snapshot</span>
                 </div>
-                {coinsMarketData?.length > 20 && (
-                    <button
-                        type="button"
-                        className="coin-table-toggle"
-                        onClick={() => setShowAll(prev => !prev)}
-                    >
-                        {showAll ? 'Show top 20' : 'Show all'}
+                <div className="section-header-actions">
+                    <button onClick={() => loadCoinsMarketData()}>
+                        <span className="material-icons">refresh</span>
                     </button>
-                )}
+                    {coinsMarketData?.length > 20 && (
+                        <button
+                            type="button"
+                            className="coin-table-toggle"
+                            onClick={() => setShowAll(prev => !prev)}
+                        >
+                            {showAll ? 'Show top 20' : 'Show all'}
+                        </button>
+                    )}
+                </div>
             </div>
             <div className="coin-table">
                 <div className="coin-table-body">
@@ -248,6 +270,30 @@ export function CoinPrices({ onSummaryChange }) {
                                 <strong>{formatMoney(selectedCoin.atl)}</strong>
                             </div>
                         </div>
+                        {user && (
+                            <span className="cell votes" data-label="Vote">
+                                <button
+                                    className={`vote-btn vote-up ${hasUpVote ? 'active' : ''}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleVote('up')
+                                    }}
+                                    title="Thumbs up"
+                                >
+                                    <span className="material-icons">thumb_up</span>
+                                </button>
+                                <button
+                                    className={`vote-btn vote-down ${hasDownVote ? 'active' : ''}`}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleVote('down')
+                                    }}
+                                    title="Thumbs down"
+                                >
+                                    <span className="material-icons">thumb_down</span>
+                                </button>
+                            </span>
+                        )}
                     </div>
                 )}
             </DetailsModal>

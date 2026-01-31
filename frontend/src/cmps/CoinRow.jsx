@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux'
 import { addVote } from '../store/actions/user.action'
 
 export function CoinRow({ coin, onSelect, changeMode = 'percent' }) {
+
     const { user } = useSelector(storeState => storeState.userModule)
+
     const priceChange = coin.price_change_percentage_24h ?? null
     const amountChange = coin.price_change_24h ?? null
     const changeValue = changeMode === 'amount' ? amountChange : priceChange
@@ -12,6 +14,8 @@ export function CoinRow({ coin, onSelect, changeMode = 'percent' }) {
         : changeValue >= 0
             ? 'pos'
             : 'neg'
+
+
     const priceData = Array.isArray(coin.sparkline_in_7d?.price)
         ? coin.sparkline_in_7d.price
         : []
@@ -21,6 +25,8 @@ export function CoinRow({ coin, onSelect, changeMode = 'percent' }) {
     const rangePadding = priceRange === 0 ? (maxPrice || 1) * 0.005 : priceRange * 0.15
     const yMin = minPrice - rangePadding
     const yMax = maxPrice + rangePadding
+
+
     const trendChange = priceData.length > 1 && priceData[0]
         ? ((priceData[priceData.length - 1] - priceData[0]) / priceData[0]) * 100
         : null

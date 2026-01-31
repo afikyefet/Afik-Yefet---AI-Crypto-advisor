@@ -3,7 +3,10 @@
     gap: 12px;
 }
 
-.coin-table-toggle {
+.section-header-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 8px 14px;
     border-radius: 999px;
     border: 1px solid var(--border);
@@ -11,11 +14,17 @@
     color: var(--text);
     font-size: 13px;
     transition: border-color 0.2s ease, background 0.2s ease;
-}
+    min-width: 40px;
+    height: 36px;
 
-.coin-table-toggle:hover {
-    border-color: rgba(34, 211, 238, 0.6);
-    background: rgba(18, 26, 36, 0.9);
+    .material-icons {
+        font-size: 18px;
+    }
+
+    &:hover {
+        border-color: rgba(34, 211, 238, 0.6);
+        background: rgba(18, 26, 36, 0.9);
+    }
 }
 
 .coin-table {

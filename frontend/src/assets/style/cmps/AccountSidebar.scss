@@ -1,19 +1,24 @@
 .account-sidebar {
     display: grid;
-    gap: 20px;
-    padding: 20px;
+    gap: 28px;
+    padding: 24px;
     border-radius: 16px;
     border: 1px solid var(--border);
     background: linear-gradient(160deg, rgba(18, 26, 36, 0.9), rgba(13, 19, 27, 0.95));
     box-shadow: 0 12px 24px rgba(3, 7, 12, 0.45);
     height: fit-content;
-    position: sticky;
+    // position: sticky;
     top: 80px;
 }
 
 .account-section {
     display: grid;
-    gap: 12px;
+    gap: 16px;
+}
+
+.account-section:not(:last-child) {
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
 }
 
 .account-section:last-child {
@@ -22,21 +27,22 @@
 
 .account-section h3 {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--muted);
     font-weight: 600;
+    margin-bottom: 4px;
 }
 
 .account-info {
     display: grid;
-    gap: 10px;
+    gap: 16px;
 }
 
 .info-item {
     display: grid;
-    gap: 4px;
+    gap: 6px;
 }
 
 .info-label {
@@ -44,17 +50,24 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--muted);
+    font-weight: 500;
 }
 
 .info-value {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--text);
     word-break: break-word;
+    font-weight: 500;
+    line-height: 1.4;
 }
 
 .pref-group {
     display: grid;
-    gap: 8px;
+    gap: 10px;
+}
+
+.pref-group:not(:last-child) {
+    margin-bottom: 4px;
 }
 
 .pref-label {
@@ -62,29 +75,38 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 2px;
 }
 
 .pref-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 8px;
 }
 
 .pref-tag {
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: 999px;
     border: 1px solid var(--border);
     background: rgba(15, 23, 42, 0.7);
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text);
     white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.pref-tag:hover {
+    border-color: rgba(34, 211, 238, 0.4);
+    background: rgba(18, 26, 36, 0.9);
 }
 
 .pref-empty {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--muted);
     font-style: italic;
     margin: 0;
+    padding: 8px 0;
 }
 
 @media (max-width: 1024px) {

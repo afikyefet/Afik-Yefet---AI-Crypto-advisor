@@ -2,8 +2,9 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 // import { aiService } from "../service/ai.service" // AI BYPASSED
 import { loadNews } from "../store/actions/cryptoPanic.action"
-import { NewsCard } from "./NewsCard"
+import { addVote } from "../store/actions/user.action"
 import { DetailsModal } from "./DetailsModal"
+import { NewsCard } from "./NewsCard"
 
 export function MarketNews({ onSummaryChange }) {
     const { news, isLoading, error } = useSelector(storeState => storeState.cryptoPanicModule)
@@ -43,6 +44,25 @@ export function MarketNews({ onSummaryChange }) {
         //     setNewsSummary(null)
         // }
     }, [news, user?._id])
+
+    // Check if user has voted for this news (check by title or id)
+    const newsVote = user?.votes?.length > 0 && user?.votes?.find(v => {
+        if (v.type !== 'news') return false
+        // Handle both old format (string) and new format (object)
+        const contentId = typeof v.content === 'object'
+            ? (v.content?.title || v.content?.id)
+            : v.content
+        return contentId === selectedNews?.title
+    })
+    const hasUpVote = newsVote?.vote === 'up'
+    const hasDownVote = newsVote?.vote === 'down'
+
+    function handleVote(vote, e) {
+        e.stopPropagation()
+        if (!user?._id || !selectedNews?.title) return
+        // Pass the entire news object
+        addVote(user._id, vote, 'news', selectedNews)
+    }
 
     const newsItems = sortedNews || news?.results || []
     const loopItems = newsItems.length ? [...newsItems, ...newsItems] : []
@@ -85,6 +105,24 @@ export function MarketNews({ onSummaryChange }) {
                         </div>
                         <h3>{selectedNews.title}</h3>
                         <p>{selectedNews.description || selectedNews.content || 'No summary available.'}</p>
+                        {user && (
+                            <div className="news-card-votes" onClick={(e) => e.stopPropagation()}>
+                                <button
+                                    className={`vote-btn vote-up ${hasUpVote ? 'active' : ''}`}
+                                    onClick={(e) => handleVote('up', e)}
+                                    title="Thumbs up"
+                                >
+                                    <span className="material-icons">thumb_up</span>
+                                </button>
+                                <button
+                                    className={`vote-btn vote-down ${hasDownVote ? 'active' : ''}`}
+                                    onClick={(e) => handleVote('down', e)}
+                                    title="Thumbs down"
+                                >
+                                    <span className="material-icons">thumb_down</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
             </DetailsModal>
