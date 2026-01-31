@@ -11,7 +11,8 @@ export const userService = {
     remove,
     getByEmail,
     updatePreferences,
-    markOnboardingComplete
+    markOnboardingComplete,
+    addVote
 };
 
 async function query(filterBy = {}) {
@@ -113,6 +114,77 @@ async function markOnboardingComplete(userId) {
         return updatedUser
     } catch (error) {
         loggerService.error(`Error in userService.markOnboardingComplete: ${error}`)
+        throw error
+    }
+}
+
+async function addVote(userId, voteData) {
+    try {
+        const collection = await dbService.getCollection(COLLECTION_NAME)
+        const user = await collection.findOne({ _id: new ObjectId(userId) })
+        if (!user) throw new Error(`Bad user id: ${userId}`)
+
+        // Initialize votes array if it doesn't exist
+        const votes = user.votes || []
+
+        // Get unique identifier from content object
+        // For coins: use content.id
+        // For news: use content.title or content.id
+        let contentId
+        if (voteData.type === 'coin') {
+            contentId = voteData.content?.id || voteData.content
+        } else if (voteData.type === 'news') {
+            contentId = voteData.content?.title || voteData.content?.id || voteData.content
+        } else {
+            contentId = voteData.content?.id || voteData.content?.title || voteData.content
+        }
+
+        // Check if vote already exists for this content (by unique identifier)
+        const existingVoteIndex = votes.findIndex(v => {
+            if (v.type !== voteData.type) return false
+
+            // Check by unique identifier
+            let existingContentId
+            if (v.type === 'coin') {
+                existingContentId = v.content?.id || v.content
+            } else if (v.type === 'news') {
+                existingContentId = v.content?.title || v.content?.id || v.content
+            } else {
+                existingContentId = v.content?.id || v.content?.title || v.content
+            }
+
+            return existingContentId === contentId
+        })
+
+        let updatedVotes
+        if (existingVoteIndex !== -1) {
+            // Vote exists - check if same vote or different
+            const existingVote = votes[existingVoteIndex]
+            if (existingVote.vote === voteData.vote) {
+                // Same vote clicked - remove it
+                updatedVotes = votes.filter((_, idx) => idx !== existingVoteIndex)
+            } else {
+                // Different vote - update it with new full object
+                updatedVotes = [...votes]
+                updatedVotes[existingVoteIndex] = voteData
+            }
+        } else {
+            // New vote - add it with full object
+            updatedVotes = [...votes, voteData]
+        }
+
+        // Update user with new votes array
+        const result = await collection.updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: { votes: updatedVotes } }
+        )
+
+        if (result.matchedCount === 0) throw new Error(`Bad user id: ${userId}`)
+
+        const updatedUser = await collection.findOne({ _id: new ObjectId(userId) })
+        return updatedUser
+    } catch (error) {
+        loggerService.error(`Error in userService.addVote: ${error}`)
         throw error
     }
 }

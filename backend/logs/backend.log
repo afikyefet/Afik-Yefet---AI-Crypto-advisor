@@ -265,3 +265,11 @@
 31.1.2026, 0:54:56 - INFO - Server ready at port 3333
 31.1.2026, 1:03:58 - INFO - User login:  | {"_id":"697d2be80813c5f64799a6ab","name":"afaf afaf","email":"afaf@afaf.com","preferences":{"fav-coins":["bitcoin","etherium"],"investor-type":"conservative","content-type":["analysis"]},"hasCompletedOnboarding":true}
 31.1.2026, 1:04:56 - INFO - User login:  | {"_id":"697c83e8f6c63ad68457fa2d","name":"123","email":"123@123.com","preferences":{"fav-coins":[],"investor-type":"","content-type":[]},"hasCompletedOnboarding":false}
+31.1.2026, 1:17:55 - INFO - Server ready at port 3333
+31.1.2026, 1:17:58 - INFO - Server ready at port 3333
+31.1.2026, 1:17:59 - INFO - Server ready at port 3333
+31.1.2026, 1:18:00 - INFO - Server ready at port 3333
+31.1.2026, 1:21:45 - INFO - Server ready at port 3333
+31.1.2026, 1:23:59 - INFO - Server ready at port 3333
+31.1.2026, 1:24:05 - INFO - Server ready at port 3333
+31.1.2026, 1:24:09 - INFO - Server ready at port 3333

@@ -21,6 +21,7 @@ export const userService = {
     getLoggedinUser,
     updatePreferences,
     completeOnboarding,
+    addVote,
 }
 
 async function getById(userId) {
@@ -40,7 +41,8 @@ async function login({ email, password }) {
         _setLoggedinUser({
             ...user,
             preferences: user.preferences || { 'fav-coins': [], 'investor-type': '', 'content-type': [] },
-            hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false
+            hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false,
+            votes: user.votes || []
         })
         return user
     } catch (err) {
@@ -56,7 +58,8 @@ async function signup({ email, password, name }) {
         _setLoggedinUser({
             ...user,
             preferences: user.preferences || { 'fav-coins': [], 'investor-type': '', 'content-type': [] },
-            hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false
+            hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false,
+            votes: user.votes || []
         })
         return user
     } catch (err) {
@@ -87,7 +90,8 @@ function _setLoggedinUser(user) {
         name: user.name,
         email: user.email,
         preferences: user.preferences,
-        hasCompletedOnboarding: user.hasCompletedOnboarding
+        hasCompletedOnboarding: user.hasCompletedOnboarding,
+        votes: user.votes || []
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN, JSON.stringify(userToSave))
     return userToSave
@@ -121,6 +125,22 @@ async function completeOnboarding(userId) {
         return user
     } catch (err) {
         const errorMsg = err.response?.data?.err || err.message || 'Failed to complete onboarding'
+        throw errorMsg
+    }
+}
+
+async function addVote(userId, vote, type, content) {
+    try {
+        const response = await axiosInstance.post(`/api/user/${userId}/add-vote`, {
+            vote,
+            type,
+            content
+        })
+        const user = response.data
+        _setLoggedinUser(user)
+        return user
+    } catch (err) {
+        const errorMsg = err.response?.data?.err || err.message || 'Failed to add vote'
         throw errorMsg
     }
 }

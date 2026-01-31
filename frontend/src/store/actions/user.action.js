@@ -69,3 +69,15 @@ export function completeOnboarding(userId) {
             throw err
         })
 }
+
+export function addVote(userId, vote, type, content) {
+    return userService.addVote(userId, vote, type, content)
+        .then((user) => {
+            store.dispatch({ type: SET_USER, user })
+            return user
+        })
+        .catch((err) => {
+            console.log('user actions -> Cannot add vote', err)
+            throw err
+        })
+}

@@ -115,3 +115,47 @@ export async function completeOnboarding(req, res) {
     res.status(400).send({ err: 'Cannot complete onboarding' })
   }
 }
+
+export async function addVote(req, res) {
+  try {
+    const { userId } = req.params
+    const { vote, type, content } = req.body
+
+    if (!vote || !type || !content) {
+      return res.status(400).send({ err: 'Vote, type, and content are required' })
+    }
+
+    if (vote !== 'up' && vote !== 'down') {
+      return res.status(400).send({ err: 'Vote must be "up" or "down"' })
+    }
+
+    if (type !== 'coin' && type !== 'news') {
+      return res.status(400).send({ err: 'Type must be "coin" or "news"' })
+    }
+
+    // Validate content has required identifier based on type
+    if (type === 'coin' && typeof content === 'object' && !content.id) {
+      return res.status(400).send({ err: 'Coin content must have an id field' })
+    }
+    if (type === 'news' && typeof content === 'object' && !content.title && !content.id) {
+      return res.status(400).send({ err: 'News content must have a title or id field' })
+    }
+
+    const voteData = { vote, type, content }
+    const updatedUser = await userService.addVote(userId, voteData)
+
+    // Return user without password
+    const { password, ...userWithoutPassword } = updatedUser
+    res.json({
+      _id: userWithoutPassword._id?.toString ? userWithoutPassword._id.toString() : userWithoutPassword._id,
+      name: userWithoutPassword.name,
+      email: userWithoutPassword.email,
+      preferences: userWithoutPassword.preferences,
+      hasCompletedOnboarding: userWithoutPassword.hasCompletedOnboarding,
+      votes: userWithoutPassword.votes || []
+    })
+  } catch (err) {
+    loggerService.error('Cannot add vote', err)
+    res.status(400).send({ err: 'Cannot add vote' })
+  }
+}

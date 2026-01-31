@@ -5,6 +5,7 @@ import { CoinRow } from "./CoinRow";
 
 export function CoinPrices() {
     const { coinsMarketData, isLoading, error } = useSelector(storeState => storeState.coinGeckoModule)
+    const { user } = useSelector(storeState => storeState.userModule)
     const [showAll, setShowAll] = useState(false)
 
     useEffect(() => {
@@ -43,6 +44,7 @@ export function CoinPrices() {
                         <span className="cell range">High / Low</span>
                         <span className="cell market-cap">Market Cap</span>
                         <span className="cell volume">Volume</span>
+                        {user && <span className="cell votes">Vote</span>}
                     </div>
                     {visibleCoins.map((coin) => (
                         <CoinRow key={coin.id} coin={coin} />

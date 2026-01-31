@@ -51,7 +51,8 @@ async function login(email, password) {
             'investor-type': '',
             'content-type': []
         },
-        hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false
+        hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false,
+        votes: user.votes || []
     }
     return miniUser
 }
@@ -75,7 +76,8 @@ async function signup({ email, password, name }) {
             'investor-type': '',
             'content-type': []
         },
-        hasCompletedOnboarding: false
+        hasCompletedOnboarding: false,
+        votes: []
     })
 
     // Return user without password
@@ -85,6 +87,7 @@ async function signup({ email, password, name }) {
         name: savedUser.name,
         email: savedUser.email,
         preferences: savedUser.preferences,
-        hasCompletedOnboarding: savedUser.hasCompletedOnboarding
+        hasCompletedOnboarding: savedUser.hasCompletedOnboarding,
+        votes: savedUser.votes || []
     }
 }

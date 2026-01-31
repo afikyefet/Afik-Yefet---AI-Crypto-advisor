@@ -90,6 +90,55 @@
     color: var(--muted);
 }
 
+.news-card-votes {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+}
+
+.news-card .vote-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+
+    .material-icons {
+        font-size: 18px;
+        line-height: 1;
+        color: inherit;
+    }
+}
+
+.news-card .vote-btn:hover {
+    border-color: rgba(34, 211, 238, 0.6);
+    background: rgba(18, 26, 36, 0.5);
+    transform: scale(1.05);
+}
+
+.news-card .vote-btn.active {
+    border-color: rgba(34, 211, 238, 0.8);
+    background: rgba(34, 211, 238, 0.15);
+}
+
+.news-card .vote-up.active {
+    border-color: var(--success);
+    background: rgba(34, 197, 94, 0.15);
+}
+
+.news-card .vote-down.active {
+    border-color: var(--danger);
+    background: rgba(239, 68, 68, 0.15);
+}
+
 @media (max-width: 720px) {
     .news-track {
         gap: 14px;
