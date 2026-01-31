@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import express from 'express'
 import path from 'path'
+import { aiRoutes } from './api/ai/ai.routes.js'
 import { authRoutes } from './api/auth/auth.routes.js'
 import { marketRoutes } from './api/market/market.routes.js'
 import { userRoutes } from './api/user/user.routes.js'
@@ -46,6 +47,7 @@ app.use(cookieParser())
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/market', marketRoutes)
+app.use('/api/ai', aiRoutes)
 
 
 app.get('/**', (req, res) => {

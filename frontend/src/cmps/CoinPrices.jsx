@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { aiService } from "../service/ai.service";
 import { loadCoinsMarketData } from "../store/actions/coinGecko.action";
 import { CoinRow } from "./CoinRow";
 
@@ -7,15 +8,27 @@ export function CoinPrices() {
     const { coinsMarketData, isLoading, error } = useSelector(storeState => storeState.coinGeckoModule)
     const { user } = useSelector(storeState => storeState.userModule)
     const [showAll, setShowAll] = useState(false)
+    const [sortedCoins, setSortedCoins] = useState(null)
 
     useEffect(() => {
         loadCoinsMarketData()
     }, [])
 
+    // Sort coins when data or user changes
+    useEffect(() => {
+        if (coinsMarketData && coinsMarketData.length > 0 && user?._id) {
+            aiService.sortCoins(user._id, coinsMarketData)
+                .then(sorted => setSortedCoins(sorted))
+                .catch(() => setSortedCoins(coinsMarketData)) // Fallback to original
+        } else if (coinsMarketData) {
+            setSortedCoins(coinsMarketData)
+        }
+    }, [coinsMarketData, user?._id])
+
     const visibleCoins = useMemo(() => {
-        if (!coinsMarketData) return []
-        return showAll ? coinsMarketData : coinsMarketData.slice(0, 20)
-    }, [coinsMarketData, showAll])
+        const coins = sortedCoins || coinsMarketData || []
+        return showAll ? coins : coins.slice(0, 20)
+    }, [sortedCoins, coinsMarketData, showAll])
 
     return (
         <div className="coin-prices-container">
