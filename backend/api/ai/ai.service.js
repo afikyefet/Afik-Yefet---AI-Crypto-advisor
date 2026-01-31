@@ -39,15 +39,21 @@ Return ONLY a valid JSON array in this exact format: [{"id": "bitcoin", "score":
         const scoreMap = new Map(scores.map(s => [s.id, s.score]))
 
         // Sort coins by score (highest first), then by market cap
-        return [...coins].sort((a, b) => {
+        const sortedCoins = [...coins].sort((a, b) => {
             const scoreA = scoreMap.get(a.id) || 0
             const scoreB = scoreMap.get(b.id) || 0
             if (scoreB !== scoreA) return scoreB - scoreA
             return (b.market_cap || 0) - (a.market_cap || 0)
         })
+
+        // Generate summary
+        const summary = await generateSummary('coins', sortedCoins.slice(0, 5), user, context)
+
+        return { coins: sortedCoins, summary }
     } catch (error) {
         loggerService.error(`Error in aiService.sortCoins: ${error}`)
-        return sortCoinsByRelevance(coins, user)
+        const sortedCoins = sortCoinsByRelevance(coins, user)
+        return { coins: sortedCoins, summary: null }
     }
 }
 
@@ -79,14 +85,20 @@ Return ONLY a valid JSON array in this exact format: [{"title": "News Title", "s
 
         const scoreMap = new Map(scores.map(s => [s.title, s.score]))
 
-        return [...newsItems].sort((a, b) => {
+        const sortedNews = [...newsItems].sort((a, b) => {
             const scoreA = scoreMap.get(a.title) || 0
             const scoreB = scoreMap.get(b.title) || 0
             return scoreB - scoreA
         })
+
+        // Generate summary
+        const summary = await generateSummary('news', sortedNews.slice(0, 5), user, context)
+
+        return { news: sortedNews, summary }
     } catch (error) {
         loggerService.error(`Error in aiService.sortNews: ${error}`)
-        return sortNewsByRelevance(newsItems, user)
+        const sortedNews = sortNewsByRelevance(newsItems, user)
+        return { news: sortedNews, summary: null }
     }
 }
 
@@ -136,6 +148,55 @@ async function getGeminiScores(prompt) {
     } catch (parseError) {
         loggerService.error(`Failed to parse Gemini response: ${text}`)
         throw new Error('Invalid JSON response from Gemini')
+    }
+}
+
+// Generate a one-sentence summary of the sorting
+async function generateSummary(type, topItems, user, context) {
+    if (!GEMINI_API_KEY) return null
+
+    try {
+        const itemList = type === 'coins'
+            ? topItems.map(c => `${c.name} (${c.symbol})`).join(', ')
+            : topItems.map(n => `"${n.title}"`).join(', ')
+
+        const prompt = `Based on this user profile and the personalized sorting I just performed, write ONE short sentence (max 15 words) summarizing what I prioritized:
+
+${context}
+
+Top ${type === 'coins' ? 'coins' : 'news items'}: ${itemList}
+
+Write a cool, concise sentence starting with "Prioritized" or "Highlighted" or "Focused on". Example: "Prioritized Bitcoin and Ethereum based on your conservative investment style and voting history."`
+
+        const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: prompt
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 50
+                }
+            })
+        })
+
+        if (!response.ok) return null
+
+        const data = await response.json()
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text
+
+        return text?.trim() || null
+    } catch (error) {
+        loggerService.error(`Error generating summary: ${error}`)
+        return null
     }
 }
 

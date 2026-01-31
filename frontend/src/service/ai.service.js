@@ -16,19 +16,19 @@ export const aiService = {
 async function sortCoins(userId, coins) {
     try {
         const response = await axiosInstance.post(`/api/ai/${userId}/sort-coins`, { coins })
-        return response.data.coins
+        return { coins: response.data.coins, summary: response.data.summary }
     } catch (err) {
         console.error('Failed to sort coins:', err)
-        return coins // Return original on error
+        return { coins, summary: null } // Return original on error
     }
 }
 
 async function sortNews(userId, news) {
     try {
         const response = await axiosInstance.post(`/api/ai/${userId}/sort-news`, { news })
-        return response.data.news
+        return { news: response.data.news, summary: response.data.summary }
     } catch (err) {
         console.error('Failed to sort news:', err)
-        return news // Return original on error
+        return { news, summary: null } // Return original on error
     }
 }

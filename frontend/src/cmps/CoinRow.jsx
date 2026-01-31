@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { addVote } from '../store/actions/user.action'
 
-export function CoinRow({ coin }) {
+export function CoinRow({ coin, onSelect }) {
     const { user } = useSelector(storeState => storeState.userModule)
     const priceChange = coin.price_change_percentage_24h ?? 0
     const changeClass = priceChange >= 0 ? 'pos' : 'neg'
@@ -49,7 +49,19 @@ export function CoinRow({ coin }) {
     }
 
     return (
-        <div className="coin-row">
+        <div
+            className={`coin-row ${onSelect ? 'is-clickable' : ''}`}
+            onClick={() => onSelect?.(coin)}
+            onKeyDown={(e) => {
+                if (!onSelect) return
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onSelect(coin)
+                }
+            }}
+            role={onSelect ? 'button' : undefined}
+            tabIndex={onSelect ? 0 : undefined}
+        >
             <span className="cell rank">{coin.market_cap_rank ?? '-'}</span>
             <span className="cell coin">
                 <img src={coin.image} alt={coin.name} />
@@ -70,14 +82,20 @@ export function CoinRow({ coin }) {
                 <span className="cell votes" data-label="Vote">
                     <button
                         className={`vote-btn vote-up ${hasUpVote ? 'active' : ''}`}
-                        onClick={() => handleVote('up')}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleVote('up')
+                        }}
                         title="Thumbs up"
                     >
                         <span className="material-icons">thumb_up</span>
                     </button>
                     <button
                         className={`vote-btn vote-down ${hasDownVote ? 'active' : ''}`}
-                        onClick={() => handleVote('down')}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleVote('down')
+                        }}
                         title="Thumbs down"
                     >
                         <span className="material-icons">thumb_down</span>

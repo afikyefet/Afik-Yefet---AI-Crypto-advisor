@@ -56,6 +56,15 @@
     }
 }
 
+.coin-row.is-clickable {
+    cursor: pointer;
+}
+
+.coin-row.is-clickable:focus-visible {
+    outline: 2px solid rgba(34, 211, 238, 0.6);
+    outline-offset: 2px;
+}
+
 .coin-row--head {
     border-radius: 16px;
     background: rgba(12, 18, 26, 0.92);

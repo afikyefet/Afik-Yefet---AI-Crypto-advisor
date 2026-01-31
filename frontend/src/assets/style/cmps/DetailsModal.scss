@@ -1,0 +1,132 @@
+.details-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(6, 10, 16, 0.7);
+    backdrop-filter: blur(8px);
+}
+
+.details-modal-card {
+    width: min(620px, 92vw);
+    max-height: 85vh;
+    overflow: auto;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: linear-gradient(160deg, rgba(16, 23, 32, 0.98), rgba(12, 18, 26, 0.98));
+    box-shadow: var(--shadow);
+    padding: 20px;
+}
+
+.details-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+
+    h2 {
+        font-size: 20px;
+        margin: 0;
+    }
+}
+
+.details-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(15, 23, 42, 0.7);
+    font-size: 20px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.details-layout {
+    display: grid;
+    gap: 16px;
+}
+
+.details-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.details-date {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.details-layout h3 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.details-layout p {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.details-hero {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    img {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 4px;
+    }
+
+    p {
+        color: var(--text);
+        font-size: 18px;
+        font-family: 'JetBrains Mono', monospace;
+    }
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    div {
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        padding: 12px;
+        display: grid;
+        gap: 6px;
+        background: rgba(12, 18, 26, 0.7);
+    }
+
+    span {
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    strong {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 720px) {
+    .details-modal-card {
+        padding: 16px;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}

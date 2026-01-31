@@ -12,8 +12,8 @@ export async function sortUserCoins(req, res) {
         }
 
         const user = await userService.getById(userId)
-        const sortedCoins = await aiService.sortCoins(coins, user)
-        res.json({ coins: sortedCoins })
+        const result = await aiService.sortCoins(coins, user)
+        res.json({ coins: result.coins, summary: result.summary })
     } catch (err) {
         loggerService.error('Cannot sort coins', err)
         res.status(400).send({ err: err.message || 'Cannot sort coins' })
@@ -30,8 +30,8 @@ export async function sortUserNews(req, res) {
         }
 
         const user = await userService.getById(userId)
-        const sortedNews = await aiService.sortNews(news, user)
-        res.json({ news: sortedNews })
+        const result = await aiService.sortNews(news, user)
+        res.json({ news: result.news, summary: result.summary })
     } catch (err) {
         loggerService.error('Cannot sort news', err)
         res.status(400).send({ err: err.message || 'Cannot sort news' })

@@ -9,6 +9,11 @@ export function Preferences() {
         'investor-type': '',
         'content-type': []
     })
+    const [originalPreferences, setOriginalPreferences] = useState({
+        'fav-coins': [],
+        'investor-type': '',
+        'content-type': []
+    })
     const [favCoinInput, setFavCoinInput] = useState('')
     const [errorMsg, setErrorMsg] = useState('')
     const [successMsg, setSuccessMsg] = useState('')
@@ -16,9 +21,31 @@ export function Preferences() {
 
     useEffect(() => {
         if (user?.preferences) {
-            setPreferences(user.preferences)
+            const prefs = {
+                'fav-coins': user.preferences['fav-coins'] || [],
+                'investor-type': user.preferences['investor-type'] || '',
+                'content-type': user.preferences['content-type'] || []
+            }
+            setPreferences(prefs)
+            setOriginalPreferences(prefs)
         }
     }, [user])
+
+    // Check if preferences have changed
+    const hasUnsavedChanges = JSON.stringify(preferences) !== JSON.stringify(originalPreferences)
+
+    // Warn before leaving with unsaved changes
+    useEffect(() => {
+        if (!hasUnsavedChanges) return
+
+        const handleBeforeUnload = (e) => {
+            e.preventDefault()
+            e.returnValue = 'You have unsaved changes. Are you sure you want to leave?'
+        }
+
+        window.addEventListener('beforeunload', handleBeforeUnload)
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+    }, [hasUnsavedChanges])
 
     function handleInvestorTypeChange(e) {
         setPreferences(prev => ({
@@ -63,7 +90,9 @@ export function Preferences() {
 
         try {
             await updatePreferences(user._id, preferences)
+            setOriginalPreferences(preferences) // Update original after successful save
             setSuccessMsg('Preferences updated successfully!')
+            setErrorMsg('')
         } catch (err) {
             setErrorMsg(typeof err === 'string' ? err : 'Failed to update preferences')
         } finally {
@@ -89,7 +118,12 @@ export function Preferences() {
                     <h1>Preferences</h1>
                     <p>Personalize your daily crypto brief.</p>
                 </div>
-                <span className="pill">Onboarding</span>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    {hasUnsavedChanges && (
+                        <span className="pill pill--unsaved">Unsaved Changes</span>
+                    )}
+                    <span className="pill">Onboarding</span>
+                </div>
             </div>
 
             <form onSubmit={handleSubmit} className="preferences-form">
@@ -196,8 +230,12 @@ export function Preferences() {
                 {successMsg && <p className="success">{successMsg}</p>}
 
                 <div className="preferences-actions">
-                    <button type="submit" disabled={isLoading} className="btn-main">
-                        {isLoading ? 'Saving...' : 'Save Preferences'}
+                    <button
+                        type="submit"
+                        disabled={isLoading || !hasUnsavedChanges}
+                        className={`btn-main ${hasUnsavedChanges ? 'btn-main--unsaved' : ''}`}
+                    >
+                        {isLoading ? 'Saving...' : hasUnsavedChanges ? 'Save Changes' : 'All Saved'}
                     </button>
                 </div>
             </form>
