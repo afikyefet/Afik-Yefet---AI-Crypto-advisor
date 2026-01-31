@@ -1,5 +1,5 @@
-import { useSelector } from 'react-redux'
 import { SparkLineChart } from '@mui/x-charts/SparkLineChart'
+import { useSelector } from 'react-redux'
 import { addVote } from '../store/actions/user.action'
 
 export function CoinRow({ coin, onSelect, changeMode = 'percent' }) {
@@ -15,6 +15,12 @@ export function CoinRow({ coin, onSelect, changeMode = 'percent' }) {
     const priceData = Array.isArray(coin.sparkline_in_7d?.price)
         ? coin.sparkline_in_7d.price
         : []
+    const minPrice = priceData.length ? Math.min(...priceData) : 0
+    const maxPrice = priceData.length ? Math.max(...priceData) : 0
+    const priceRange = maxPrice - minPrice
+    const rangePadding = priceRange === 0 ? (maxPrice || 1) * 0.005 : priceRange * 0.15
+    const yMin = minPrice - rangePadding
+    const yMax = maxPrice + rangePadding
     const trendChange = priceData.length > 1 && priceData[0]
         ? ((priceData[priceData.length - 1] - priceData[0]) / priceData[0]) * 100
         : null
@@ -104,15 +110,21 @@ export function CoinRow({ coin, onSelect, changeMode = 'percent' }) {
                     <div className="sparkline-wrap">
                         <SparkLineChart
                             data={priceData}
-                            height={50}
+                            height={30}
                             width={110}
                             area
                             showHighlight
                             showTooltip
                             colors={[lineColor]}
                             valueFormatter={(value) => formatMoney(value)}
+                            yAxis={{ min: yMin, max: yMax }}
                             margin={{ top: 5, bottom: 5, left: 5, right: 5 }}
                             curve="linear"
+                            sx={{
+                                '& .MuiAreaElement-root': {
+                                    opacity: 0.1
+                                }
+                            }}
                         />
                         {trendChange !== null && trendChange !== undefined && (
                             <span className={`sparkline-label ${trendChange >= 0 ? 'pos' : 'neg'}`}>

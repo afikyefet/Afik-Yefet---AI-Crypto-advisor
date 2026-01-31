@@ -77,6 +77,10 @@ export function CoinPrices({ onSummaryChange }) {
         ? '#34d399'
         : '#f87171'
     const lastTrendIndex = trendData.length > 0 ? trendData.length - 1 : 0
+    const trendMin = trendData.length ? Math.min(...trendData) : 0
+    const trendMax = trendData.length ? Math.max(...trendData) : 0
+    const trendRange = trendMax - trendMin
+    const trendPadding = trendRange === 0 ? (trendMax || 1) * 0.005 : trendRange * 0.15
     const trendTimestamps = trendData.map((_, idx) => {
         const hoursAgo = lastTrendIndex - idx
         return new Date(Date.now() - hoursAgo * 60 * 60 * 1000)
@@ -194,6 +198,8 @@ export function CoinPrices({ onSummaryChange }) {
                                     ]}
                                     yAxis={[
                                         {
+                                            min: trendMin - trendPadding,
+                                            max: trendMax + trendPadding,
                                             tickNumber: 5,
                                             tickLabelStyle: { fill: '#9aa4b2', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' },
                                             valueFormatter: (value) => formatMoney(value),
@@ -204,6 +210,11 @@ export function CoinPrices({ onSummaryChange }) {
                                     colors={[trendColor]}
                                     axisHighlight={{ x: 'line', y: 'line' }}
                                     tooltip={{ trigger: 'axis' }}
+                                    sx={{
+                                        '& .MuiAreaElement-root': {
+                                            opacity: 0.1
+                                        }
+                                    }}
                                 />
                             ) : (
                                 <p className="details-chart-empty">No trend data available.</p>

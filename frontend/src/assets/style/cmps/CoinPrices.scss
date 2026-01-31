@@ -29,7 +29,7 @@
 
 .coin-table-body {
     display: grid;
-    gap: 12px;
+    gap: 16px;
     padding: 12px;
     min-width: fit-content;
     width: 100%;
@@ -40,7 +40,7 @@
     grid-template-columns: 40px minmax(180px, 1.6fr) 1fr 0.8fr 1.2fr 1fr 1fr 120px;
     align-items: center;
     gap: 14px;
-    padding: 14px 16px;
+    padding: 6px 16px;
     border: 1px solid var(--border);
     font-size: 14px;
     min-width: 1040px;
