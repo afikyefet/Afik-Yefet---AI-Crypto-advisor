@@ -40,7 +40,7 @@ async function login({ email, password }) {
         const user = response.data
         _setLoggedinUser({
             ...user,
-            preferences: user.preferences || { 'fav-coins': [], 'investor-type': '', 'content-type': [] },
+            preferences: user.preferences || { 'fav-coins': [], 'investor-type': [], 'content-type': [] },
             hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false,
             votes: user.votes || []
         })
@@ -57,7 +57,7 @@ async function signup({ email, password, name }) {
         const user = response.data
         _setLoggedinUser({
             ...user,
-            preferences: user.preferences || { 'fav-coins': [], 'investor-type': '', 'content-type': [] },
+            preferences: user.preferences || { 'fav-coins': [], 'investor-type': [], 'content-type': [] },
             hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false,
             votes: user.votes || []
         })

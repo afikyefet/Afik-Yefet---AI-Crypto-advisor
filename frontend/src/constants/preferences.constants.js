@@ -55,10 +55,9 @@ export function getCoinLabel(coinId) {
     return coinId
 }
 
-// Helper function to normalize investor-type (handle both string and array)
+// Helper function to normalize investor-type (always returns array)
 export function normalizeInvestorType(investorType) {
     if (!investorType) return []
     if (Array.isArray(investorType)) return investorType
-    if (typeof investorType === 'string') return investorType ? [investorType] : []
     return []
 }

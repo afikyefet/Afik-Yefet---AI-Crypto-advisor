@@ -37,13 +37,13 @@
 
 .coin-row {
     display: grid;
-    grid-template-columns: 40px minmax(180px, 1.6fr) 1fr 0.8fr 1.2fr 1fr 1fr;
+    grid-template-columns: 40px minmax(180px, 1.6fr) 1fr 0.8fr 1.2fr 1fr 1fr 120px;
     align-items: center;
     gap: 14px;
     padding: 14px 16px;
     border: 1px solid var(--border);
     font-size: 14px;
-    min-width: 900px;
+    min-width: 1040px;
     border-radius: 16px;
     background: rgba(16, 23, 32, 0.78);
     box-shadow: 0 14px 28px rgba(5, 10, 16, 0.35);
@@ -51,8 +51,8 @@
     -webkit-backdrop-filter: blur(14px);
 
     &:has(.cell.votes) {
-        grid-template-columns: 40px minmax(180px, 1.6fr) 1fr 0.8fr 1.2fr 1fr 1fr 80px;
-        min-width: 980px;
+        grid-template-columns: 40px minmax(180px, 1.6fr) 1fr 0.8fr 1.2fr 1fr 1fr 120px 80px;
+        min-width: 1120px;
     }
 }
 
@@ -146,6 +146,82 @@
     color: var(--muted);
 }
 
+.change-toggle-btn {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    color: inherit;
+    font-size: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: rgba(15, 23, 42, 0.6);
+}
+
+.change-toggle-btn:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+}
+
+.coin-row .sparkline {
+    justify-content: center;
+}
+
+.details-chart {
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: rgba(12, 18, 26, 0.7);
+}
+
+.details-chart-empty {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.details-chart .MuiChartsAxis-line,
+.details-chart .MuiChartsAxis-tick {
+    stroke: var(--border);
+}
+
+.details-chart .MuiChartsAxis-tickLabel,
+.details-chart .MuiChartsAxis-label {
+    fill: var(--muted);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.details-chart .MuiChartsGrid-horizontalLine {
+    stroke: rgba(31, 42, 58, 0.55);
+}
+
+.details-chart .MuiChartsGrid-verticalLine {
+    stroke: rgba(31, 42, 58, 0.35);
+}
+
+.sparkline-wrap {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+}
+
+.sparkline-label {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+}
+
+.sparkline-label.pos {
+    color: var(--success);
+}
+
+.sparkline-label.neg {
+    color: var(--danger);
+}
+
+.sparkline-empty {
+    color: var(--muted);
+    font-size: 12px;
+}
+
 .coin-row:not(.coin-row--head):hover {
     border-color: rgba(34, 211, 238, 0.5);
     transform: translateY(-1px);
@@ -202,21 +278,21 @@
 
 @media (max-width: 980px) {
     .coin-row {
-        min-width: 800px;
+        min-width: 920px;
         padding: 10px 12px;
     }
 }
 
 @media (max-width: 720px) {
     .coin-row {
-        min-width: 700px;
+        min-width: 860px;
         padding: 10px 12px;
     }
 }
 
 @media (max-width: 520px) {
     .coin-row {
-        min-width: 600px;
+        min-width: 820px;
         padding: 10px;
     }
 

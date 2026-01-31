@@ -19,7 +19,7 @@ export const coinGeckoService = {
 }
 
 async function getCoinsMarketData(options = {}) {
-    const { ids, vs_currency, vs_currencies } = options
+    const { ids, vs_currency, vs_currencies, sparkline } = options
     const currency = vs_currency || vs_currencies || 'usd'
 
     const params = new URLSearchParams()
@@ -27,6 +27,9 @@ async function getCoinsMarketData(options = {}) {
 
     if (ids) {
         params.append('ids', Array.isArray(ids) ? ids.join(',') : ids)
+    }
+    if (sparkline !== undefined) {
+        params.append('sparkline', String(sparkline))
     }
 
     return axiosInstance.get(`/api/market/market-data?${params.toString()}`)

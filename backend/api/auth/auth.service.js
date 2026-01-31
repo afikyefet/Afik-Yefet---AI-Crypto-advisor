@@ -48,7 +48,7 @@ async function login(email, password) {
         email: user.email,
         preferences: user.preferences || {
             'fav-coins': [],
-            'investor-type': '',
+            'investor-type': [],
             'content-type': []
         },
         hasCompletedOnboarding: user.hasCompletedOnboarding !== undefined ? user.hasCompletedOnboarding : false,
@@ -73,7 +73,7 @@ async function signup({ email, password, name }) {
         name,
         preferences: {
             'fav-coins': [],
-            'investor-type': '',
+            'investor-type': [],
             'content-type': []
         },
         hasCompletedOnboarding: false,

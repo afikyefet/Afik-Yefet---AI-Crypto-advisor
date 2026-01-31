@@ -1,10 +1,29 @@
 import { useSelector } from 'react-redux'
+import { SparkLineChart } from '@mui/x-charts/SparkLineChart'
 import { addVote } from '../store/actions/user.action'
 
-export function CoinRow({ coin, onSelect }) {
+export function CoinRow({ coin, onSelect, changeMode = 'percent' }) {
     const { user } = useSelector(storeState => storeState.userModule)
-    const priceChange = coin.price_change_percentage_24h ?? 0
-    const changeClass = priceChange >= 0 ? 'pos' : 'neg'
+    const priceChange = coin.price_change_percentage_24h ?? null
+    const amountChange = coin.price_change_24h ?? null
+    const changeValue = changeMode === 'amount' ? amountChange : priceChange
+    const changeClass = changeValue === null || changeValue === undefined
+        ? ''
+        : changeValue >= 0
+            ? 'pos'
+            : 'neg'
+    const priceData = Array.isArray(coin.sparkline_in_7d?.price)
+        ? coin.sparkline_in_7d.price
+        : []
+    const trendChange = priceData.length > 1 && priceData[0]
+        ? ((priceData[priceData.length - 1] - priceData[0]) / priceData[0]) * 100
+        : null
+    const trendBasis = trendChange ?? priceChange
+    const lineColor = trendBasis === null || trendBasis === undefined
+        ? '#9aa4b2'
+        : trendBasis >= 0
+            ? '#34d399'
+            : '#f87171'
 
     const priceFormatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -71,13 +90,40 @@ export function CoinRow({ coin, onSelect }) {
                 </span>
             </span>
             <span className="cell price" data-label="Price">{formatMoney(coin.current_price)}</span>
-            <span className={`cell change ${changeClass}`} data-label="24h">{formatPercent(priceChange)}</span>
+            <span className={`cell change ${changeClass}`} data-label="24h">
+                {changeMode === 'amount' ? formatMoney(changeValue) : formatPercent(changeValue)}
+            </span>
             <span className="cell range" data-label="Range">
                 <span className="range-high">H {formatMoney(coin.high_24h)}</span>
                 <span className="range-low">L {formatMoney(coin.low_24h)}</span>
             </span>
             <span className="cell market-cap" data-label="Mkt Cap">{formatCompact(coin.market_cap)}</span>
             <span className="cell volume" data-label="Volume">{formatCompact(coin.total_volume)}</span>
+            <span className="cell sparkline" data-label="Trend">
+                {priceData.length > 0 ? (
+                    <div className="sparkline-wrap">
+                        <SparkLineChart
+                            data={priceData}
+                            height={50}
+                            width={110}
+                            area
+                            showHighlight
+                            showTooltip
+                            colors={[lineColor]}
+                            valueFormatter={(value) => formatMoney(value)}
+                            margin={{ top: 5, bottom: 5, left: 5, right: 5 }}
+                            curve="linear"
+                        />
+                        {trendChange !== null && trendChange !== undefined && (
+                            <span className={`sparkline-label ${trendChange >= 0 ? 'pos' : 'neg'}`}>
+                                {formatPercent(trendChange)}
+                            </span>
+                        )}
+                    </div>
+                ) : (
+                    <span className="sparkline-empty">--</span>
+                )}
+            </span>
             {user && (
                 <span className="cell votes" data-label="Vote">
                     <button

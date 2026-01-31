@@ -12,8 +12,8 @@ import { store } from '../store'
 export function loadCoinsMarketData(options = {}) {
     store.dispatch({ type: SET_CG_LOADING, isLoading: true })
     store.dispatch({ type: SET_CG_ERROR, error: null })
-    const { ids, vs_currencies = 'usd' } = options
-    return coinGeckoService.getCoinsMarketData({ ids, vs_currencies })
+    const { ids, vs_currencies = 'usd', sparkline = true } = options
+    return coinGeckoService.getCoinsMarketData({ ids, vs_currencies, sparkline })
         .then((coinsMarketData) => {
             store.dispatch({ type: SET_CG_COINS_MARKET_DATA, coinsMarketData })
             return coinsMarketData

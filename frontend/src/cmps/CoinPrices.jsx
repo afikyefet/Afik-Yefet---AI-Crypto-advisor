@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 // import { aiService } from "../service/ai.service"; // AI BYPASSED
+import { LineChart } from "@mui/x-charts/LineChart";
 import { loadCoinsMarketData } from "../store/actions/coinGecko.action";
 import { CoinRow } from "./CoinRow";
 import { DetailsModal } from "./DetailsModal";
@@ -9,6 +10,7 @@ export function CoinPrices({ onSummaryChange }) {
     const { coinsMarketData, isLoading, error } = useSelector(storeState => storeState.coinGeckoModule)
     const { user } = useSelector(storeState => storeState.userModule)
     const [showAll, setShowAll] = useState(false)
+    const [changeMode, setChangeMode] = useState('percent')
     const [sortedCoins, setSortedCoins] = useState(null)
     const [coinsSummary, setCoinsSummary] = useState(null)
     const [selectedCoin, setSelectedCoin] = useState(null)
@@ -70,6 +72,36 @@ export function CoinPrices({ onSummaryChange }) {
         return compactFormatter.format(value)
     }
 
+    const trendData = selectedCoin?.sparkline_in_7d?.price || []
+    const trendColor = (selectedCoin?.price_change_percentage_24h ?? 0) >= 0
+        ? '#34d399'
+        : '#f87171'
+    const lastTrendIndex = trendData.length > 0 ? trendData.length - 1 : 0
+    const trendTimestamps = trendData.map((_, idx) => {
+        const hoursAgo = lastTrendIndex - idx
+        return new Date(Date.now() - hoursAgo * 60 * 60 * 1000)
+    })
+    const formatDate = (value) => {
+        if (!value) return ''
+        const date = value instanceof Date ? value : new Date(value)
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day: '2-digit'
+        })
+    }
+
+    const formatDateTime = (value) => {
+        if (!value) return ''
+        const date = value instanceof Date ? value : new Date(value)
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        })
+    }
+
     return (
         <div className="coin-prices-container">
             <div className="section-header">
@@ -93,14 +125,24 @@ export function CoinPrices({ onSummaryChange }) {
                         <span className="cell rank">#</span>
                         <span className="cell coin">Coin</span>
                         <span className="cell price">Price</span>
-                        <span className="cell change">24h</span>
+                        <span className="cell change">
+                            <button
+                                type="button"
+                                className="change-toggle-btn"
+                                onClick={() => setChangeMode(prev => prev === 'percent' ? 'amount' : 'percent')}
+                                title={`Switch to ${changeMode === 'percent' ? 'amount' : 'percent'} view`}
+                            >
+                                {changeMode === 'percent' ? '24h %' : '24h $'}
+                            </button>
+                        </span>
                         <span className="cell range">High / Low</span>
                         <span className="cell market-cap">Market Cap</span>
                         <span className="cell volume">Volume</span>
+                        <span className="cell sparkline">Trend</span>
                         {user && <span className="cell votes">Vote</span>}
                     </div>
                     {visibleCoins.map((coin) => (
-                        <CoinRow key={coin.id} coin={coin} onSelect={setSelectedCoin} />
+                        <CoinRow key={coin.id} coin={coin} onSelect={setSelectedCoin} changeMode={changeMode} />
                     ))}
                 </div>
             </div>
@@ -122,6 +164,50 @@ export function CoinPrices({ onSummaryChange }) {
                                 <h3>{selectedCoin.name}</h3>
                                 <p>{formatMoney(selectedCoin.current_price)}</p>
                             </div>
+                        </div>
+                        <div className="details-chart">
+                            {trendData.length > 0 ? (
+                                <LineChart
+                                    height={220}
+                                    margin={{ top: 20, right: 20, bottom: 40, left: 70 }}
+                                    series={[
+                                        {
+                                            data: trendData,
+                                            showMark: false,
+                                            area: true,
+                                            curve: 'linear',
+                                            valueFormatter: (value) => formatMoney(value)
+                                        }
+                                    ]}
+                                    xAxis={[
+                                        {
+                                            data: trendTimestamps,
+                                            scaleType: 'point',
+                                            tickLabelInterval: (_value, index) => index % 24 === 0,
+                                            tickLabelStyle: { fill: '#9aa4b2', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' },
+                                            valueFormatter: (value, context) => {
+                                                if (context?.location === 'tooltip') return formatDateTime(value)
+                                                return formatDate(value)
+                                            },
+                                            label: 'Date'
+                                        }
+                                    ]}
+                                    yAxis={[
+                                        {
+                                            tickNumber: 5,
+                                            tickLabelStyle: { fill: '#9aa4b2', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' },
+                                            valueFormatter: (value) => formatMoney(value),
+                                            label: 'Price (USD)'
+                                        }
+                                    ]}
+                                    grid={{ horizontal: true, vertical: false }}
+                                    colors={[trendColor]}
+                                    axisHighlight={{ x: 'line', y: 'line' }}
+                                    tooltip={{ trigger: 'axis' }}
+                                />
+                            ) : (
+                                <p className="details-chart-empty">No trend data available.</p>
+                            )}
                         </div>
                         <div className="details-grid">
                             <div>

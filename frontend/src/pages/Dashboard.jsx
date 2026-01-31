@@ -4,6 +4,7 @@ import { CoinPrices } from "../cmps/CoinPrices";
 import { MarketNews } from "../cmps/MarketNews";
 import { Onboarding } from "../cmps/Onboarding";
 import { MemeButton } from "../cmps/MemeButton";
+import { AccountSidebar } from "../cmps/AccountSidebar";
 
 export function Dashboard() {
     const { user } = useSelector(storeState => storeState.userModule)
@@ -16,8 +17,13 @@ export function Dashboard() {
 
     return (
         <div className="dashboard-container">
-            <MarketNews onSummaryChange={setAiSummary} />
-            <CoinPrices onSummaryChange={setAiSummary} />
+            <div className="dashboard-main">
+                <AccountSidebar />
+                <div className="dashboard-content">
+                    <MarketNews onSummaryChange={setAiSummary} />
+                    <CoinPrices onSummaryChange={setAiSummary} />
+                </div>
+            </div>
             {aiSummary && (
                 <div className="ai-summary">
                     <p className="ai-summary-text">{aiSummary}</p>

@@ -72,11 +72,25 @@ export async function updateUserPreferences(req, res) {
     if (preferences['fav-coins'] && !Array.isArray(preferences['fav-coins'])) {
       return res.status(400).send({ err: 'fav-coins must be an array' })
     }
-    if (preferences['investor-type'] && typeof preferences['investor-type'] !== 'string') {
-      return res.status(400).send({ err: 'investor-type must be a string' })
+    
+    // investor-type must be an array
+    if (preferences['investor-type'] !== undefined) {
+      if (!Array.isArray(preferences['investor-type'])) {
+        return res.status(400).send({ err: 'investor-type must be an array' })
+      }
+      if (preferences['investor-type'].length > 2) {
+        return res.status(400).send({ err: 'investor-type array can have maximum 2 selections' })
+      }
+    } else {
+      // Ensure it's always an array, even if empty
+      preferences['investor-type'] = []
     }
+
     if (preferences['content-type'] && !Array.isArray(preferences['content-type'])) {
       return res.status(400).send({ err: 'content-type must be an array' })
+    }
+    if (preferences['content-type'] && Array.isArray(preferences['content-type']) && (preferences['content-type'].length < 2 || preferences['content-type'].length > 4)) {
+      return res.status(400).send({ err: 'content-type must have 2-4 selections' })
     }
 
     const updatedUser = await userService.updatePreferences(userId, preferences)
@@ -88,7 +102,8 @@ export async function updateUserPreferences(req, res) {
       name: userWithoutPassword.name,
       email: userWithoutPassword.email,
       preferences: userWithoutPassword.preferences,
-      hasCompletedOnboarding: userWithoutPassword.hasCompletedOnboarding
+      hasCompletedOnboarding: userWithoutPassword.hasCompletedOnboarding,
+      votes: userWithoutPassword.votes || []
     })
   } catch (err) {
     loggerService.error('Cannot update user preferences', err)
@@ -108,7 +123,8 @@ export async function completeOnboarding(req, res) {
       name: userWithoutPassword.name,
       email: userWithoutPassword.email,
       preferences: userWithoutPassword.preferences,
-      hasCompletedOnboarding: userWithoutPassword.hasCompletedOnboarding
+      hasCompletedOnboarding: userWithoutPassword.hasCompletedOnboarding,
+      votes: userWithoutPassword.votes || []
     })
   } catch (err) {
     loggerService.error('Cannot complete onboarding', err)
