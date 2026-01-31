@@ -79,3 +79,13 @@ export async function getHotNews(req, res) {
         res.status(400).send({ err: 'Cannot get hot news' })
     }
 }
+
+export async function getMeme(req, res) {
+    try {
+        const data = await marketService.getMeme()
+        res.send(data)
+    } catch (err) {
+        loggerService.error('Cannot get meme', err)
+        res.status(400).send({ err: 'Cannot get meme' })
+    }
+}

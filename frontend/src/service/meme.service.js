@@ -1,7 +1,10 @@
 import axios from 'axios'
 
-const memeAxios = axios.create({
-    baseURL: 'https://meme-api.com',
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3333'
+
+const axiosInstance = axios.create({
+    baseURL: BASE_URL,
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json'
     }
@@ -12,20 +15,6 @@ export const memeService = {
 }
 
 async function getCryptoMeme() {
-    const response = await memeAxios.get('/gimme/cryptomemes')
-    const data = response.data || {}
-
-    const previewUrl = Array.isArray(data.preview) && data.preview.length
-        ? data.preview[data.preview.length - 1]
-        : ''
-    const imageUrl = data.url || data.image || previewUrl
-
-    if (!imageUrl) {
-        throw new Error('No meme image available')
-    }
-
-    return {
-        title: data.title || 'Crypto meme',
-        imageUrl
-    }
+    const response = await axiosInstance.get('/api/market/meme')
+    return response.data
 }

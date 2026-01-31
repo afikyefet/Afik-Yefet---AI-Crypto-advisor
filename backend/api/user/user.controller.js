@@ -1,10 +1,35 @@
 import { loggerService } from "../../services/logger.service.js";
 import { userService } from "./user.service.js";
 
+function ensureOwner(req, res, userId) {
+  const loggedInId = req.loggedinUser?._id
+  if (!loggedInId) {
+    res.status(401).send({ err: 'Login first!' })
+    return false
+  }
+  if (loggedInId !== userId) {
+    res.status(403).send({ err: 'Not allowed' })
+    return false
+  }
+  return true
+}
+
+function sanitizeUser(user) {
+  if (!user) return user
+  const { password, ...safeUser } = user
+  return {
+    ...safeUser,
+    _id: safeUser._id?.toString ? safeUser._id.toString() : safeUser._id,
+    votes: safeUser.votes || []
+  }
+}
+
 export async function getUsers(req, res) {
   try {
-    const users = await userService.query()
-    res.send(users)
+    const userId = req.loggedinUser?._id
+    if (!userId) return res.status(401).send({ err: 'Login first!' })
+    const user = await userService.getById(userId)
+    res.send([sanitizeUser(user)])
   } catch (err) {
     loggerService.error('Cannot get users', err)
     res.status(400).send('Cannot get users')
@@ -14,9 +39,10 @@ export async function getUsers(req, res) {
 export async function getUser(req, res) {
   try {
     const { userId } = req.params;
+    if (!ensureOwner(req, res, userId)) return
     const user = await userService.getById(userId);
     if (!user) throw new Error(`User not found for id: ${userId}`);
-    res.send(user);
+    res.send(sanitizeUser(user));
   } catch (err) {
     loggerService.error('Cannot get user', err);
     res.status(400).send('Cannot get user');
@@ -26,10 +52,7 @@ export async function getUser(req, res) {
 
 export async function addUser(req, res) {
   try {
-    const { fullname, email, password } = req.body
-    const userToSave = { fullname, email, password }
-    const savedUser = await userService.save(userToSave)
-    res.send(savedUser)
+    res.status(403).send({ err: 'Use /api/auth/signup instead' })
   } catch (err) {
     loggerService.error('Cannot add user', err)
     res.status(400).send('Cannot add user')
@@ -39,9 +62,10 @@ export async function addUser(req, res) {
 export async function updateUser(req, res) {
   try {
     const { _id, fullname, email, password } = req.body
+    if (!ensureOwner(req, res, _id)) return
     const userToSave = { _id, fullname, email, password }
     const savedUser = await userService.save(userToSave)
-    res.send(savedUser)
+    res.send(sanitizeUser(savedUser))
   } catch (err) {
     loggerService.error('Cannot update user', err)
     res.status(400).send('Cannot update user')
@@ -51,6 +75,7 @@ export async function updateUser(req, res) {
 export async function removeUser(req, res) {
   try {
     const { userId } = req.params
+    if (!ensureOwner(req, res, userId)) return
     await userService.remove(userId)
     res.send('User removed')
   } catch (err) {
@@ -63,6 +88,8 @@ export async function updateUserPreferences(req, res) {
   try {
     const { userId } = req.params
     const { preferences } = req.body
+
+    if (!ensureOwner(req, res, userId)) return
 
     if (!preferences) {
       return res.status(400).send({ err: 'Preferences are required' })
@@ -114,6 +141,7 @@ export async function updateUserPreferences(req, res) {
 export async function completeOnboarding(req, res) {
   try {
     const { userId } = req.params
+    if (!ensureOwner(req, res, userId)) return
     const updatedUser = await userService.markOnboardingComplete(userId)
 
     // Return user without password
@@ -136,6 +164,8 @@ export async function addVote(req, res) {
   try {
     const { userId } = req.params
     const { vote, type, content } = req.body
+
+    if (!ensureOwner(req, res, userId)) return
 
     if (!vote || !type || !content) {
       return res.status(400).send({ err: 'Vote, type, and content are required' })

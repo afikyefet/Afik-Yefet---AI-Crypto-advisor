@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { coinGeckoService } from '../../services/coinGecko.service.js'
 import { cryptoPanicService } from '../../services/cryptoPanic.service.js'
+import { memeService } from '../../services/meme.service.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -24,7 +25,8 @@ export const marketService = {
     pingCoinGecko,
     getNews,
     getTrendingNews,
-    getHotNews
+    getHotNews,
+    getMeme
 }
 
 async function getCoinPrices(query = {}) {
@@ -152,6 +154,10 @@ async function getHotNews(query = {}) {
         CRYPTOPANIC_AUTH_TOKEN,
         splitList(currencies)
     )
+}
+
+async function getMeme() {
+    return memeService.getCryptoMeme()
 }
 
 function splitList(value) {
