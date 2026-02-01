@@ -1,50 +1,28 @@
+import { LineChart } from "@mui/x-charts/LineChart";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-// import { aiService } from "../service/ai.service"; // AI BYPASSED
-import { LineChart } from "@mui/x-charts/LineChart";
 import { loadCoinsMarketData } from "../store/actions/coinGecko.action";
 import { addVote } from "../store/actions/user.action";
 import { CoinRow } from "./CoinRow";
 import { DetailsModal } from "./DetailsModal";
 
-export function CoinPrices({ onSummaryChange }) {
+export function CoinPrices() {
     const { coinsMarketData, isLoading, error } = useSelector(storeState => storeState.coinGeckoModule)
     const { user } = useSelector(storeState => storeState.userModule)
     const [showAll, setShowAll] = useState(false)
     const [changeMode, setChangeMode] = useState('percent')
     const [sortedCoins, setSortedCoins] = useState(null)
-    const [coinsSummary, setCoinsSummary] = useState(null)
     const [selectedCoin, setSelectedCoin] = useState(null)
 
     useEffect(() => {
         loadCoinsMarketData()
     }, [])
 
-    // Sort coins when data or user changes
-    // AI BYPASSED - Using original data directly
     useEffect(() => {
         if (coinsMarketData) {
             setSortedCoins(coinsMarketData)
-            setCoinsSummary(null)
         }
-        // AI sorting bypassed - uncomment below to re-enable
-        // if (coinsMarketData && coinsMarketData.length > 0 && user?._id) {
-        //     aiService.sortCoins(user._id, coinsMarketData)
-        //         .then(result => {
-        //             setSortedCoins(result.coins)
-        //             setCoinsSummary(result.summary)
-        //             if (result.summary && onSummaryChange) {
-        //                 onSummaryChange(result.summary)
-        //             }
-        //         })
-        //         .catch(() => {
-        //             setSortedCoins(coinsMarketData)
-        //             setCoinsSummary(null)
-        //         })
-        // } else if (coinsMarketData) {
-        //     setSortedCoins(coinsMarketData)
-        //     setCoinsSummary(null)
-        // }
+
     }, [coinsMarketData, user?._id])
 
     const visibleCoins = useMemo(() => {

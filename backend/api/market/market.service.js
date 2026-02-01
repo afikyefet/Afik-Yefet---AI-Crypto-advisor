@@ -16,6 +16,10 @@ const USE_STATIC_NEWS = false
 const STATIC_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicNews.json')
 const STATIC_TRENDING_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicTrendingNews.json')
 const STATIC_HOT_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicHotNews.json')
+const NEWS_CACHE_TTL_MS = 1000 * 60 * 60 * 3 // 3 hours
+const newsCache = { data: null, cachedAt: 0 }
+const trendingNewsCache = { data: null, cachedAt: 0 }
+const hotNewsCache = { data: null, cachedAt: 0 }
 
 export const marketService = {
     getCoinsMarketData,
@@ -27,6 +31,10 @@ export const marketService = {
     getTrendingNews,
     getHotNews,
     getMeme
+}
+
+function isNewsCacheValid(cache) {
+    return cache.data !== null && (Date.now() - cache.cachedAt < NEWS_CACHE_TTL_MS)
 }
 
 async function getCoinPrices(query = {}) {
@@ -94,16 +102,20 @@ async function pingCoinGecko() {
 }
 
 async function getNews(query = {}) {
+    if (isNewsCacheValid(newsCache)) return newsCache.data
     if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
             const { currencies, filter, region, page } = query
-            return await cryptoPanicService.getNews({
+            const data = await cryptoPanicService.getNews({
                 auth_token: CRYPTOPANIC_AUTH_TOKEN,
                 currencies: splitList(currencies),
                 filter,
                 region,
                 page: page ? +page : undefined
             })
+            newsCache.data = data
+            newsCache.cachedAt = Date.now()
+            return data
         } catch (err) {
             // API failed — fall back to static file below
         }
@@ -119,14 +131,19 @@ async function getNews(query = {}) {
 }
 
 async function getTrendingNews(query = {}) {
+    if (isNewsCacheValid(trendingNewsCache)) return trendingNewsCache.data
+
     // Try API first (when we have a token and are not forcing static)
     if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
             const { currencies } = query
-            return await cryptoPanicService.getTrendingNews(
+            const data = await cryptoPanicService.getTrendingNews(
                 CRYPTOPANIC_AUTH_TOKEN,
                 splitList(currencies)
             )
+            trendingNewsCache.data = data
+            trendingNewsCache.cachedAt = Date.now()
+            return data
         } catch (err) {
             // API failed — fall back to static file below
         }
@@ -142,14 +159,18 @@ async function getTrendingNews(query = {}) {
 }
 
 async function getHotNews(query = {}) {
+    if (isNewsCacheValid(hotNewsCache)) return hotNewsCache.data
     // Try API first (when we have a token and are not forcing static)
     if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
             const { currencies } = query
-            return await cryptoPanicService.getHotNews(
+            const data = await cryptoPanicService.getHotNews(
                 CRYPTOPANIC_AUTH_TOKEN,
                 splitList(currencies)
             )
+            hotNewsCache.data = data
+            hotNewsCache.cachedAt = Date.now()
+            return data
         } catch (err) {
             // API failed — fall back to static file below
         }

@@ -6,7 +6,7 @@ import { addVote } from "../store/actions/user.action"
 import { DetailsModal } from "./DetailsModal"
 import { NewsCard } from "./NewsCard"
 
-export function MarketNews({ onSummaryChange }) {
+export function MarketNews() {
     const { news, isLoading, error } = useSelector(storeState => storeState.cryptoPanicModule)
     const { user } = useSelector(storeState => storeState.userModule)
     const [sortedNews, setSortedNews] = useState(null)

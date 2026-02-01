@@ -52,7 +52,7 @@ app.use('/api/market', marketRoutes)
 app.use('/api/ai', aiRoutes)
 
 
-app.get('/**', (req, res) => {
+app.get('/*', (req, res) => {
     res.sendFile(path.resolve('public/index.html'))
 })
 
