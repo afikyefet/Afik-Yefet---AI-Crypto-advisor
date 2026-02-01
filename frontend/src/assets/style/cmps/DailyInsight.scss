@@ -9,7 +9,6 @@
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background: linear-gradient(135deg, var(--panel-92), rgba(14, 21, 30, 0.96));
-    box-shadow: var(--shadow-elevated);
     @include grid-stack(var(--space-5));
 
     &.is-loading {

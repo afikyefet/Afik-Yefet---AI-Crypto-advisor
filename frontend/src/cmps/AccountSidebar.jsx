@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { CONTENT_TYPES, getCoinLabel, INVESTOR_TYPES } from '../constants/preferences.constants'
 import { memeService } from "../service/meme.service"
 
 
@@ -36,16 +35,6 @@ export function AccountSidebar() {
     }
 
     const investorTypes = preferences['investor-type'] || []
-
-    const getInvestorLabel = (value) => {
-        const type = INVESTOR_TYPES.find(t => t.value === value)
-        return type ? type.label : value
-    }
-
-    const getContentLabel = (value) => {
-        const type = CONTENT_TYPES.find(t => t.value === value)
-        return type ? type.label : value
-    }
 
     return (
         <aside className="account-sidebar">
@@ -89,7 +78,7 @@ export function AccountSidebar() {
                         <div className="pref-tags">
                             {preferences['fav-coins'].map((coinId, idx) => (
                                 <span key={idx} className="pref-tag">
-                                    {getCoinLabel(coinId)}
+                                    {coinId}
                                 </span>
                             ))}
                         </div>
@@ -102,7 +91,7 @@ export function AccountSidebar() {
                         <div className="pref-tags">
                             {investorTypes.map((type, idx) => (
                                 <span key={idx} className="pref-tag">
-                                    {getInvestorLabel(type)}
+                                    {type}
                                 </span>
                             ))}
                         </div>
@@ -115,7 +104,7 @@ export function AccountSidebar() {
                         <div className="pref-tags">
                             {preferences['content-type'].map((type, idx) => (
                                 <span key={idx} className="pref-tag">
-                                    {getContentLabel(type)}
+                                    {type}
                                 </span>
                             ))}
                         </div>

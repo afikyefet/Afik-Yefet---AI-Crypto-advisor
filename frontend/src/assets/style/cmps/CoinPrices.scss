@@ -30,7 +30,6 @@
 .coin-table {
     border: none;
     background: transparent;
-    box-shadow: none;
     overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
@@ -54,7 +53,6 @@
     min-width: 1040px;
     border-radius: var(--radius-xl);
     background: rgba(16, 23, 32, 0.78);
-    box-shadow: var(--shadow-elevated);
     @include glass(14px);
 
     &:has(.cell.votes) {
@@ -83,7 +81,6 @@
     letter-spacing: var(--tracking-widest);
     color: var(--muted);
     border-color: var(--accent-25);
-    box-shadow: 0 10px 20px rgba(4, 8, 14, 0.35);
 }
 
 .coin-row .cell {

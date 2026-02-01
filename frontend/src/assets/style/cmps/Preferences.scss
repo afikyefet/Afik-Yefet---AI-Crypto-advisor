@@ -47,10 +47,12 @@
 }
 
 @keyframes pulse-unsaved {
+
     0%,
     100% {
         opacity: 1;
     }
+
     50% {
         opacity: 0.7;
     }
@@ -64,7 +66,6 @@
     border-radius: var(--radius-lg);
     @include card-base;
     background: linear-gradient(160deg, var(--panel-92), rgba(13, 19, 27, 0.96));
-    box-shadow: var(--shadow);
     padding: var(--space-9);
     @include grid-stack(var(--space-7));
 }
@@ -113,30 +114,16 @@
 // Unsaved state for button
 .btn-main--unsaved {
     background: linear-gradient(135deg, rgba(248, 113, 113, 0.9), rgba(239, 68, 68, 0.9));
-    box-shadow: 0 12px 22px var(--danger-25);
     animation: pulse-button 2s ease-in-out infinite;
 
-    &:hover:not(:disabled) {
-        box-shadow: 0 16px 26px rgba(248, 113, 113, 0.35);
-    }
 }
 
-@keyframes pulse-button {
-    0%,
-    100% {
-        box-shadow: 0 12px 22px var(--danger-25);
-    }
-    50% {
-        box-shadow: 0 12px 22px rgba(248, 113, 113, 0.4);
-    }
-}
 
 .preferences-empty {
     padding: var(--space-12);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     background: rgba(15, 23, 33, 0.7);
-    box-shadow: var(--shadow);
 }
 
 @include mobile {

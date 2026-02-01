@@ -6,7 +6,6 @@
     padding: var(--space-12);
     border-radius: var(--radius-lg);
     @include card-base;
-    box-shadow: var(--shadow);
 
     h1 {
         @include page-title;

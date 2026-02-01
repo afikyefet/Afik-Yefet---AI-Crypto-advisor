@@ -160,7 +160,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"preferences\": {\n        \"fav-coins\": [\"bitcoin\", \"ethereum\"],\n        \"investor-type\": [\"conservative\", \"moderate\"],\n        \"content-type\": [\"news\", \"analysis\", \"tutorials\", \"market-updates\"]\n    }\n}"
+							"raw": "{\n    \"preferences\": {\n        \"fav-coins\": [\"bitcoin\", \"ethereum\"],\n        \"investor-type\": [\"conservative\"],\n        \"content-type\": [\"news\"]\n    }\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/user/:userId/preferences",
@@ -181,7 +181,7 @@
 								}
 							]
 						},
-						"description": "Update user preferences. investor-type: max 2, content-type: 2-4 selections"
+						"description": "Update user preferences. investor-type: exactly 1, content-type: exactly 1 selection"
 					},
 					"response": []
 				},

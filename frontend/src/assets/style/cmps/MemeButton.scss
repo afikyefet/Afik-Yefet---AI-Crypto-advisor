@@ -16,12 +16,10 @@
     background: linear-gradient(135deg, rgba(34, 211, 238, 0.95), rgba(56, 189, 248, 0.9));
     color: #031018;
     font-weight: var(--font-semibold);
-    box-shadow: var(--shadow-btn-accent);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    transition: transform var(--transition-fast);
 
     &:hover {
         transform: translateY(-1px);
-        box-shadow: 0 16px 28px rgba(34, 211, 238, 0.28);
     }
 }
 

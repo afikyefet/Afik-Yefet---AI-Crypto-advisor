@@ -105,19 +105,21 @@ export async function updateUserPreferences(req, res) {
       if (!Array.isArray(preferences['investor-type'])) {
         return res.status(400).send({ err: 'investor-type must be an array' })
       }
-      if (preferences['investor-type'].length > 2) {
-        return res.status(400).send({ err: 'investor-type array can have maximum 2 selections' })
+      if (preferences['investor-type'].length !== 1) {
+        return res.status(400).send({ err: 'investor-type must have exactly 1 selection' })
       }
     } else {
       // Ensure it's always an array, even if empty
       preferences['investor-type'] = []
     }
 
-    if (preferences['content-type'] && !Array.isArray(preferences['content-type'])) {
+    if (preferences['content-type'] !== undefined && !Array.isArray(preferences['content-type'])) {
       return res.status(400).send({ err: 'content-type must be an array' })
     }
-    if (preferences['content-type'] && Array.isArray(preferences['content-type']) && (preferences['content-type'].length < 2 || preferences['content-type'].length > 4)) {
-      return res.status(400).send({ err: 'content-type must have 2-4 selections' })
+    if (preferences['content-type'] !== undefined && Array.isArray(preferences['content-type']) && preferences['content-type'].length !== 1) {
+      return res.status(400).send({ err: 'content-type must have exactly 1 selection' })
+    } else if (preferences['content-type'] === undefined) {
+      preferences['content-type'] = []
     }
 
     const updatedUser = await userService.updatePreferences(userId, preferences)

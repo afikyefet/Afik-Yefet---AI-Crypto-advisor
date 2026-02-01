@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { CONTENT_TYPES, INVESTOR_TYPES, QUICK_PICKS } from '../constants/preferences.constants'
 import { updatePreferences } from '../store/actions/user.action'
-import { QUICK_PICKS, L2_COINS, INVESTOR_TYPES, CONTENT_TYPES, getCoinLabel, normalizeInvestorType } from '../constants/preferences.constants'
 
 export function Preferences() {
     const { user } = useSelector(storeState => storeState.userModule)
@@ -25,18 +25,16 @@ export function Preferences() {
         if (user?.preferences) {
             const prefs = {
                 'fav-coins': user.preferences['fav-coins'] || [],
-                'investor-type': normalizeInvestorType(user.preferences['investor-type']),
+                'investor-type': user.preferences['investor-type'] || [],
                 'content-type': user.preferences['content-type'] || []
             }
             setPreferences(prefs)
-            setOriginalPreferences(JSON.parse(JSON.stringify(prefs))) // Deep copy
+            setOriginalPreferences(JSON.parse(JSON.stringify(prefs)))
         }
     }, [user])
 
-    // Check if preferences have changed
     const hasUnsavedChanges = JSON.stringify(preferences) !== JSON.stringify(originalPreferences)
 
-    // Warn before leaving with unsaved changes
     useEffect(() => {
         if (!hasUnsavedChanges) return
 
@@ -82,12 +80,9 @@ export function Preferences() {
         setPreferences(prev => {
             const current = prev['investor-type']
             if (current.includes(type)) {
-                return { ...prev, 'investor-type': current.filter(t => t !== type) }
-            } else {
-                // Limit to 2 selections max
-                const updated = current.length < 2 ? [...current, type] : [current[1], type]
-                return { ...prev, 'investor-type': updated }
+                return prev
             }
+            return { ...prev, 'investor-type': [type] }
         })
     }
 
@@ -95,28 +90,10 @@ export function Preferences() {
         setPreferences(prev => {
             const current = prev['content-type']
             if (current.includes(type)) {
-                return { ...prev, 'content-type': current.filter(t => t !== type) }
-            } else {
-                // Limit to 4 selections max
-                const updated = current.length < 4 ? [...current, type] : current
-                return { ...prev, 'content-type': updated }
+                return prev
             }
+            return { ...prev, 'content-type': [type] }
         })
-    }
-
-    function handleCategorySelect(categoryId) {
-        if (categoryId === 'category-l2') {
-            // Add L2 coins
-            L2_COINS.forEach(coin => {
-                if (!preferences['fav-coins'].includes(coin.id)) {
-                    setPreferences(prev => ({
-                        ...prev,
-                        'fav-coins': [...prev['fav-coins'], coin.id]
-                    }))
-                }
-            })
-        }
-        handleToggleCoin(categoryId)
     }
 
     async function handleSubmit(e) {
@@ -127,7 +104,7 @@ export function Preferences() {
 
         try {
             await updatePreferences(user._id, preferences)
-            setOriginalPreferences(JSON.parse(JSON.stringify(preferences))) // Update original after successful save
+            setOriginalPreferences(JSON.parse(JSON.stringify(preferences)))
             setSuccessMsg('Preferences updated successfully!')
             setErrorMsg('')
         } catch (err) {
@@ -179,7 +156,7 @@ export function Preferences() {
                                         key={pick.id}
                                         type="button"
                                         className={`quick-pick-btn ${preferences['fav-coins'].includes(pick.id) ? 'active' : ''}`}
-                                        onClick={() => pick.isCategory ? handleCategorySelect(pick.id) : handleToggleCoin(pick.id)}
+                                        onClick={() => handleToggleCoin(pick.id)}
                                     >
                                         {pick.label}
                                     </button>
@@ -195,7 +172,7 @@ export function Preferences() {
                             >
                                 {showAdvanced ? '▼' : '▶'} Advanced: Search and add
                             </button>
-                            
+
                             {showAdvanced && (
                                 <div className="advanced-options">
                                     <div className="search-add-section">
@@ -226,7 +203,7 @@ export function Preferences() {
                                 <div className="selected-coins-list">
                                     {preferences['fav-coins'].map(coinId => (
                                         <span key={coinId} className="selected-coin-tag">
-                                            {getCoinLabel(coinId)}
+                                            {coinId}
                                             <button type="button" onClick={() => handleRemoveCoin(coinId)}>×</button>
                                         </span>
                                     ))}
@@ -240,7 +217,7 @@ export function Preferences() {
                     <div className="preference-card-header">
                         <div>
                             <h2>Investor Type</h2>
-                            <p>Select 1-2 options that best describe you.</p>
+                            <p>Select 1 option that best describes you.</p>
                         </div>
                     </div>
                     <div className="preference-block">
@@ -258,7 +235,7 @@ export function Preferences() {
                         </div>
                         {preferences['investor-type'].length > 0 && (
                             <p className="selection-count">
-                                Selected: {preferences['investor-type'].length} / 2 max
+                                Selected: {preferences['investor-type'].length} / 1
                             </p>
                         )}
                     </div>
@@ -268,7 +245,7 @@ export function Preferences() {
                     <div className="preference-card-header">
                         <div>
                             <h2>Content Types</h2>
-                            <p>Select 2-4 options for your feed.</p>
+                            <p>Select 1 option for your feed.</p>
                         </div>
                     </div>
                     <div className="preference-block">
@@ -279,7 +256,6 @@ export function Preferences() {
                                     type="button"
                                     className={`option-btn ${preferences['content-type'].includes(type.value) ? 'active' : ''}`}
                                     onClick={() => handleToggleContentType(type.value)}
-                                    disabled={!preferences['content-type'].includes(type.value) && preferences['content-type'].length >= 4}
                                 >
                                     {type.label}
                                 </button>
@@ -287,7 +263,7 @@ export function Preferences() {
                         </div>
                         {preferences['content-type'].length > 0 && (
                             <p className="selection-count">
-                                Selected: {preferences['content-type'].length} / 4 max (minimum 2 required)
+                                Selected: {preferences['content-type'].length} / 1
                             </p>
                         )}
                     </div>

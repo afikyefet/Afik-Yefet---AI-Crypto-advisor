@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { CONTENT_TYPES, INVESTOR_TYPES, QUICK_PICKS } from '../constants/preferences.constants'
 import { completeOnboarding, updatePreferences } from '../store/actions/user.action'
-import { QUICK_PICKS, L2_COINS, INVESTOR_TYPES, CONTENT_TYPES, getCoinLabel } from '../constants/preferences.constants'
 
 export function Onboarding() {
     const { user } = useSelector(storeState => storeState.userModule)
@@ -63,13 +63,9 @@ export function Onboarding() {
         setPreferences(prev => {
             const current = prev['investor-type']
             if (current.includes(type)) {
-                // Remove if already selected
-                return { ...prev, 'investor-type': current.filter(t => t !== type) }
-            } else {
-                // Add, but limit to 2 selections max
-                const updated = current.length < 2 ? [...current, type] : [current[1], type]
-                return { ...prev, 'investor-type': updated }
+                return prev
             }
+            return { ...prev, 'investor-type': [type] }
         })
     }
 
@@ -77,29 +73,10 @@ export function Onboarding() {
         setPreferences(prev => {
             const current = prev['content-type']
             if (current.includes(type)) {
-                return { ...prev, 'content-type': current.filter(t => t !== type) }
-            } else {
-                // Limit to 4 selections max
-                const updated = current.length < 4 ? [...current, type] : current
-                return { ...prev, 'content-type': updated }
+                return prev
             }
+            return { ...prev, 'content-type': [type] }
         })
-    }
-
-    function handleCategorySelect(categoryId) {
-        if (categoryId === 'category-l2') {
-            // Add L2 coins
-            L2_COINS.forEach(coin => {
-                if (!preferences['fav-coins'].includes(coin.id)) {
-                    setPreferences(prev => ({
-                        ...prev,
-                        'fav-coins': [...prev['fav-coins'], coin.id]
-                    }))
-                }
-            })
-        }
-        // For other categories, just add the category ID (can be expanded later)
-        handleToggleCoin(categoryId)
     }
 
     function handleNext() {
@@ -134,10 +111,10 @@ export function Onboarding() {
             return preferences['fav-coins'].length > 0
         }
         if (step.type === 'investor-type') {
-            return preferences['investor-type'].length > 0 && preferences['investor-type'].length <= 2
+            return preferences['investor-type'].length === 1
         }
         if (step.type === 'content-type') {
-            return preferences['content-type'].length >= 2 && preferences['content-type'].length <= 4
+            return preferences['content-type'].length === 1
         }
         return false
     }
@@ -164,7 +141,7 @@ export function Onboarding() {
                                         key={pick.id}
                                         type="button"
                                         className={`quick-pick-btn ${preferences['fav-coins'].includes(pick.id) ? 'active' : ''}`}
-                                        onClick={() => pick.isCategory ? handleCategorySelect(pick.id) : handleToggleCoin(pick.id)}
+                                        onClick={() => handleToggleCoin(pick.id)}
                                     >
                                         {pick.label}
                                     </button>
@@ -178,7 +155,7 @@ export function Onboarding() {
                                 className="toggle-advanced"
                                 onClick={() => setShowAdvanced(!showAdvanced)}
                             >
-                                {showAdvanced ? '▼' : '▶'} Level 2 (Advanced)
+                                {showAdvanced ? '▼' : '▶'} Add by text
                             </button>
 
                             {showAdvanced && (
@@ -212,7 +189,7 @@ export function Onboarding() {
                                 <div className="selected-coins-list">
                                     {preferences['fav-coins'].map(coinId => (
                                         <span key={coinId} className="selected-coin-tag">
-                                            {getCoinLabel(coinId)}
+                                            {coinId}
                                             <button type="button" onClick={() => handleRemoveCoin(coinId)}>×</button>
                                         </span>
                                     ))}
@@ -224,7 +201,7 @@ export function Onboarding() {
 
                 {currentQuestion.type === 'investor-type' && (
                     <div className="onboarding-input-section">
-                        <p className="section-label">Select 1-2 options</p>
+                        <p className="section-label">Select 1 option</p>
                         <div className="options-grid">
                             {INVESTOR_TYPES.map(type => (
                                 <button
@@ -239,7 +216,7 @@ export function Onboarding() {
                         </div>
                         {preferences['investor-type'].length > 0 && (
                             <p className="selection-count">
-                                Selected: {preferences['investor-type'].length} / 2 max
+                                Selected: {preferences['investor-type'].length} / 1
                             </p>
                         )}
                     </div>
@@ -247,7 +224,7 @@ export function Onboarding() {
 
                 {currentQuestion.type === 'content-type' && (
                     <div className="onboarding-input-section">
-                        <p className="section-label">Select 2-4 options</p>
+                        <p className="section-label">Select 1 option</p>
                         <div className="options-grid">
                             {CONTENT_TYPES.map(type => (
                                 <button
@@ -255,7 +232,6 @@ export function Onboarding() {
                                     type="button"
                                     className={`option-btn ${preferences['content-type'].includes(type.value) ? 'active' : ''}`}
                                     onClick={() => handleToggleContentType(type.value)}
-                                    disabled={!preferences['content-type'].includes(type.value) && preferences['content-type'].length >= 4}
                                 >
                                     {type.label}
                                 </button>
@@ -263,7 +239,7 @@ export function Onboarding() {
                         </div>
                         {preferences['content-type'].length > 0 && (
                             <p className="selection-count">
-                                Selected: {preferences['content-type'].length} / 4 max (minimum 2 required)
+                                Selected: {preferences['content-type'].length} / 1
                             </p>
                         )}
                     </div>

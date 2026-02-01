@@ -50,6 +50,19 @@ export async function pingCoinGecko(req, res) {
     }
 }
 
+export async function getRelevantNews(req, res) {
+    try {
+        const data = await marketService.getRelevantNews(req.loggedinUser._id)
+        if (!data) {
+            return res.status(404).send({ err: 'No relevant news found' })
+        }
+        res.send(data)
+    } catch (err) {
+        loggerService.error('Cannot get relevant news', err)
+        res.status(400).send({ err: 'Cannot get relevant news' })
+    }
+}
+
 export async function getNews(req, res) {
     try {
         const data = await marketService.getNews(req.query)

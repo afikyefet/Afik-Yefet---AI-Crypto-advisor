@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { coinGeckoService } from '../../services/coinGecko.service.js'
 import { cryptoPanicService } from '../../services/cryptoPanic.service.js'
 import { memeService } from '../../services/meme.service.js'
+import { aiService } from '../ai/ai.service.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -25,6 +26,7 @@ export const marketService = {
     getCoinsMarketData,
     getCoinPrices,
     getCoinsList,
+    getRelevantNews,
     getSupportedCurrencies,
     pingCoinGecko,
     getNews,
@@ -101,17 +103,24 @@ async function pingCoinGecko() {
     return coinGeckoService.ping(COINGECKO_API_KEY || null)
 }
 
+async function getRelevantNews(userId) {
+    const { filter, currencies, kind } = await aiService.getRelevantNewsFilter(userId)
+    return getNews({ currencies, filter, kind })
+}
+
+
 async function getNews(query = {}) {
     if (isNewsCacheValid(newsCache)) return newsCache.data
     if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
-            const { currencies, filter, region, page } = query
+            const { currencies, filter, region, page, kind } = query
             const data = await cryptoPanicService.getNews({
                 auth_token: CRYPTOPANIC_AUTH_TOKEN,
                 currencies: splitList(currencies),
                 filter,
                 region,
-                page: page ? +page : undefined
+                page: page ? +page : undefined,
+                kind
             })
             newsCache.data = data
             newsCache.cachedAt = Date.now()

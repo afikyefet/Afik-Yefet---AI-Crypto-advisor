@@ -20,24 +20,6 @@ export async function sortUserCoins(req, res) {
     }
 }
 
-export async function sortUserNews(req, res) {
-    try {
-        const { userId } = req.params
-        const { news } = req.body
-
-        if (!news || !Array.isArray(news)) {
-            return res.status(400).send({ err: 'News array is required' })
-        }
-
-        const user = await userService.getById(userId)
-        const result = await aiService.sortNews(news, user)
-        res.json({ news: result.news, summary: result.summary })
-    } catch (err) {
-        loggerService.error('Cannot sort news', err)
-        res.status(400).send({ err: err.message || 'Cannot sort news' })
-    }
-}
-
 export async function getDailyInsight(req, res) {
     try {
         const { userId } = req.params

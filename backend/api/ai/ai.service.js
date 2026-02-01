@@ -10,11 +10,13 @@ const OPENROUTER_APP_URL = process.env.OPENROUTER_APP_URL || ''
 const OPENROUTER_APP_TITLE = process.env.OPENROUTER_APP_TITLE || 'AI Crypto Advisor'
 const OPENROUTER_MAX_TOKENS = Number(process.env.OPENROUTER_MAX_TOKENS) || 180
 const DAILY_CONTENT_COLLECTION = 'daily_content'
+const CRYPTOPANIC_FILTERS = ['rising', 'hot', 'bullish', 'bearish', 'important', 'saved', 'lol']
+const CRYPTOPANIC_KINDS = ['news', 'media', 'all']
 
 export const aiService = {
     sortCoins,
-    sortNews,
-    getDailyInsight
+    getDailyInsight,
+    getRelevantNewsFilter
 }
 
 // Sort coins based on user preferences and votes
@@ -23,11 +25,6 @@ async function sortCoins(coins, user) {
     return { coins: sortedCoins, summary: null }
 }
 
-// Sort news based on user preferences and votes
-async function sortNews(newsItems, user) {
-    const sortedNews = sortNewsByRelevance(newsItems, user)
-    return { news: sortedNews, summary: null }
-}
 
 // Fallback: Simple relevance-based sorting without AI
 function sortCoinsByRelevance(coins, user) {
@@ -58,43 +55,6 @@ function sortCoinsByRelevance(coins, user) {
         if (!aFav && bFav) return 1
 
         return (b.market_cap || 0) - (a.market_cap || 0)
-    })
-}
-
-function sortNewsByRelevance(newsItems, user) {
-    if (!user || !newsItems) return newsItems || []
-
-    const upVotedTitles = new Set()
-    const favCoins = new Set((user.preferences?.['fav-coins'] || []).map(c => c.toLowerCase()))
-
-    if (user.votes) {
-        user.votes.forEach(v => {
-            if (v.type === 'news' && v.vote === 'up') {
-                const title = typeof v.content === 'object' ? v.content?.title : v.content
-                if (title) upVotedTitles.add(title.toLowerCase())
-            }
-        })
-    }
-
-    return [...newsItems].sort((a, b) => {
-        const aVoted = upVotedTitles.has(a.title?.toLowerCase())
-        const bVoted = upVotedTitles.has(b.title?.toLowerCase())
-
-        // Check if news mentions favorite coins
-        const aRelevant = favCoins.size > 0 && Array.from(favCoins).some(coin =>
-            a.title?.toLowerCase().includes(coin) || a.description?.toLowerCase().includes(coin)
-        )
-        const bRelevant = favCoins.size > 0 && Array.from(favCoins).some(coin =>
-            b.title?.toLowerCase().includes(coin) || b.description?.toLowerCase().includes(coin)
-        )
-
-        // Prioritize: voted > mentions fav coins > date
-        if (aVoted && !bVoted) return -1
-        if (!aVoted && bVoted) return 1
-        if (aRelevant && !bRelevant) return -1
-        if (!aRelevant && bRelevant) return 1
-
-        return new Date(b.published_at || b.created_at || 0) - new Date(a.published_at || a.created_at || 0)
     })
 }
 
@@ -136,6 +96,46 @@ async function getDailyInsight(userId, options = {}) {
 
 function getDateKey(date = new Date()) {
     return date.toISOString().slice(0, 10)
+}
+
+async function getRelevantNewsFilter(userId) {
+    const user = await userService.getById(userId)
+    const context = buildCompactUserContext(user)
+    const contextStr = JSON.stringify(context)
+
+    const systemPrompt = `You are a crypto news filter assistant. Given a user profile, reply with ONLY a JSON object (no markdown, no explanation) with exactly these keys:
+- "filter": one of [${CRYPTOPANIC_FILTERS.join(', ')}]
+- "currencies": array of 0-10 currency symbols (e.g. BTC, ETH, SOL) derived from fav-coins and voted content; map CoinGecko id to symbol (bitcoin->BTC, ethereum->ETH, solana->SOL, ripple->XRP, etc.)
+- "kind": one of [${CRYPTOPANIC_KINDS.join(', ')}]
+
+Pick filter and kind to best match investor-type and content-type. Reply with nothing but the JSON.`
+
+    const userMessage = `User profile:\n${contextStr}\n\nReturn the JSON object only.`
+
+    let params = { filter: 'rising', currencies: [], kind: 'all' }
+
+    if (OPENROUTER_API_KEY) {
+        try {
+            const responseText = await openRouterChat(
+                [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userMessage }
+                ],
+                120
+            )
+            const cleaned = responseText.replace(/^[`"'\s]+|[`"'\s]+$/g, '').replace(/\s+/g, ' ')
+            const parsed = JSON.parse(cleaned)
+            if (parsed.filter && CRYPTOPANIC_FILTERS.includes(parsed.filter)) params.filter = parsed.filter
+            if (Array.isArray(parsed.currencies)) params.currencies = parsed.currencies.slice(0, 10)
+            if (parsed.kind && CRYPTOPANIC_KINDS.includes(parsed.kind)) params.kind = parsed.kind
+        } catch (error) {
+            loggerService.error('AI news filter failed, using defaults', error)
+        }
+    }
+    loggerService.info('AI news filter parameters', params)
+    console.log('AI news filter parameters', params);
+
+    return params
 }
 
 async function generateDailyInsight(user) {

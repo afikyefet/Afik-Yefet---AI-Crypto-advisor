@@ -1,49 +1,21 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 // import { aiService } from "../service/ai.service" // AI BYPASSED
-import { loadNews } from "../store/actions/cryptoPanic.action"
+import { loadRelevantNews } from "../store/actions/cryptoPanic.action"
 import { addVote } from "../store/actions/user.action"
 import { DetailsModal } from "./DetailsModal"
 import { NewsCard } from "./NewsCard"
 
 export function MarketNews() {
-    const { news, isLoading, error } = useSelector(storeState => storeState.cryptoPanicModule)
+    const { news, relevantNews, isLoading, error } = useSelector(storeState => storeState.cryptoPanicModule)
     const { user } = useSelector(storeState => storeState.userModule)
-    const [sortedNews, setSortedNews] = useState(null)
     const [selectedNews, setSelectedNews] = useState(null)
-    const [newsSummary, setNewsSummary] = useState(null)
 
     useEffect(() => {
-        loadNews()
-    }, [])
+        loadRelevantNews({ userId: user?._id })
+    }, [user?._id])
 
-    // Sort news when data or user changes
-    // AI BYPASSED - Using original data directly
-    useEffect(() => {
-        const newsItems = news?.results || []
-        if (newsItems.length > 0) {
-            setSortedNews(newsItems)
-            setNewsSummary(null)
-        }
-        // AI sorting bypassed - uncomment below to re-enable
-        // if (newsItems.length > 0 && user?._id) {
-        //     aiService.sortNews(user._id, newsItems)
-        //         .then(result => {
-        //             setSortedNews(result.news)
-        //             setNewsSummary(result.summary)
-        //             if (result.summary && onSummaryChange) {
-        //                 onSummaryChange(result.summary)
-        //             }
-        //         })
-        //         .catch(() => {
-        //             setSortedNews(newsItems)
-        //             setNewsSummary(null)
-        //         })
-        // } else if (newsItems.length > 0) {
-        //     setSortedNews(newsItems)
-        //     setNewsSummary(null)
-        // }
-    }, [news, user?._id])
+
 
     // Check if user has voted for this news (check by title or id)
     const newsVote = user?.votes?.length > 0 && user?.votes?.find(v => {
@@ -64,7 +36,7 @@ export function MarketNews() {
         addVote(user._id, vote, 'news', selectedNews)
     }
 
-    const newsItems = sortedNews || news?.results || []
+    const newsItems = relevantNews?.results || []
     const loopItems = newsItems.length ? [...newsItems, ...newsItems] : []
     const selectedDate = selectedNews?.published_at || selectedNews?.created_at
     const formattedDate = selectedDate

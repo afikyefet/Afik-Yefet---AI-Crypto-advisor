@@ -415,17 +415,17 @@ describe('User Controller - Security Tests', () => {
                 expect(res.send).toHaveBeenCalledWith({ err: 'investor-type must be an array' })
             })
 
-            it('should return 400 if investor-type has more than 2 selections', async () => {
+            it('should return 400 if investor-type has more than 1 selection', async () => {
                 const { req, res } = createMockReqRes({
                     params: { userId },
-                    body: { preferences: { 'investor-type': ['a', 'b', 'c'] } },
+                    body: { preferences: { 'investor-type': ['a', 'b'] } },
                     loggedinUser: { _id: userId }
                 })
 
                 await updateUserPreferences(req, res)
 
                 expect(res.status).toHaveBeenCalledWith(400)
-                expect(res.send).toHaveBeenCalledWith({ err: 'investor-type array can have maximum 2 selections' })
+                expect(res.send).toHaveBeenCalledWith({ err: 'investor-type must have exactly 1 selection' })
             })
 
             it('should return 400 if content-type is not an array', async () => {
@@ -441,30 +441,30 @@ describe('User Controller - Security Tests', () => {
                 expect(res.send).toHaveBeenCalledWith({ err: 'content-type must be an array' })
             })
 
-            it('should return 400 if content-type has less than 2 selections', async () => {
+            it('should return 400 if content-type has less than 1 selection', async () => {
                 const { req, res } = createMockReqRes({
                     params: { userId },
-                    body: { preferences: { 'content-type': ['news'] } },
+                    body: { preferences: { 'content-type': [] } },
                     loggedinUser: { _id: userId }
                 })
 
                 await updateUserPreferences(req, res)
 
                 expect(res.status).toHaveBeenCalledWith(400)
-                expect(res.send).toHaveBeenCalledWith({ err: 'content-type must have 2-4 selections' })
+                expect(res.send).toHaveBeenCalledWith({ err: 'content-type must have exactly 1 selection' })
             })
 
-            it('should return 400 if content-type has more than 4 selections', async () => {
+            it('should return 400 if content-type has more than 1 selection', async () => {
                 const { req, res } = createMockReqRes({
                     params: { userId },
-                    body: { preferences: { 'content-type': ['a', 'b', 'c', 'd', 'e'] } },
+                    body: { preferences: { 'content-type': ['a', 'b'] } },
                     loggedinUser: { _id: userId }
                 })
 
                 await updateUserPreferences(req, res)
 
                 expect(res.status).toHaveBeenCalledWith(400)
-                expect(res.send).toHaveBeenCalledWith({ err: 'content-type must have 2-4 selections' })
+                expect(res.send).toHaveBeenCalledWith({ err: 'content-type must have exactly 1 selection' })
             })
 
             it('should accept valid preferences', async () => {
@@ -475,7 +475,7 @@ describe('User Controller - Security Tests', () => {
                     preferences: {
                         'fav-coins': ['bitcoin'],
                         'investor-type': ['aggressive'],
-                        'content-type': ['news', 'analysis']
+                        'content-type': ['news']
                     },
                     hasCompletedOnboarding: false
                 }
@@ -487,7 +487,7 @@ describe('User Controller - Security Tests', () => {
                         preferences: {
                             'fav-coins': ['bitcoin'],
                             'investor-type': ['aggressive'],
-                            'content-type': ['news', 'analysis']
+                            'content-type': ['news']
                         }
                     },
                     loggedinUser: { _id: userId }

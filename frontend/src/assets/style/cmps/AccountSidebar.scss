@@ -4,8 +4,7 @@
     @include grid-stack(var(--space-11));
     padding: var(--space-10);
     border-radius: var(--radius-xl);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-card);
+    // border: 1px solid var(--border);
     height: fit-content;
     top: 80px;
 }

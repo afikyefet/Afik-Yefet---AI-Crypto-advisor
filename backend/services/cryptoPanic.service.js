@@ -6,18 +6,9 @@
 
 const CRYPTOPANIC_API_BASE_URL = 'https://cryptopanic.com/api/developer/v2/posts/';
 
-/**
- * Fetch news posts from CryptoPanic API
- * @param {Object} options - Query options
- * @param {string} options.auth_token - API auth token (required)
- * @param {string[]} options.currencies - Array of currency symbols (e.g., ['BTC', 'ETH'])
- * @param {string} options.filter - Filter type: 'trending', 'hot', 'bullish', 'bearish', 'important', 'saved', 'lol'
- * @param {string} options.region - Region filter: 'en', 'de', 'es', 'it', 'pt', 'ru'
- * @param {number} options.page - Page number for pagination
- * @returns {Promise<Object>} API response with news posts
- */
+
 export async function getNews(options = {}) {
-    const { auth_token, currencies, filter = 'rising', region, page } = options;
+    const { auth_token, currencies, filter = 'rising', region, page, kind } = options;
 
     if (!auth_token) {
         throw new Error('CryptoPanic API auth_token is required');
@@ -44,6 +35,10 @@ export async function getNews(options = {}) {
         params.append('page', page.toString());
     }
 
+    if (kind) {
+        params.append('kind', kind);
+    }
+
     try {
         const url = `${CRYPTOPANIC_API_BASE_URL}?${params.toString()}`;
         const response = await fetch(url);
@@ -59,12 +54,7 @@ export async function getNews(options = {}) {
     }
 }
 
-/**
- * Get trending news
- * @param {string} auth_token - API auth token
- * @param {string[]} currencies - Optional array of currency symbols
- * @returns {Promise<Object>} Trending news posts
- */
+
 export async function getTrendingNews(auth_token, currencies = null) {
     return getNews({
         auth_token,
@@ -73,12 +63,6 @@ export async function getTrendingNews(auth_token, currencies = null) {
     });
 }
 
-/**
- * Get hot news
- * @param {string} auth_token - API auth token
- * @param {string[]} currencies - Optional array of currency symbols
- * @returns {Promise<Object>} Hot news posts
- */
 export async function getHotNews(auth_token, currencies = null) {
     return getNews({
         auth_token,

@@ -74,14 +74,7 @@ export async function getCoinPrices(options = {}) {
     }
 }
 
-/**
- * Get coin prices by symbols (e.g., 'btc', 'eth')
- * @param {string} api_key - API key (optional)
- * @param {string|string[]} symbols - Coin symbols
- * @param {string|string[]} vs_currencies - Target currencies, default: 'usd'
- * @param {Object} options - Additional options (include_market_cap, include_24hr_vol, etc.)
- * @returns {Promise<Object>} API response with coin prices
- */
+
 export async function getCoinPricesBySymbols(api_key, symbols, vs_currencies = 'usd', options = {}) {
     const symbolsParam = Array.isArray(symbols) ? symbols.join(',') : symbols;
 
@@ -93,13 +86,7 @@ export async function getCoinPricesBySymbols(api_key, symbols, vs_currencies = '
     });
 }
 
-/**
- * Get coin prices with full market data (market cap, volume, 24hr change)
- * @param {string} api_key - API key (optional)
- * @param {string|string[]} ids - Coin IDs
- * @param {string|string[]} vs_currencies - Target currencies, default: 'usd'
- * @returns {Promise<Object>} API response with full market data
- */
+
 export async function getCoinPricesWithMarketData(api_key, ids, vs_currencies = 'usd') {
     return getCoinPrices({
         api_key,
@@ -112,18 +99,7 @@ export async function getCoinPricesWithMarketData(api_key, ids, vs_currencies = 
     });
 }
 
-/**
- * Get market data for coins (prices, market cap, etc.)
- * @param {Object} options - Query options
- * @param {string} options.api_key - API key (optional)
- * @param {string} options.vs_currency - Target currency, default: 'usd'
- * @param {string|string[]} options.ids - Optional coin IDs
- * @param {string} options.order - Order of results (e.g., 'market_cap_desc')
- * @param {number} options.per_page - Results per page
- * @param {number} options.page - Page number
- * @param {boolean} options.sparkline - Include sparkline data
- * @returns {Promise<Array>} Array of coin market data
- */
+
 export async function getCoinsMarketData(options = {}) {
     const {
         api_key,
@@ -168,11 +144,7 @@ export async function getCoinsMarketData(options = {}) {
     }
 }
 
-/**
- * Get list of all supported coins
- * @param {string} api_key - API key (optional)
- * @returns {Promise<Array>} Array of coins with id, name, and symbol
- */
+
 export async function getCoinsList(api_key = null) {
     try {
         const url = `${COINGECKO_API_BASE_URL}/coins/list`;
@@ -195,11 +167,7 @@ export async function getCoinsList(api_key = null) {
     }
 }
 
-/**
- * Get supported vs currencies
- * @param {string} api_key - API key (optional)
- * @returns {Promise<Array>} Array of supported currency codes
- */
+
 export async function getSupportedCurrencies(api_key = null) {
     try {
         const url = `${COINGECKO_API_BASE_URL}/simple/supported_vs_currencies`;
@@ -222,11 +190,7 @@ export async function getSupportedCurrencies(api_key = null) {
     }
 }
 
-/**
- * Ping API server to check status
- * @param {string} api_key - API key (optional)
- * @returns {Promise<Object>} API status response
- */
+
 export async function ping(api_key = null) {
     try {
         const url = `${COINGECKO_API_BASE_URL}/ping`;

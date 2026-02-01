@@ -4,7 +4,8 @@ import {
     SET_CP_HOT,
     SET_CP_LOADING,
     SET_CP_NEWS,
-    SET_CP_TRENDING
+    SET_CP_TRENDING,
+    SET_CP_RELEVANT_NEWS
 } from '../reducers/cryptoPanic.reducer'
 import { store } from '../store'
 
@@ -19,6 +20,25 @@ export function loadNews(options = {}) {
         })
         .catch((err) => {
             const errorMsg = err?.message || err?.response?.data?.err || 'Failed to load news'
+            store.dispatch({ type: SET_CP_ERROR, error: errorMsg })
+            throw err
+        })
+        .finally(() => {
+            store.dispatch({ type: SET_CP_LOADING, isLoading: false })
+        })
+}
+
+export function loadRelevantNews(options = {}) {
+    store.dispatch({ type: SET_CP_LOADING, isLoading: true })
+    store.dispatch({ type: SET_CP_ERROR, error: null })
+
+    return cryptoPanicService.getRelevantNews(options)
+        .then((relevantNews) => {
+            store.dispatch({ type: SET_CP_RELEVANT_NEWS, relevantNews })
+            return relevantNews
+        })
+        .catch((err) => {
+            const errorMsg = err?.message || err?.response?.data?.err || 'Failed to load relevant news'
             store.dispatch({ type: SET_CP_ERROR, error: errorMsg })
             throw err
         })
