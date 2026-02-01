@@ -1,12 +1,13 @@
+@use '../setup/mixins' as *;
+
 .market-news-container {
-    display: grid;
-    gap: 12px;
+    @include grid-stack(var(--space-5));
 }
 
 .market-news-body {
     position: relative;
     overflow: hidden;
-    padding: 6px 0 12px;
+    padding: var(--space-2) 0 var(--space-5);
     mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%);
 }
@@ -14,7 +15,7 @@
 .news-track {
     display: flex;
     align-items: stretch;
-    gap: 18px;
+    gap: var(--space-8);
     width: max-content;
     animation: news-marquee 130s linear infinite;
 }
@@ -35,57 +36,42 @@
 
 .news-card {
     flex: 0 0 280px;
-    display: grid;
-    gap: 10px;
-    padding: 16px;
+    @include grid-stack(var(--space-4));
+    padding: var(--space-7);
     border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    background: linear-gradient(160deg, rgba(18, 26, 36, 0.9), rgba(13, 19, 27, 0.95));
-    box-shadow: 0 12px 24px rgba(3, 7, 12, 0.45);
-    transition: transform 0.25s ease, border-color 0.25s ease;
-}
+    @include card-base;
+    @include card-hover;
 
-.news-card.is-clickable {
-    cursor: pointer;
-}
+    &.is-clickable {
+        cursor: pointer;
 
-.news-card.is-clickable:focus-visible {
-    outline: 2px solid rgba(34, 211, 238, 0.6);
-    outline-offset: 2px;
-}
-
-.news-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(34, 211, 238, 0.5);
+        @include focus-ring;
+    }
 }
 
 .news-card-header {
-    display: flex;
+    @include flex-row(var(--space-5));
     justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    font-size: 12px;
+    font-size: var(--text-sm);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: var(--tracking-widest);
     color: var(--muted);
 }
 
 .news-tag {
-    padding: 4px 8px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.7);
-    font-size: 11px;
+    @include pill-base;
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--text-xs);
 }
 
 .news-title {
-    font-size: 15px;
-    line-height: 1.3;
+    font-size: var(--text-lg);
+    line-height: var(--leading-snug);
 }
 
 .news-desc {
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
     color: var(--muted);
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -94,73 +80,41 @@
 }
 
 .news-date {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    @include mono-data;
+    font-size: var(--text-xs);
     color: var(--muted);
 }
 
 .news-card-votes {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    padding-top: 8px;
+    @include flex-row(var(--space-3));
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
     border-top: 1px solid var(--border);
 }
 
+// News card vote buttons extend base but with flex: 1
 .news-card .vote-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 10px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     flex: 1;
+    padding: var(--space-2) var(--space-4);
 
-    .material-icons {
-        font-size: 18px;
-        line-height: 1;
-        color: inherit;
+    &:hover {
+        transform: scale(1.05);
     }
 }
 
-.news-card .vote-btn:hover {
-    border-color: rgba(34, 211, 238, 0.6);
-    background: rgba(18, 26, 36, 0.5);
-    transform: scale(1.05);
-}
-
-.news-card .vote-btn.active {
-    border-color: rgba(34, 211, 238, 0.8);
-    background: rgba(34, 211, 238, 0.15);
-}
-
-.news-card .vote-up.active {
-    border-color: var(--success);
-    background: rgba(34, 197, 94, 0.15);
-}
-
-.news-card .vote-down.active {
-    border-color: var(--danger);
-    background: rgba(239, 68, 68, 0.15);
-}
-
-@media (max-width: 720px) {
+@include mobile {
     .news-track {
-        gap: 14px;
+        gap: var(--space-6);
         animation-duration: 90s;
     }
 
     .news-card {
         flex-basis: 240px;
-        padding: 14px;
+        padding: var(--space-6);
     }
 }
 
-@media (max-width: 520px) {
+@include mobile-sm {
     .news-card {
         flex-basis: 220px;
     }

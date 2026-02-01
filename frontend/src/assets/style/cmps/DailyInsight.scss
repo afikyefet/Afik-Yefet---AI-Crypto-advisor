@@ -1,67 +1,64 @@
+@use '../setup/mixins' as *;
+
 .daily-insight-container {
-    display: grid;
-    gap: 12px;
+    @include grid-stack(var(--space-5));
 }
 
 .daily-insight-card {
-    padding: 20px 24px;
+    padding: var(--space-9) var(--space-10);
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
-    background: linear-gradient(135deg, rgba(18, 26, 36, 0.92), rgba(14, 21, 30, 0.96));
-    box-shadow: 0 14px 26px rgba(4, 8, 14, 0.45);
-    display: grid;
-    gap: 12px;
-}
+    background: linear-gradient(135deg, var(--panel-92), rgba(14, 21, 30, 0.96));
+    box-shadow: var(--shadow-elevated);
+    @include grid-stack(var(--space-5));
 
-.daily-insight-card.is-loading {
-    opacity: 0.8;
+    &.is-loading {
+        opacity: 0.8;
+    }
 }
 
 .daily-insight-meta {
-    display: flex;
-    align-items: center;
+    @include flex-row(var(--space-5));
     justify-content: space-between;
-    gap: 12px;
-    font-size: 12px;
+    font-size: var(--text-sm);
     color: var(--muted);
 }
 
 .daily-insight-meta-left {
+    @include flex-row(var(--space-5));
     display: inline-flex;
-    align-items: center;
-    gap: 12px;
 }
 
 .daily-insight-actions .btn-text {
-    font-size: 12px;
-    padding: 6px 10px;
-    border-radius: 999px;
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
     border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.4);
-}
+    background: var(--dark-40);
 
-.daily-insight-actions .btn-text:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 }
 
 .daily-insight-text {
-    font-size: 32px;
-    line-height: 1.5;
+    font-size: var(--text-6xl);
+    line-height: var(--leading-relaxed);
     color: var(--text);
 }
 
 .daily-insight-status {
-    font-size: 12px;
+    font-size: var(--text-sm);
     color: var(--muted);
 }
 
-@media (max-width: 720px) {
+@include mobile {
     .daily-insight-card {
-        padding: 18px;
+        padding: var(--space-8);
     }
 
     .daily-insight-text {
-        font-size: 15px;
+        font-size: var(--text-lg);
     }
 }

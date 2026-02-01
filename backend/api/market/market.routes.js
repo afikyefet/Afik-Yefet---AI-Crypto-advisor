@@ -25,6 +25,7 @@ router.get('/market-data', getCoinsMarketData)
 router.get('/news', getNews)
 router.get('/news/trending', getTrendingNews)
 router.get('/news/hot', getHotNews)
+
 router.get('/meme', getMeme)
 
 export const marketRoutes = router

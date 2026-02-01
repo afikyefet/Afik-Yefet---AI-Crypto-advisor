@@ -1,23 +1,11 @@
+@use './setup/variables';
+@use './setup/mixins' as *;
+
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
-:root {
-    color-scheme: dark;
-    --bg: #0a0f14;
-    --bg-soft: #0f151c;
-    --panel: #121a24;
-    --panel-elev: #182230;
-    --border: #1f2a3a;
-    --text: #e5e7eb;
-    --muted: #9aa4b2;
-    --accent: #22d3ee;
-    --accent-2: #38bdf8;
-    --success: #34d399;
-    --danger: #f87171;
-    --shadow: 0 10px 30px rgba(6, 10, 16, 0.55);
-    --radius-lg: 18px;
-    --radius-md: 12px;
-    --radius-sm: 10px;
-}
+// ============================================
+// GLOBAL RESETS & BASE STYLES
+// ============================================
 
 *,
 *::before,
@@ -30,8 +18,8 @@ body {
     min-height: 100vh;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-    letter-spacing: -0.01em;
+    font-family: var(--font-primary);
+    letter-spacing: var(--tracking-tight);
 }
 
 body::before {
@@ -69,7 +57,7 @@ h2,
 h3,
 h4 {
     margin: 0;
-    font-weight: 600;
+    font-weight: var(--font-semibold);
     color: var(--text);
 }
 
@@ -80,7 +68,8 @@ p {
 
 button,
 input,
-textarea {
+textarea,
+select {
     font-family: inherit;
 }
 
@@ -91,81 +80,71 @@ button {
     cursor: pointer;
 }
 
-.section-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 16px;
+// ============================================
+// GLOBAL REUSABLE COMPONENTS
+// ============================================
 
-    h1 {
-        font-size: 24px;
-        font-weight: 600;
-        letter-spacing: -0.02em;
-    }
+// Section header pattern
+.section-header {
+    @include section-header;
 
     .section-header-actions {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+        @include flex-row(var(--space-5));
     }
-}
 
-.section-subtitle {
-    color: var(--muted);
-    font-size: 14px;
-}
-
-@media (max-width: 720px) {
-    .section-header {
+    @include mobile {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
+        gap: var(--space-5);
 
         .section-header-actions {
             width: 100%;
             justify-content: flex-start;
         }
     }
+}
 
-    .section-subtitle {
-        font-size: 13px;
+.section-subtitle {
+    color: var(--muted);
+    font-size: var(--text-md);
+
+    @include mobile {
+        font-size: var(--text-base);
     }
 }
 
+.section-label {
+    @include section-label;
+}
+
+// Primary button
 .btn-main {
-    padding: 12px 18px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.9), rgba(56, 189, 248, 0.9));
-    color: #031018;
-    font-weight: 600;
-    box-shadow: 0 12px 22px rgba(34, 211, 238, 0.2);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    @include btn-primary;
 }
 
-.btn-main:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 16px 26px rgba(34, 211, 238, 0.28);
+// Secondary button
+.btn-secondary {
+    @include btn-secondary;
 }
 
+// Text/ghost button
 .btn-text {
-    color: var(--muted);
-    font-size: 14px;
-    padding: 8px 12px;
+    @include btn-ghost;
 }
 
-.btn-text:hover {
-    color: var(--text);
-}
-
+// Base pill
 .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.6);
-    font-size: 12px;
-    color: var(--muted);
+    @include pill-base;
+}
+
+// Vote button (shared between CoinPrices & MarketNews)
+.vote-btn {
+    @include vote-btn;
+}
+
+// Clickable items focus state
+.is-clickable {
+    cursor: pointer;
+
+    @include focus-ring;
 }

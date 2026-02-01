@@ -5,3 +5,5 @@ api/api.postman.json
 .env.*.local
 .claude
 logs/backend.log
+*.log
+logs/

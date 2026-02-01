@@ -12,7 +12,7 @@ const COINGECKO_API_KEY = process.env.COINGECKO_API_KEY || ''
 const CRYPTOPANIC_AUTH_TOKEN = process.env.CRYPTOPANIC_AUTH_TOKEN || ''
 
 // TEMPORARY: Use static JSON file instead of API
-const USE_STATIC_NEWS = true
+const USE_STATIC_NEWS = false
 const STATIC_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicNews.json')
 const STATIC_TRENDING_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicTrendingNews.json')
 const STATIC_HOT_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicHotNews.json')
@@ -94,66 +94,74 @@ async function pingCoinGecko() {
 }
 
 async function getNews(query = {}) {
-    // TEMPORARY: Use static JSON file instead of API
-    if (USE_STATIC_NEWS) {
+    if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
-            const fileContent = fs.readFileSync(STATIC_NEWS_PATH, 'utf8')
-            return JSON.parse(fileContent)
+            const { currencies, filter, region, page } = query
+            return await cryptoPanicService.getNews({
+                auth_token: CRYPTOPANIC_AUTH_TOKEN,
+                currencies: splitList(currencies),
+                filter,
+                region,
+                page: page ? +page : undefined
+            })
         } catch (err) {
-            throw 'Failed to read static news file'
+            // API failed — fall back to static file below
         }
     }
 
-    const { currencies, filter, region, page } = query
-    if (!CRYPTOPANIC_AUTH_TOKEN) throw 'Missing CryptoPanic API token'
-
-    return cryptoPanicService.getNews({
-        auth_token: CRYPTOPANIC_AUTH_TOKEN,
-        currencies: splitList(currencies),
-        filter,
-        region,
-        page: page ? +page : undefined
-    })
+    // Fallback: use static JSON (when USE_STATIC_NEWS is true or API failed)
+    try {
+        const fileContent = fs.readFileSync(STATIC_NEWS_PATH, 'utf8')
+        return JSON.parse(fileContent)
+    } catch (err) {
+        throw 'Failed to read static news file'
+    }
 }
 
 async function getTrendingNews(query = {}) {
-    // TEMPORARY: Use static JSON file instead of API
-    if (USE_STATIC_NEWS) {
+    // Try API first (when we have a token and are not forcing static)
+    if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
-            const fileContent = fs.readFileSync(STATIC_TRENDING_NEWS_PATH, 'utf8')
-            return JSON.parse(fileContent)
+            const { currencies } = query
+            return await cryptoPanicService.getTrendingNews(
+                CRYPTOPANIC_AUTH_TOKEN,
+                splitList(currencies)
+            )
         } catch (err) {
-            throw 'Failed to read static news file'
+            // API failed — fall back to static file below
         }
     }
 
-    const { currencies } = query
-    if (!CRYPTOPANIC_AUTH_TOKEN) throw 'Missing CryptoPanic API token'
-
-    return cryptoPanicService.getTrendingNews(
-        CRYPTOPANIC_AUTH_TOKEN,
-        splitList(currencies)
-    )
+    // Fallback: use static JSON (when USE_STATIC_NEWS is true or API failed)
+    try {
+        const fileContent = fs.readFileSync(STATIC_TRENDING_NEWS_PATH, 'utf8')
+        return JSON.parse(fileContent)
+    } catch (err) {
+        throw 'Failed to read static news file'
+    }
 }
 
 async function getHotNews(query = {}) {
-    // TEMPORARY: Use static JSON file instead of API
-    if (USE_STATIC_NEWS) {
+    // Try API first (when we have a token and are not forcing static)
+    if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
-            const fileContent = fs.readFileSync(STATIC_HOT_NEWS_PATH, 'utf8')
-            return JSON.parse(fileContent)
+            const { currencies } = query
+            return await cryptoPanicService.getHotNews(
+                CRYPTOPANIC_AUTH_TOKEN,
+                splitList(currencies)
+            )
         } catch (err) {
-            throw 'Failed to read static news file'
+            // API failed — fall back to static file below
         }
     }
 
-    const { currencies } = query
-    if (!CRYPTOPANIC_AUTH_TOKEN) throw 'Missing CryptoPanic API token'
-
-    return cryptoPanicService.getHotNews(
-        CRYPTOPANIC_AUTH_TOKEN,
-        splitList(currencies)
-    )
+    // Fallback: use static JSON (when USE_STATIC_NEWS is true or API failed)
+    try {
+        const fileContent = fs.readFileSync(STATIC_HOT_NEWS_PATH, 'utf8')
+        return JSON.parse(fileContent)
+    } catch (err) {
+        throw 'Failed to read static news file'
+    }
 }
 
 async function getMeme() {

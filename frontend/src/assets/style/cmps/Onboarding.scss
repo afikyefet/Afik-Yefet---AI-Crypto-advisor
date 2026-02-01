@@ -1,411 +1,95 @@
+@use '../setup/mixins' as *;
+
+// ============================================
+// ONBOARDING COMPONENT
+// Form components are shared via _forms.scss
+// ============================================
+
 .onboarding-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 64px);
-    padding: 40px 20px;
+    min-height: calc(100vh - var(--header-height));
+    padding: var(--space-13) var(--space-9);
 }
 
 .onboarding-content {
     width: min(600px, 90vw);
-    padding: 32px;
+    padding: var(--space-12);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    background: linear-gradient(160deg, rgba(18, 26, 36, 0.9), rgba(13, 18, 26, 0.95));
+    @include card-base;
     box-shadow: var(--shadow);
-    display: grid;
-    gap: 24px;
+    @include grid-stack(var(--space-10));
     max-height: 90vh;
     overflow-y: auto;
+
+    h2 {
+        @include page-title;
+        text-align: center;
+    }
 }
 
 .onboarding-progress {
     text-align: center;
-    font-size: 14px;
+    font-size: var(--text-md);
     color: var(--muted);
-}
-
-.onboarding-content h2 {
-    text-align: center;
-    font-size: 28px;
-    margin: 0;
-    font-weight: 600;
-    letter-spacing: -0.02em;
 }
 
 .onboarding-input-section {
-    display: grid;
-    gap: 20px;
-}
+    @include grid-stack(var(--space-9));
 
-.section-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0;
-}
+    select {
+        @include input-base;
+        @include input-lg;
+        cursor: pointer;
+    }
 
-.quick-picks-section {
-    display: grid;
-    gap: 12px;
-}
+    label {
+        @include flex-row(var(--space-4));
+        padding: var(--space-5) var(--space-6);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        background: var(--input-bg);
+        cursor: pointer;
+        font-size: var(--text-md);
+        color: var(--text);
+        transition: border-color var(--transition-fast), background var(--transition-fast);
 
-.quick-picks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 10px;
-}
+        &:hover {
+            border-color: var(--accent-40);
+            background: rgba(10, 15, 20, 0.9);
+        }
 
-.quick-pick-btn {
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(10, 15, 20, 0.8);
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-}
-
-.quick-pick-btn:hover {
-    border-color: rgba(34, 211, 238, 0.5);
-    background: rgba(18, 26, 36, 0.9);
-    transform: translateY(-1px);
-}
-
-.quick-pick-btn.active {
-    border-color: var(--accent);
-    background: rgba(34, 211, 238, 0.15);
-    color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.1);
-}
-
-.advanced-section {
-    display: grid;
-    gap: 12px;
-}
-
-.toggle-advanced {
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(10, 15, 20, 0.6);
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s ease;
-}
-
-.toggle-advanced:hover {
-    border-color: rgba(34, 211, 238, 0.4);
-    color: var(--text);
-}
-
-.advanced-options {
-    display: grid;
-    gap: 16px;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(8, 12, 18, 0.6);
-}
-
-.search-input-group {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 10px;
-}
-
-.search-input-group input {
-    padding: 10px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(10, 15, 20, 0.8);
-    color: var(--text);
-    outline: none;
-    font-size: 13px;
-}
-
-.search-input-group input:focus {
-    border-color: rgba(34, 211, 238, 0.6);
-    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
-}
-
-.search-input-group button {
-    padding: 10px 16px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.7);
-    color: var(--text);
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 13px;
-    transition: all 0.2s ease;
-}
-
-.search-input-group button:hover {
-    border-color: rgba(34, 211, 238, 0.6);
-    background: rgba(18, 26, 36, 0.9);
-}
-
-.helper-text {
-    font-size: 11px;
-    color: var(--muted);
-    margin: 0;
-    font-style: italic;
-}
-
-.selected-coins {
-    display: grid;
-    gap: 12px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-}
-
-.selected-coins-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.selected-coin-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
-    border-radius: 999px;
-    border: 1px solid var(--accent);
-    background: rgba(34, 211, 238, 0.1);
-    font-size: 12px;
-    color: var(--accent);
-    font-weight: 500;
-}
-
-.selected-coin-tag button {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: rgba(34, 211, 238, 0.2);
-    color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    cursor: pointer;
-    padding: 0;
-    border: none;
-    transition: all 0.2s ease;
-}
-
-.selected-coin-tag button:hover {
-    background: rgba(34, 211, 238, 0.3);
-    transform: scale(1.1);
-}
-
-.options-grid {
-    display: grid;
-    gap: 10px;
-}
-
-.option-btn {
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(10, 15, 20, 0.8);
-    color: var(--text);
-    font-size: 14px;
-    text-align: left;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.option-btn:hover:not(:disabled) {
-    border-color: rgba(34, 211, 238, 0.5);
-    background: rgba(18, 26, 36, 0.9);
-    transform: translateX(4px);
-}
-
-.option-btn.active {
-    border-color: var(--accent);
-    background: rgba(34, 211, 238, 0.15);
-    color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.1);
-}
-
-.option-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
-.selection-count {
-    font-size: 12px;
-    color: var(--muted);
-    text-align: center;
-    margin: 8px 0 0;
-    font-style: italic;
-}
-
-.fav-coins-input {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 10px;
-}
-
-.fav-coins-input input {
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(10, 15, 20, 0.8);
-    color: var(--text);
-    outline: none;
-    font-size: 14px;
-}
-
-.fav-coins-input input:focus {
-    border-color: rgba(34, 211, 238, 0.6);
-    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
-}
-
-.fav-coins-input button {
-    padding: 10px 16px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.7);
-    color: var(--text);
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.fav-coins-input button:hover {
-    border-color: rgba(34, 211, 238, 0.6);
-    background: rgba(18, 26, 36, 0.9);
-}
-
-.fav-coins-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.fav-coin-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.6);
-    font-size: 12px;
-    color: var(--text);
-}
-
-.fav-coin-tag button {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--muted);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    cursor: pointer;
-    padding: 0;
-    border: none;
-    transition: color 0.2s ease;
-}
-
-.fav-coin-tag button:hover {
-    color: var(--text);
-}
-
-.onboarding-input-section select {
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(10, 15, 20, 0.8);
-    color: var(--text);
-    outline: none;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.onboarding-input-section select:focus {
-    border-color: rgba(34, 211, 238, 0.6);
-    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
-}
-
-.onboarding-input-section label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(10, 15, 20, 0.8);
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--text);
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.onboarding-input-section label:hover {
-    border-color: rgba(34, 211, 238, 0.4);
-    background: rgba(10, 15, 20, 0.9);
-}
-
-.onboarding-input-section label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: var(--accent);
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+    }
 }
 
 .onboarding-actions {
-    display: flex;
-    gap: 12px;
+    @include flex-row(var(--space-5));
     justify-content: center;
-    margin-top: 8px;
+    margin-top: var(--space-3);
 }
 
-.btn-secondary {
-    padding: 12px 18px;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    background: rgba(15, 23, 42, 0.7);
-    color: var(--text);
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.btn-secondary:hover {
-    border-color: rgba(34, 211, 238, 0.6);
-    background: rgba(18, 26, 36, 0.9);
-}
-
+// btn-main disabled state
 .onboarding-content .btn-main:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
 }
 
-@media (max-width: 720px) {
+@include mobile {
     .onboarding-container {
         position: fixed;
         inset: 0;
         min-height: 100vh;
         padding: 0;
         align-items: stretch;
-        z-index: 100;
+        z-index: var(--z-overlay);
     }
 
     .onboarding-content {
@@ -414,14 +98,14 @@
         width: 100%;
         max-width: 100%;
         height: 100vh;
-        padding: 20px 16px 100px;
+        padding: var(--space-9) var(--space-7) 100px;
         border-radius: 0;
         max-height: 100vh;
         overflow-y: auto;
-    }
 
-    .onboarding-content h2 {
-        font-size: 22px;
+        h2 {
+            font-size: var(--text-3xl);
+        }
     }
 
     .onboarding-actions {
@@ -429,27 +113,13 @@
         bottom: 0;
         left: 0;
         right: 0;
-        padding: 16px;
+        padding: var(--space-7);
         background: linear-gradient(180deg, transparent 0%, rgba(12, 18, 26, 0.98) 20%, rgba(12, 18, 26, 0.98) 100%);
-        backdrop-filter: blur(10px);
+        @include glass(10px);
         border-top: 1px solid var(--border);
         flex-direction: column;
-        gap: 10px;
-        z-index: 10;
-    }
-
-    .quick-picks-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 8px;
-    }
-
-    .quick-pick-btn {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-
-    .search-input-group {
-        grid-template-columns: 1fr;
+        gap: var(--space-4);
+        z-index: var(--z-sticky);
     }
 
     .btn-main,

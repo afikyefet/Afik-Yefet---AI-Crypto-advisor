@@ -1,6 +1,19 @@
+// ============================================
+// MAIN STYLESHEET
+// Import order matters - base first, then shared, then components
+// ============================================
+
+// Foundation
 @use './base.scss';
+
+// Shared form components (used by Onboarding & Preferences)
+@use './setup/forms';
+
+// Page layouts
 @use './pages/Dashboard.scss';
 @use './pages/Login.scss';
+
+// Components
 @use './cmps/AppHeader.scss';
 @use './cmps/AppFooter.scss';
 @use './cmps/MarketNews.scss';

@@ -1,53 +1,54 @@
+@use '../setup/mixins' as *;
+
 .dashboard-container {
-    padding: 32px clamp(16px, 4vw, 48px) 80px;
-    max-width: 1600px;
+    padding: var(--space-12) var(--content-padding) 80px;
+    max-width: var(--content-max-width);
     margin: 0 auto;
     position: relative;
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh - var(--header-height));
 }
 
 .dashboard-main {
     display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 32px;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    gap: var(--space-12);
     align-items: start;
 }
 
 .dashboard-content {
-    display: grid;
-    gap: 32px;
+    @include grid-stack(var(--space-12));
 }
 
 .ai-summary {
     position: fixed;
-    bottom: 20px;
+    bottom: var(--space-9);
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100;
+    z-index: var(--z-overlay);
     pointer-events: none;
     animation: fadeInUp 0.5s ease-out;
 }
 
 .ai-summary-text {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: var(--text-base);
+    font-weight: var(--font-medium);
     color: var(--text);
     text-align: center;
-    padding: 8px 16px;
-    background: linear-gradient(160deg, rgba(18, 26, 36, 0.95), rgba(13, 19, 27, 0.98));
+    padding: var(--space-3) var(--space-7);
+    background: linear-gradient(160deg, var(--panel-95), rgba(13, 19, 27, 0.98));
     border: 1px solid var(--border);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(34, 211, 238, 0.15),
+        0 0 20px var(--accent-15),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     text-shadow:
         0 2px 4px rgba(0, 0, 0, 0.5),
         0 0 8px rgba(34, 211, 238, 0.3);
-    backdrop-filter: blur(10px);
+    @include glass(10px);
     max-width: 90vw;
-    line-height: 1.4;
-    letter-spacing: 0.02em;
+    line-height: var(--leading-normal);
+    letter-spacing: var(--tracking-wide);
 }
 
 @keyframes fadeInUp {
@@ -55,40 +56,39 @@
         opacity: 0;
         transform: translateX(-50%) translateY(10px);
     }
-
     to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
     }
 }
 
-@media (max-width: 1024px) {
+@include tablet {
     .dashboard-main {
         grid-template-columns: 1fr;
-        gap: 24px;
+        gap: var(--space-10);
     }
 }
 
-@media (max-width: 720px) {
+@include mobile {
     .dashboard-container {
-        padding: 20px 16px 70px;
+        padding: var(--space-9) var(--space-7) 70px;
     }
 
     .dashboard-main {
-        gap: 20px;
+        gap: var(--space-9);
     }
 
     .dashboard-content {
-        gap: 24px;
+        gap: var(--space-10);
     }
 
     .ai-summary {
-        bottom: 16px;
+        bottom: var(--space-7);
     }
 
     .ai-summary-text {
-        font-size: 12px;
-        padding: 6px 12px;
+        font-size: var(--text-sm);
+        padding: var(--space-2) var(--space-5);
         max-width: 95vw;
     }
 }

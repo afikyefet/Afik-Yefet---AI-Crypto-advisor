@@ -1,0 +1,191 @@
+// ============================================
+// DESIGN TOKENS - Single Source of Truth
+// ============================================
+
+:root {
+    color-scheme: dark;
+
+    // ----------------------------------------
+    // COLOR PALETTE
+    // ----------------------------------------
+
+    // Base backgrounds
+    --bg: #0a0f14;
+    --bg-soft: #0f151c;
+    --panel: #121a24;
+    --panel-elev: #182230;
+    --border: #1f2a3a;
+
+    // Text colors
+    --text: #e5e7eb;
+    --muted: #9aa4b2;
+
+    // Accent colors
+    --accent: #22d3ee;
+    --accent-2: #38bdf8;
+    --success: #34d399;
+    --danger: #f87171;
+
+    // ----------------------------------------
+    // RGBA OVERLAYS (derived from palette)
+    // ----------------------------------------
+
+    // Accent overlays
+    --accent-5: rgba(34, 211, 238, 0.05);
+    --accent-10: rgba(34, 211, 238, 0.1);
+    --accent-15: rgba(34, 211, 238, 0.15);
+    --accent-20: rgba(34, 211, 238, 0.2);
+    --accent-25: rgba(34, 211, 238, 0.25);
+    --accent-40: rgba(34, 211, 238, 0.4);
+    --accent-50: rgba(34, 211, 238, 0.5);
+    --accent-60: rgba(34, 211, 238, 0.6);
+    --accent-80: rgba(34, 211, 238, 0.8);
+
+    // Success overlays
+    --success-15: rgba(34, 197, 94, 0.15);
+
+    // Danger overlays
+    --danger-15: rgba(239, 68, 68, 0.15);
+    --danger-25: rgba(248, 113, 113, 0.25);
+    --danger-50: rgba(248, 113, 113, 0.5);
+
+    // Panel overlays (for cards, modals, inputs)
+    --panel-90: rgba(18, 26, 36, 0.9);
+    --panel-92: rgba(18, 26, 36, 0.92);
+    --panel-95: rgba(18, 26, 36, 0.95);
+    --panel-70: rgba(18, 26, 36, 0.7);
+    --panel-50: rgba(18, 26, 36, 0.5);
+
+    // Dark overlays (for inputs, backgrounds)
+    --dark-60: rgba(15, 23, 42, 0.6);
+    --dark-70: rgba(15, 23, 42, 0.7);
+    --dark-40: rgba(15, 23, 42, 0.4);
+
+    // Input backgrounds
+    --input-bg: rgba(10, 15, 20, 0.8);
+    --input-bg-light: rgba(10, 15, 20, 0.6);
+
+    // Modal backdrop
+    --backdrop: rgba(6, 10, 16, 0.7);
+    --backdrop-header: rgba(8, 12, 17, 0.9);
+    --backdrop-footer: rgba(8, 12, 17, 0.6);
+
+    // White overlay
+    --white-8: rgba(255, 255, 255, 0.08);
+
+    // ----------------------------------------
+    // SHADOWS
+    // ----------------------------------------
+
+    --shadow: 0 10px 30px rgba(6, 10, 16, 0.55);
+    --shadow-card: 0 12px 24px rgba(3, 7, 12, 0.45);
+    --shadow-elevated: 0 14px 28px rgba(5, 10, 16, 0.35);
+    --shadow-btn-accent: 0 12px 22px var(--accent-20);
+    --shadow-btn-accent-hover: 0 16px 26px rgba(34, 211, 238, 0.28);
+
+    // ----------------------------------------
+    // BORDER RADIUS
+    // ----------------------------------------
+
+    --radius-xs: 6px;
+    --radius-sm: 10px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 16px; // for coin rows, sidebar
+    --radius-full: 999px;
+
+    // ----------------------------------------
+    // SPACING SCALE
+    // ----------------------------------------
+
+    --space-1: 4px;
+    --space-2: 6px;
+    --space-3: 8px;
+    --space-4: 10px;
+    --space-5: 12px;
+    --space-6: 14px;
+    --space-7: 16px;
+    --space-8: 18px;
+    --space-9: 20px;
+    --space-10: 24px;
+    --space-11: 28px;
+    --space-12: 32px;
+    --space-13: 40px;
+    --space-14: 48px;
+
+    // ----------------------------------------
+    // TYPOGRAPHY
+    // ----------------------------------------
+
+    // Font families
+    --font-primary: 'Space Grotesk', 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    // Font sizes
+    --text-xs: 11px;
+    --text-sm: 12px;
+    --text-base: 13px;
+    --text-md: 14px;
+    --text-lg: 15px;
+    --text-xl: 18px;
+    --text-2xl: 20px;
+    --text-3xl: 22px;
+    --text-4xl: 24px;
+    --text-5xl: 28px;
+    --text-6xl: 32px;
+
+    // Font weights
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+
+    // Letter spacing
+    --tracking-tighter: -0.02em;
+    --tracking-tight: -0.01em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.02em;
+    --tracking-wider: 0.05em;
+    --tracking-widest: 0.08em;
+    --tracking-ultra: 0.1em;
+
+    // Line heights
+    --leading-none: 1;
+    --leading-tight: 1.1;
+    --leading-snug: 1.3;
+    --leading-normal: 1.4;
+    --leading-relaxed: 1.5;
+
+    // ----------------------------------------
+    // TRANSITIONS
+    // ----------------------------------------
+
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.25s ease;
+
+    // ----------------------------------------
+    // Z-INDEX SCALE
+    // ----------------------------------------
+
+    --z-sticky: 10;
+    --z-fab: 45;
+    --z-modal: 50;
+    --z-overlay: 100;
+
+    // ----------------------------------------
+    // LAYOUT
+    // ----------------------------------------
+
+    --header-height: 64px;
+    --header-height-mobile: 56px;
+    --content-max-width: 1600px;
+    --content-padding: clamp(16px, 4vw, 48px);
+    --sidebar-width: 280px;
+
+    // ----------------------------------------
+    // BREAKPOINTS (for reference, use in @media)
+    // ----------------------------------------
+    // --bp-sm: 520px;
+    // --bp-md: 720px;
+    // --bp-lg: 980px;
+    // --bp-xl: 1024px;
+}
