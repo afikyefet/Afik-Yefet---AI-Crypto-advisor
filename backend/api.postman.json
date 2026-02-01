@@ -1,0 +1,595 @@
+{
+	"info": {
+		"_postman_id": "crypto-advisor-api",
+		"name": "AI Crypto Advisor API",
+		"description": "API collection for AI Crypto Advisor backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Test User\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Create a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login and receive JWT token in cookie"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logout and clear authentication cookie"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/user/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}",
+									"description": "User ID"
+								}
+							]
+						},
+						"description": "Get user by ID (requires authentication, user can only access own data)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"_id\": \"{{userId}}\",\n    \"fullname\": \"Updated Name\",\n    \"email\": \"updated@example.com\",\n    \"password\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						},
+						"description": "Update user profile (requires authentication, user can only update own data)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Preferences",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"preferences\": {\n        \"fav-coins\": [\"bitcoin\", \"ethereum\"],\n        \"investor-type\": [\"conservative\", \"moderate\"],\n        \"content-type\": [\"news\", \"analysis\", \"tutorials\", \"market-updates\"]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user/:userId/preferences",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								":userId",
+								"preferences"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}",
+									"description": "User ID"
+								}
+							]
+						},
+						"description": "Update user preferences. investor-type: max 2, content-type: 2-4 selections"
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Onboarding",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/user/:userId/complete-onboarding",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								":userId",
+								"complete-onboarding"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}",
+									"description": "User ID"
+								}
+							]
+						},
+						"description": "Mark onboarding as complete"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Vote",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vote\": \"up\",\n    \"type\": \"coin\",\n    \"content\": {\n        \"id\": \"bitcoin\",\n        \"name\": \"Bitcoin\",\n        \"symbol\": \"BTC\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user/:userId/add-vote",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								":userId",
+								"add-vote"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}",
+									"description": "User ID"
+								}
+							]
+						},
+						"description": "Add or toggle vote for coin or news. vote: 'up' or 'down', type: 'coin' or 'news'"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Vote (News)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vote\": \"down\",\n    \"type\": \"news\",\n    \"content\": {\n        \"title\": \"Bitcoin hits new high\",\n        \"id\": \"123\",\n        \"url\": \"https://example.com/news\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/user/:userId/add-vote",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"user",
+								":userId",
+								"add-vote"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}",
+									"description": "User ID"
+								}
+							]
+						},
+						"description": "Add vote for news article"
+					},
+					"response": []
+				}
+			],
+			"description": "User management endpoints (all require authentication)"
+		},
+		{
+			"name": "Market",
+			"item": [
+				{
+					"name": "Get Coin Prices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/prices?ids=bitcoin,ethereum&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"prices"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "bitcoin,ethereum",
+									"description": "Comma-separated coin IDs"
+								},
+								{
+									"key": "vs_currencies",
+									"value": "usd",
+									"description": "Currency to compare against"
+								},
+								{
+									"key": "include_market_cap",
+									"value": "true",
+									"description": "Include market cap"
+								},
+								{
+									"key": "include_24hr_vol",
+									"value": "true",
+									"description": "Include 24h volume"
+								},
+								{
+									"key": "include_24hr_change",
+									"value": "true",
+									"description": "Include 24h change"
+								}
+							]
+						},
+						"description": "Get cryptocurrency prices"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Coins Market Data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/market-data?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"market-data"
+							],
+							"query": [
+								{
+									"key": "vs_currency",
+									"value": "usd",
+									"description": "Currency"
+								},
+								{
+									"key": "order",
+									"value": "market_cap_desc",
+									"description": "Sort order"
+								},
+								{
+									"key": "per_page",
+									"value": "100",
+									"description": "Results per page"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "sparkline",
+									"value": "true",
+									"description": "Include sparkline data"
+								}
+							]
+						},
+						"description": "Get comprehensive market data for coins"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Coins List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/coins",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"coins"
+							]
+						},
+						"description": "Get list of all supported coins"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Supported Currencies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/currencies",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"currencies"
+							]
+						},
+						"description": "Get list of supported fiat currencies"
+					},
+					"response": []
+				},
+				{
+					"name": "Ping CoinGecko",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/ping",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"ping"
+							]
+						},
+						"description": "Check CoinGecko API status"
+					},
+					"response": []
+				},
+				{
+					"name": "Get News",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/news?currencies=BTC,ETH&filter=rising&region=en&page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"news"
+							],
+							"query": [
+								{
+									"key": "currencies",
+									"value": "BTC,ETH",
+									"description": "Comma-separated currency symbols"
+								},
+								{
+									"key": "filter",
+									"value": "rising",
+									"description": "Filter: trending, hot, bullish, bearish, important, saved, lol"
+								},
+								{
+									"key": "region",
+									"value": "en",
+									"description": "Region: en, de, es, it, pt, ru"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								}
+							]
+						},
+						"description": "Get cryptocurrency news"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Trending News",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/news/trending?currencies=BTC&region=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"news",
+								"trending"
+							],
+							"query": [
+								{
+									"key": "currencies",
+									"value": "BTC",
+									"description": "Comma-separated currency symbols"
+								},
+								{
+									"key": "region",
+									"value": "en",
+									"description": "Region"
+								}
+							]
+						},
+						"description": "Get trending cryptocurrency news"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Hot News",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/news/hot?currencies=BTC,ETH&region=en",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"news",
+								"hot"
+							],
+							"query": [
+								{
+									"key": "currencies",
+									"value": "BTC,ETH",
+									"description": "Comma-separated currency symbols"
+								},
+								{
+									"key": "region",
+									"value": "en",
+									"description": "Region"
+								}
+							]
+						},
+						"description": "Get hot cryptocurrency news"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Meme",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/market/meme",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"market",
+								"meme"
+							]
+						},
+						"description": "Get crypto meme"
+					},
+					"response": []
+				}
+			],
+			"description": "Market data endpoints (all require authentication)"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://afik-yefet-ai-crypto-advisor.onrender.com",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string",
+			"description": "Set this after login to use in authenticated requests"
+		}
+	]
+}

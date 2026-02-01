@@ -10,7 +10,8 @@ const axiosInstance = axios.create({
 
 export const aiService = {
     sortCoins,
-    sortNews
+    sortNews,
+    getDailyInsight
 }
 
 async function sortCoins(userId, coins) {
@@ -30,5 +31,16 @@ async function sortNews(userId, news) {
     } catch (err) {
         console.error('Failed to sort news:', err)
         return { news, summary: null } // Return original on error
+    }
+}
+
+async function getDailyInsight(userId, options = {}) {
+    try {
+        const config = options.force ? { params: { force: true } } : undefined
+        const response = await axiosInstance.get(`/api/ai/${userId}/daily-insight`, config)
+        return response.data
+    } catch (err) {
+        console.error('Failed to get daily insight:', err)
+        return null
     }
 }

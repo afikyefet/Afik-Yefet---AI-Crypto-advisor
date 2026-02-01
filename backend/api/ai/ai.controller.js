@@ -37,3 +37,15 @@ export async function sortUserNews(req, res) {
         res.status(400).send({ err: err.message || 'Cannot sort news' })
     }
 }
+
+export async function getDailyInsight(req, res) {
+    try {
+        const { userId } = req.params
+        const force = req.query?.force === 'true'
+        const result = await aiService.getDailyInsight(userId, { force })
+        res.json({ insight: result.insight })
+    } catch (err) {
+        loggerService.error('Cannot get daily insight', err)
+        res.status(400).send({ err: err.message || 'Cannot get daily insight' })
+    }
+}

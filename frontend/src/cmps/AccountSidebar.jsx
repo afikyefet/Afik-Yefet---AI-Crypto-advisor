@@ -1,8 +1,31 @@
+import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { getCoinLabel, INVESTOR_TYPES, CONTENT_TYPES } from '../constants/preferences.constants'
+import { CONTENT_TYPES, getCoinLabel, INVESTOR_TYPES } from '../constants/preferences.constants'
+import { memeService } from "../service/meme.service"
+
 
 export function AccountSidebar() {
     const { user } = useSelector(storeState => storeState.userModule)
+    const [meme, setMeme] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState(null)
+
+    const loadMeme = useCallback(async () => {
+        setIsLoading(true)
+        setError(null)
+        try {
+            const memeData = await memeService.getCryptoMeme()
+            setMeme(memeData)
+        } catch (err) {
+            setError('Could not load meme right now.')
+        } finally {
+            setIsLoading(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        loadMeme()
+    }, [loadMeme])
 
     if (!user) return null
 
@@ -26,6 +49,23 @@ export function AccountSidebar() {
 
     return (
         <aside className="account-sidebar">
+            {meme && (
+                <div className="account-section">
+                    <h3>Daily Meme</h3>
+                    <div className="daily-meme">
+                        <div className="meme-image-wrap">
+                            <img src={meme.imageUrl} alt={meme.title} />
+                        </div>
+                        <div className="meme-meta">
+                            <h3>{meme.title}</h3>
+                            <p>{meme.description}</p>
+                        </div>
+                        <button type="button" className="btn-text" onClick={loadMeme}>
+                            New meme
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="account-section">
                 <h3>Account</h3>
                 <div className="account-info">
@@ -42,7 +82,7 @@ export function AccountSidebar() {
 
             <div className="account-section">
                 <h3>Preferences</h3>
-                
+
                 {preferences['fav-coins']?.length > 0 && (
                     <div className="pref-group">
                         <span className="pref-label">Favorite Coins</span>
@@ -82,11 +122,11 @@ export function AccountSidebar() {
                     </div>
                 )}
 
-                {preferences['fav-coins']?.length === 0 && 
-                 investorTypes.length === 0 && 
-                 preferences['content-type']?.length === 0 && (
-                    <p className="pref-empty">No preferences set</p>
-                )}
+                {preferences['fav-coins']?.length === 0 &&
+                    investorTypes.length === 0 &&
+                    preferences['content-type']?.length === 0 && (
+                        <p className="pref-empty">No preferences set</p>
+                    )}
             </div>
         </aside>
     )

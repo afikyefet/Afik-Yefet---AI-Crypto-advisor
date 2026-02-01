@@ -1,203 +1,32 @@
+import { ObjectId } from 'mongodb'
+import { dbService } from '../../services/db.service.js'
 import { loggerService } from '../../services/logger.service.js'
+import { userService } from '../user/user.service.js'
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || ''
-const GEMINI_API_URL = 'https://generativeai.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent'
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || ''
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'liquid/lfm-2.5-1.2b-instruct:free'
+const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+const OPENROUTER_APP_URL = process.env.OPENROUTER_APP_URL || ''
+const OPENROUTER_APP_TITLE = process.env.OPENROUTER_APP_TITLE || 'AI Crypto Advisor'
+const OPENROUTER_MAX_TOKENS = Number(process.env.OPENROUTER_MAX_TOKENS) || 180
+const DAILY_CONTENT_COLLECTION = 'daily_content'
 
 export const aiService = {
     sortCoins,
-    sortNews
+    sortNews,
+    getDailyInsight
 }
 
 // Sort coins based on user preferences and votes
 async function sortCoins(coins, user) {
-    if (!coins || coins.length === 0) {
-        return sortCoinsByRelevance(coins, user)
-    }
-
-    // If no API key, use fallback sorting
-    if (!GEMINI_API_KEY) {
-        loggerService.info('GEMINI_API_KEY not set, using fallback sorting')
-        return sortCoinsByRelevance(coins, user)
-    }
-
-    try {
-        const context = buildUserContext(user)
-
-        // Create scoring prompt for Gemini
-        const prompt = `You are a crypto advisor. Score each coin (0-100) based on relevance to this user profile:
-
-${context}
-
-Coins to score (return ONLY valid JSON array with id and score):
-${coins.slice(0, 50).map(c => `- ${c.id} (${c.name}): $${c.current_price}, ${c.price_change_percentage_24h}%`).join('\n')}
-
-Return ONLY a valid JSON array in this exact format: [{"id": "bitcoin", "score": 95}, {"id": "ethereum", "score": 80}]`
-
-        const scores = await getGeminiScores(prompt)
-
-        // Create score map
-        const scoreMap = new Map(scores.map(s => [s.id, s.score]))
-
-        // Sort coins by score (highest first), then by market cap
-        const sortedCoins = [...coins].sort((a, b) => {
-            const scoreA = scoreMap.get(a.id) || 0
-            const scoreB = scoreMap.get(b.id) || 0
-            if (scoreB !== scoreA) return scoreB - scoreA
-            return (b.market_cap || 0) - (a.market_cap || 0)
-        })
-
-        // Generate summary
-        const summary = await generateSummary('coins', sortedCoins.slice(0, 5), user, context)
-
-        return { coins: sortedCoins, summary }
-    } catch (error) {
-        loggerService.error(`Error in aiService.sortCoins: ${error}`)
-        const sortedCoins = sortCoinsByRelevance(coins, user)
-        return { coins: sortedCoins, summary: null }
-    }
+    const sortedCoins = sortCoinsByRelevance(coins, user)
+    return { coins: sortedCoins, summary: null }
 }
 
 // Sort news based on user preferences and votes
 async function sortNews(newsItems, user) {
-    if (!newsItems || newsItems.length === 0) {
-        return sortNewsByRelevance(newsItems, user)
-    }
-
-    // If no API key, use fallback sorting
-    if (!GEMINI_API_KEY) {
-        loggerService.info('GEMINI_API_KEY not set, using fallback sorting')
-        return sortNewsByRelevance(newsItems, user)
-    }
-
-    try {
-        const context = buildUserContext(user)
-
-        const prompt = `Score each news item (0-100) based on relevance to this user profile:
-
-${context}
-
-News to score (return ONLY valid JSON array with title and score):
-${newsItems.slice(0, 30).map((n, i) => `${i + 1}. "${n.title}" (${n.kind || 'news'})`).join('\n')}
-
-Return ONLY a valid JSON array in this exact format: [{"title": "News Title", "score": 85}, {"title": "Another News", "score": 70}]`
-
-        const scores = await getGeminiScores(prompt)
-
-        const scoreMap = new Map(scores.map(s => [s.title, s.score]))
-
-        const sortedNews = [...newsItems].sort((a, b) => {
-            const scoreA = scoreMap.get(a.title) || 0
-            const scoreB = scoreMap.get(b.title) || 0
-            return scoreB - scoreA
-        })
-
-        // Generate summary
-        const summary = await generateSummary('news', sortedNews.slice(0, 5), user, context)
-
-        return { news: sortedNews, summary }
-    } catch (error) {
-        loggerService.error(`Error in aiService.sortNews: ${error}`)
-        const sortedNews = sortNewsByRelevance(newsItems, user)
-        return { news: sortedNews, summary: null }
-    }
-}
-
-// Helper: Get AI scores from Gemini API
-async function getGeminiScores(prompt) {
-    const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`
-
-    const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            contents: [{
-                parts: [{
-                    text: prompt
-                }]
-            }],
-            generationConfig: {
-                temperature: 0.3,
-                maxOutputTokens: 2000,
-                responseMimeType: 'application/json'
-            }
-        })
-    })
-
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({}))
-        throw new Error(error.error?.message || 'Gemini API error')
-    }
-
-    const data = await response.json()
-
-    // Extract text from Gemini response
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text
-
-    if (!text) {
-        throw new Error('No response from Gemini')
-    }
-
-    // Parse JSON response
-    try {
-        // Gemini might return JSON wrapped in markdown code blocks
-        const jsonMatch = text.match(/\[[\s\S]*\]/) || text.match(/```json\s*([\s\S]*?)\s*```/) || [text]
-        const jsonText = jsonMatch[1] || jsonMatch[0]
-        return JSON.parse(jsonText)
-    } catch (parseError) {
-        loggerService.error(`Failed to parse Gemini response: ${text}`)
-        throw new Error('Invalid JSON response from Gemini')
-    }
-}
-
-// Generate a one-sentence summary of the sorting
-async function generateSummary(type, topItems, user, context) {
-    if (!GEMINI_API_KEY) return null
-
-    try {
-        const itemList = type === 'coins'
-            ? topItems.map(c => `${c.name} (${c.symbol})`).join(', ')
-            : topItems.map(n => `"${n.title}"`).join(', ')
-
-        const prompt = `Based on this user profile and the personalized sorting I just performed, write ONE short sentence (max 15 words) summarizing what I prioritized:
-
-${context}
-
-Top ${type === 'coins' ? 'coins' : 'news items'}: ${itemList}
-
-Write a cool, concise sentence starting with "Prioritized" or "Highlighted" or "Focused on". Example: "Prioritized Bitcoin and Ethereum based on your conservative investment style and voting history."`
-
-        const url = `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 50
-                }
-            })
-        })
-
-        if (!response.ok) return null
-
-        const data = await response.json()
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text
-
-        return text?.trim() || null
-    } catch (error) {
-        loggerService.error(`Error generating summary: ${error}`)
-        return null
-    }
+    const sortedNews = sortNewsByRelevance(newsItems, user)
+    return { news: sortedNews, summary: null }
 }
 
 // Fallback: Simple relevance-based sorting without AI
@@ -269,33 +98,165 @@ function sortNewsByRelevance(newsItems, user) {
     })
 }
 
-function buildUserContext(user) {
-    if (!user) return 'No user profile available.'
+async function getDailyInsight(userId, options = {}) {
+    const user = await userService.getById(userId)
+    const collection = await dbService.getCollection(DAILY_CONTENT_COLLECTION)
+    const dateKey = getDateKey()
+    const userObjectId = new ObjectId(userId)
+    const forceRefresh = options.force === true
 
-    let context = `User Profile:
-- Investor Type: ${user.preferences?.['investor-type'] || 'Not specified'}
-- Favorite Coins: ${user.preferences?.['fav-coins']?.join(', ') || 'None'}
-- Content Preferences: ${user.preferences?.['content-type']?.join(', ') || 'None'}
-`
-
-    if (user.votes && user.votes.length > 0) {
-        const upVotes = user.votes.filter(v => v.vote === 'up')
-        const downVotes = user.votes.filter(v => v.vote === 'down')
-
-        if (upVotes.length > 0) {
-            context += `\nLiked: ${upVotes.map(v => {
-                if (v.type === 'coin') return v.content?.name || v.content?.id || v.content
-                return v.content?.title || v.content
-            }).join(', ')}\n`
-        }
-
-        if (downVotes.length > 0) {
-            context += `Disliked: ${downVotes.map(v => {
-                if (v.type === 'coin') return v.content?.name || v.content?.id || v.content
-                return v.content?.title || v.content
-            }).join(', ')}\n`
-        }
+    const existing = await collection.findOne({ userId: userObjectId, date: dateKey, type: 'insight' })
+    if (existing?.insight && !forceRefresh) {
+        return { insight: existing.insight }
     }
 
-    return context
+    const insight = await generateDailyInsight(user)
+
+    if (insight) {
+        const now = new Date()
+        await collection.updateOne(
+            { userId: userObjectId, date: dateKey, type: 'insight' },
+            {
+                $set: {
+                    userId: userObjectId,
+                    date: dateKey,
+                    type: 'insight',
+                    insight,
+                    model: OPENROUTER_MODEL,
+                    updatedAt: now
+                },
+                $setOnInsert: { createdAt: now }
+            },
+            { upsert: true }
+        )
+    }
+
+    return { insight: insight || null }
+}
+
+function getDateKey(date = new Date()) {
+    return date.toISOString().slice(0, 10)
+}
+
+async function generateDailyInsight(user) {
+    const fallback = buildFallbackInsight(user)
+
+    if (!OPENROUTER_API_KEY) {
+        loggerService.info('OPENROUTER_API_KEY not set, using fallback insight')
+        return fallback
+    }
+
+    try {
+        const context = buildCompactUserContext(user)
+        const messages = [
+            { role: 'system', content: 'You are a concise crypto assistant. Reply with an elborate daily insight according to the markets status and the news that we have. keep it 40 words max. No emojis.' },
+            { role: 'user', content: `User profile: ${context}. Share today's insight.` }
+        ]
+
+        const responseText = await openRouterChat(messages, OPENROUTER_MAX_TOKENS)
+        const insight = normalizeInsight(responseText)
+        return insight || fallback
+    } catch (error) {
+        loggerService.error(`Error generating daily insight: ${error}`)
+        return fallback
+    }
+}
+
+async function openRouterChat(messages, maxTokens = OPENROUTER_MAX_TOKENS) {
+    if (!OPENROUTER_API_KEY) return null
+
+    const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${OPENROUTER_API_KEY}`
+    }
+
+    if (OPENROUTER_APP_URL) headers['HTTP-Referer'] = OPENROUTER_APP_URL
+    if (OPENROUTER_APP_TITLE) headers['X-Title'] = OPENROUTER_APP_TITLE
+
+    const response = await fetch(OPENROUTER_API_URL, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+            model: OPENROUTER_MODEL,
+            messages,
+            temperature: 0.3
+        })
+    })
+
+    if (!response.ok) {
+        const error = await response.json().catch(() => ({}))
+        throw new Error(error?.error?.message || error?.message || 'OpenRouter API error')
+    }
+
+    const data = await response.json()
+    return data?.choices?.[0]?.message?.content?.trim() || null
+}
+
+function buildCompactUserContext(user) {
+    if (!user) return 'no profile'
+
+    const investorType = toLimitedList(user.preferences?.['investor-type'], 2)
+    const favCoins = toLimitedList(user.preferences?.['fav-coins'], 3)
+    const contentTypes = toLimitedList(user.preferences?.['content-type'], 2)
+
+    const votes = Array.isArray(user.votes) ? user.votes : []
+    const liked = votes
+        .filter(v => v.vote === 'up')
+        .map(extractVoteLabel)
+        .filter(Boolean)
+        .slice(0, 3)
+    const disliked = votes
+        .filter(v => v.vote === 'down')
+        .map(extractVoteLabel)
+        .filter(Boolean)
+        .slice(0, 3)
+
+    const likedStr = liked.length ? liked.join(', ') : 'none'
+    const dislikedStr = disliked.length ? disliked.join(', ') : 'none'
+
+    return `Investor: ${investorType}; Favs: ${favCoins}; Content: ${contentTypes}; Likes: ${likedStr}; Dislikes: ${dislikedStr}`
+}
+
+function extractVoteLabel(vote) {
+    if (!vote) return null
+    if (vote.type === 'coin') return vote.content?.name || vote.content?.id || vote.content
+    if (vote.type === 'news') return vote.content?.title || vote.content?.id || vote.content
+    return vote.content?.name || vote.content?.title || vote.content?.id || vote.content
+}
+
+function toLimitedList(values, limit) {
+    if (!Array.isArray(values) || values.length === 0) return 'none'
+    return values.filter(Boolean).slice(0, limit).join(', ')
+}
+
+function buildFallbackInsight(user) {
+    const favCoins = toLimitedList(user?.preferences?.['fav-coins'], 3)
+    if (favCoins !== 'none') {
+        return `Watching ${favCoins} today; keep an eye on volatility and volume.`
+    }
+
+    const contentTypes = toLimitedList(user?.preferences?.['content-type'], 2)
+    if (contentTypes !== 'none') {
+        return `Your ${contentTypes} focus is set; watch today's headlines for momentum shifts.`
+    }
+
+    const investorType = toLimitedList(user?.preferences?.['investor-type'], 1)
+    if (investorType !== 'none') {
+        return `As a ${investorType} investor, stay alert for major market catalysts today.`
+    }
+
+    return 'Add a few favorite coins to unlock a sharper daily insight.'
+}
+
+function normalizeInsight(text) {
+    if (!text) return null
+    const cleaned = text.replace(/^[`"'\s]+|[`"'\s]+$/g, '').replace(/\s+/g, ' ')
+    return limitWords(cleaned, 40)
+}
+
+function limitWords(text, maxWords) {
+    if (!text) return null
+    const words = text.split(/\s+/).filter(Boolean)
+    if (words.length <= maxWords) return text.trim()
+    return words.slice(0, maxWords).join(' ')
 }
