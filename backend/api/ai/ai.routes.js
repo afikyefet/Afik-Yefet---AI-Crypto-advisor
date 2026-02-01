@@ -1,9 +1,11 @@
 import express from 'express'
-import { getDailyInsight, sortUserCoins } from './ai.controller.js'
+import { requireAuth } from '../../middlewares/require-auth.middleware.js'
+import { getDailyInsight, getRelevantCoins } from './ai.controller.js'
 
 const router = express.Router()
 
-router.post('/:userId/sort-coins', sortUserCoins)
-router.get('/:userId/daily-insight', getDailyInsight)
+router.use(requireAuth)
 
+router.get('/:userId/daily-insight', getDailyInsight)
+router.get('/:userId/relevant-coins', getRelevantCoins)
 export const aiRoutes = router

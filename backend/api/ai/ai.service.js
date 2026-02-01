@@ -12,50 +12,17 @@ const OPENROUTER_MAX_TOKENS = Number(process.env.OPENROUTER_MAX_TOKENS) || 180
 const DAILY_CONTENT_COLLECTION = 'daily_content'
 const CRYPTOPANIC_FILTERS = ['rising', 'hot', 'bullish', 'bearish', 'important', 'saved', 'lol']
 const CRYPTOPANIC_KINDS = ['news', 'media', 'all']
+const RELEVANT_COINS_CACHE_TTL_MS = 1000 * 60 * 60 * 2 // 2 hours
+const RELEVANT_COINS_CACHE = { data: null, cachedAt: 0 }
 
 export const aiService = {
-    sortCoins,
     getDailyInsight,
-    getRelevantNewsFilter
+    getRelevantNewsFilter,
+    getRelevantCoins
 }
 
-// Sort coins based on user preferences and votes
-async function sortCoins(coins, user) {
-    const sortedCoins = sortCoinsByRelevance(coins, user)
-    return { coins: sortedCoins, summary: null }
-}
-
-
-// Fallback: Simple relevance-based sorting without AI
-function sortCoinsByRelevance(coins, user) {
-    if (!user || !coins) return coins || []
-
-    const upVotedCoinIds = new Set()
-    const favCoins = new Set((user.preferences?.['fav-coins'] || []).map(c => c.toLowerCase()))
-
-    if (user.votes) {
-        user.votes.forEach(v => {
-            if (v.type === 'coin' && v.vote === 'up') {
-                const coinId = typeof v.content === 'object' ? v.content?.id : v.content
-                if (coinId) upVotedCoinIds.add(coinId.toLowerCase())
-            }
-        })
-    }
-
-    return [...coins].sort((a, b) => {
-        const aVoted = upVotedCoinIds.has(a.id?.toLowerCase())
-        const bVoted = upVotedCoinIds.has(b.id?.toLowerCase())
-        const aFav = favCoins.has(a.name?.toLowerCase()) || favCoins.has(a.symbol?.toLowerCase())
-        const bFav = favCoins.has(b.name?.toLowerCase()) || favCoins.has(b.symbol?.toLowerCase())
-
-        // Prioritize: voted > favorite > market cap
-        if (aVoted && !bVoted) return -1
-        if (!aVoted && bVoted) return 1
-        if (aFav && !bFav) return -1
-        if (!aFav && bFav) return 1
-
-        return (b.market_cap || 0) - (a.market_cap || 0)
-    })
+function isNewsCacheValid(cache) {
+    return cache.data !== null && (Date.now() - cache.cachedAt < NEWS_CACHE_TTL_MS)
 }
 
 async function getDailyInsight(userId, options = {}) {
@@ -96,6 +63,40 @@ async function getDailyInsight(userId, options = {}) {
 
 function getDateKey(date = new Date()) {
     return date.toISOString().slice(0, 10)
+}
+
+async function getRelevantCoins(userId) {
+    if (isNewsCacheValid(RELEVANT_COINS_CACHE)) return RELEVANT_COINS_CACHE.data
+
+    const user = await userService.getById(userId)
+    const context = buildCompactUserContext(user)
+    const contextStr = JSON.stringify(context)
+
+    const systemPrompt = `You are a crypto coins filter assistant. Given a user profile, reply with ONLY a JSON object (no markdown, no explanation) with exactly these keys:
+    - "coins": array of 0-10 coin symbols (e.g. BTC, ETH, SOL) derived from fav-coins and voted content; map CoinGecko id to symbol (bitcoin->BTC, ethereum->ETH, solana->SOL, ripple->XRP, etc.)
+    `
+    const userMessage = `User profile:\n${contextStr}\n\nReturn the JSON object only.`
+    console.log(contextStr);
+
+    if (OPENROUTER_API_KEY) {
+        try {
+            const responseText = await openRouterChat(
+                [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: userMessage }
+                ],
+                120
+            )
+            const cleaned = responseText.replace(/^[`"'\s]+|[`"'\s]+$/g, '').replace(/\s+/g, ' ')
+            const parsed = JSON.parse(cleaned)
+            loggerService.info('AI coins suggested response', parsed)
+            console.log('AI coins suggested response', parsed);
+            if (parsed.coins) return parsed.coins
+        } catch (error) {
+            loggerService.error('AI coins suggested failed, using defaults', error)
+        }
+    }
+    return []
 }
 
 async function getRelevantNewsFilter(userId) {
@@ -195,21 +196,21 @@ async function openRouterChat(messages, maxTokens = OPENROUTER_MAX_TOKENS) {
 function buildCompactUserContext(user) {
     if (!user) return 'no profile'
 
-    const investorType = toLimitedList(user.preferences?.['investor-type'], 2)
-    const favCoins = toLimitedList(user.preferences?.['fav-coins'], 3)
-    const contentTypes = toLimitedList(user.preferences?.['content-type'], 2)
+    const investorType = user.preferences?.['investor-type']?.join(', ')
+    const favCoins = user.preferences?.['fav-coins']?.join(', ')
+    const contentTypes = user.preferences?.['content-type']?.join(', ')
 
     const votes = Array.isArray(user.votes) ? user.votes : []
     const liked = votes
         .filter(v => v.vote === 'up')
         .map(extractVoteLabel)
         .filter(Boolean)
-        .slice(0, 3)
+        .slice(0, 10)
     const disliked = votes
         .filter(v => v.vote === 'down')
         .map(extractVoteLabel)
         .filter(Boolean)
-        .slice(0, 3)
+        .slice(0, 10)
 
     const likedStr = liked.length ? liked.join(', ') : 'none'
     const dislikedStr = disliked.length ? disliked.join(', ') : 'none'
@@ -224,24 +225,19 @@ function extractVoteLabel(vote) {
     return vote.content?.name || vote.content?.title || vote.content?.id || vote.content
 }
 
-function toLimitedList(values, limit) {
-    if (!Array.isArray(values) || values.length === 0) return 'none'
-    return values.filter(Boolean).slice(0, limit).join(', ')
-}
-
 function buildFallbackInsight(user) {
-    const favCoins = toLimitedList(user?.preferences?.['fav-coins'], 3)
-    if (favCoins !== 'none') {
+    const favCoins = user?.preferences?.['fav-coins']?.join(', ')
+    if (favCoins) {
         return `Watching ${favCoins} today; keep an eye on volatility and volume.`
     }
 
-    const contentTypes = toLimitedList(user?.preferences?.['content-type'], 2)
-    if (contentTypes !== 'none') {
+    const contentTypes = user?.preferences?.['content-type']?.join(', ')
+    if (contentTypes) {
         return `Your ${contentTypes} focus is set; watch today's headlines for momentum shifts.`
     }
 
-    const investorType = toLimitedList(user?.preferences?.['investor-type'], 1)
-    if (investorType !== 'none') {
+    const investorType = user?.preferences?.['investor-type']?.join(', ')
+    if (investorType) {
         return `As a ${investorType} investor, stay alert for major market catalysts today.`
     }
 

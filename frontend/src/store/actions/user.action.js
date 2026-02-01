@@ -1,4 +1,6 @@
+import { aiService } from "../../service/ai.service"
 import { userService } from "../../service/user.service"
+import { SET_CG_RELEVANT_COINS } from "../reducers/coinGecko.reducer"
 import { SET_ISSIGNUP, SET_USER, TOGGLE_ISSIGNUP } from "../reducers/user.reducer"
 import { store } from "../store"
 
@@ -78,6 +80,18 @@ export function addVote(userId, vote, type, content) {
         })
         .catch((err) => {
             console.log('user actions -> Cannot add vote', err)
+            throw err
+        })
+}
+
+export function getRelevantCoins(userId) {
+    return aiService.getRelevantCoins(userId)
+        .then((coins) => {
+            store.dispatch({ type: SET_CG_RELEVANT_COINS, relevantCoins: coins })
+            return coins
+        })
+        .catch((err) => {
+            console.log('user actions -> Cannot get relevant coins', err)
             throw err
         })
 }

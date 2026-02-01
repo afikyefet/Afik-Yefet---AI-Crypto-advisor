@@ -16,7 +16,7 @@ const CRYPTOPANIC_AUTH_TOKEN = process.env.CRYPTOPANIC_AUTH_TOKEN || ''
 const USE_STATIC_NEWS = false
 const STATIC_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicNews.json')
 const NEWS_CACHE_TTL_MS = 1000 * 60 * 60 * 3 // 3 hours
-const newsCache = { data: null, cachedAt: 0 }
+const NEWS_CACHE = { data: null, cachedAt: 0 }
 
 export const marketService = {
     getCoinsMarketData,
@@ -98,13 +98,13 @@ async function pingCoinGecko() {
 }
 
 async function getRelevantNews(userId) {
+    if (isNewsCacheValid(NEWS_CACHE)) return NEWS_CACHE.data
     const { filter, currencies, kind } = await aiService.getRelevantNewsFilter(userId)
     return getNews({ currencies, filter, kind })
 }
 
 
 async function getNews(query = {}) {
-    if (isNewsCacheValid(newsCache)) return newsCache.data
     if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {
         try {
             const { currencies, filter, region, page, kind } = query
@@ -116,8 +116,8 @@ async function getNews(query = {}) {
                 page: page ? +page : undefined,
                 kind
             })
-            newsCache.data = data
-            newsCache.cachedAt = Date.now()
+            NEWS_CACHE.data = data
+            NEWS_CACHE.cachedAt = Date.now()
             return data
         } catch (err) {
             // API failed — fall back to static file below

@@ -2,33 +2,46 @@ import { LineChart } from "@mui/x-charts/LineChart";
 import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { loadCoinsMarketData } from "../store/actions/coinGecko.action";
-import { addVote } from "../store/actions/user.action";
+import { addVote, getRelevantCoins } from "../store/actions/user.action";
 import { CoinRow } from "./CoinRow";
 import { DetailsModal } from "./DetailsModal";
 
 export function CoinPrices() {
     const { coinsMarketData, isLoading, error } = useSelector(storeState => storeState.coinGeckoModule)
     const { user } = useSelector(storeState => storeState.userModule)
+    const { relevantCoins } = useSelector(storeState => storeState.coinGeckoModule)
     const [showAll, setShowAll] = useState(false)
     const [changeMode, setChangeMode] = useState('percent')
-    const [sortedCoins, setSortedCoins] = useState(null)
     const [selectedCoin, setSelectedCoin] = useState(null)
 
     useEffect(() => {
         loadCoinsMarketData()
-    }, [])
+        getRelevantCoins(user?._id)
+    }, [user?._id])
 
-    useEffect(() => {
-        if (coinsMarketData) {
-            setSortedCoins(coinsMarketData)
-        }
-
-    }, [coinsMarketData, user?._id])
 
     const visibleCoins = useMemo(() => {
-        const coins = sortedCoins || coinsMarketData || []
-        return showAll ? coins : coins.slice(0, 20)
-    }, [sortedCoins, coinsMarketData, showAll])
+        const coins = coinsMarketData ?? []
+        const relevantSymbols = (relevantCoins?.coins ?? []).map(s => s.toLowerCase())
+
+        // fallback before relevant is loaded
+        if (relevantSymbols.length === 0) {
+            return showAll ? coins : coins.slice(0, 10)
+        }
+
+        const isRelevant = new Set(relevantSymbols)
+
+        const relevantList = relevantSymbols
+            .map(sym => coins.find(c => c.symbol?.toLowerCase() === sym))
+            .filter(Boolean)
+
+        const otherList = coins.filter(c => !isRelevant.has(c.symbol?.toLowerCase()))
+
+        const ordered = [...relevantList, ...otherList]
+        return showAll ? ordered : ordered.slice(0, relevantSymbols.length)
+    }, [coinsMarketData, showAll, relevantCoins?.coins])
+
+
 
     const priceFormatter = useMemo(() => new Intl.NumberFormat('en-US', {
         style: 'currency',
@@ -112,13 +125,13 @@ export function CoinPrices() {
                     <button onClick={() => loadCoinsMarketData()}>
                         <span className="material-icons">refresh</span>
                     </button>
-                    {coinsMarketData?.length > 20 && (
+                    {coinsMarketData?.length > (relevantCoins?.coins?.length ?? 10) && (
                         <button
                             type="button"
                             className="coin-table-toggle"
                             onClick={() => setShowAll(prev => !prev)}
                         >
-                            {showAll ? 'Show top 20' : 'Show all'}
+                            {showAll ? 'Show top AI suggested' : 'Show all'}
                         </button>
                     )}
                 </div>

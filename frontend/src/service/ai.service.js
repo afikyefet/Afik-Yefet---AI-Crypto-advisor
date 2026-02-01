@@ -9,29 +9,8 @@ const axiosInstance = axios.create({
 })
 
 export const aiService = {
-    sortCoins,
-    sortNews,
-    getDailyInsight
-}
-
-async function sortCoins(userId, coins) {
-    try {
-        const response = await axiosInstance.post(`/api/ai/${userId}/sort-coins`, { coins })
-        return { coins: response.data.coins, summary: response.data.summary }
-    } catch (err) {
-        console.error('Failed to sort coins:', err)
-        return { coins, summary: null } // Return original on error
-    }
-}
-
-async function sortNews(userId, news) {
-    try {
-        const response = await axiosInstance.post(`/api/ai/${userId}/sort-news`, { news })
-        return { news: response.data.news, summary: response.data.summary }
-    } catch (err) {
-        console.error('Failed to sort news:', err)
-        return { news, summary: null } // Return original on error
-    }
+    getDailyInsight,
+    getRelevantCoins
 }
 
 async function getDailyInsight(userId, options = {}) {
@@ -41,6 +20,16 @@ async function getDailyInsight(userId, options = {}) {
         return response.data
     } catch (err) {
         console.error('Failed to get daily insight:', err)
+        return null
+    }
+}
+
+async function getRelevantCoins(userId) {
+    try {
+        const response = await axiosInstance.get(`/api/ai/${userId}/relevant-coins`)
+        return response.data
+    } catch (err) {
+        console.error('Failed to get relevant coins:', err)
         return null
     }
 }
