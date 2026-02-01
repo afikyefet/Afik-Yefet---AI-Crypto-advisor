@@ -85,7 +85,7 @@ async function getRelevantCoins(userId) {
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: userMessage }
                 ],
-                120
+                220
             )
             const cleaned = responseText.replace(/^[`"'\s]+|[`"'\s]+$/g, '').replace(/\s+/g, ' ')
             const parsed = JSON.parse(cleaned)
@@ -122,7 +122,7 @@ Pick filter and kind to best match investor-type and content-type. Reply with no
                     { role: 'system', content: systemPrompt },
                     { role: 'user', content: userMessage }
                 ],
-                120
+                220
             )
             const cleaned = responseText.replace(/^[`"'\s]+|[`"'\s]+$/g, '').replace(/\s+/g, ' ')
             const parsed = JSON.parse(cleaned)
