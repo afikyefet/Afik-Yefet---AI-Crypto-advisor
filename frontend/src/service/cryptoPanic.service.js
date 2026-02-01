@@ -12,9 +12,7 @@ const axiosInstance = axios.create({
 
 export const cryptoPanicService = {
     getNews,
-    getRelevantNews,
-    getTrendingNews,
-    getHotNews
+    getRelevantNews
 }
 
 async function getNews(options = {}) {
@@ -45,23 +43,5 @@ async function getRelevantNews(options = {}) {
     if (kind) params.append('kind', kind)
 
     const response = await axiosInstance.get(`/api/market/news/relevant?${params.toString()}`)
-    return response.data
-}
-
-async function getTrendingNews(currencies = null) {
-    const params = new URLSearchParams()
-    if (currencies) {
-        params.append('currencies', Array.isArray(currencies) ? currencies.join(',') : currencies)
-    }
-    const response = await axiosInstance.get(`/api/market/news/trending?${params.toString()}`)
-    return response.data
-}
-
-async function getHotNews(currencies = null) {
-    const params = new URLSearchParams()
-    if (currencies) {
-        params.append('currencies', Array.isArray(currencies) ? currencies.join(',') : currencies)
-    }
-    const response = await axiosInstance.get(`/api/market/news/hot?${params.toString()}`)
     return response.data
 }

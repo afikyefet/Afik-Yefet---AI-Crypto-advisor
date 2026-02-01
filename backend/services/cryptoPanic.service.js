@@ -54,25 +54,6 @@ export async function getNews(options = {}) {
     }
 }
 
-
-export async function getTrendingNews(auth_token, currencies = null) {
-    return getNews({
-        auth_token,
-        currencies,
-        filter: 'trending'
-    });
-}
-
-export async function getHotNews(auth_token, currencies = null) {
-    return getNews({
-        auth_token,
-        currencies,
-        filter: 'hot'
-    });
-}
-
 export const cryptoPanicService = {
-    getNews,
-    getTrendingNews,
-    getHotNews
+    getNews
 };

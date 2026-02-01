@@ -73,26 +73,6 @@ export async function getNews(req, res) {
     }
 }
 
-export async function getTrendingNews(req, res) {
-    try {
-        const data = await marketService.getTrendingNews(req.query)
-        res.send(data)
-    } catch (err) {
-        loggerService.error('Cannot get trending news', err)
-        res.status(400).send({ err: 'Cannot get trending news' })
-    }
-}
-
-export async function getHotNews(req, res) {
-    try {
-        const data = await marketService.getHotNews(req.query)
-        res.send(data)
-    } catch (err) {
-        loggerService.error('Cannot get hot news', err)
-        res.status(400).send({ err: 'Cannot get hot news' })
-    }
-}
-
 export async function getMeme(req, res) {
     try {
         const data = await marketService.getMeme()

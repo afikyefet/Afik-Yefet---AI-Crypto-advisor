@@ -4,12 +4,10 @@ import {
     getCoinPrices,
     getCoinsList,
     getCoinsMarketData,
-    getHotNews,
     getMeme,
     getNews,
     getRelevantNews,
     getSupportedCurrencies,
-    getTrendingNews,
     pingCoinGecko
 } from './market.controller.js'
 
@@ -24,8 +22,6 @@ router.get('/ping', pingCoinGecko)
 router.get('/market-data', getCoinsMarketData)
 router.get('/news/relevant', getRelevantNews)
 router.get('/news', getNews)
-router.get('/news/trending', getTrendingNews)
-router.get('/news/hot', getHotNews)
 
 router.get('/meme', getMeme)
 
