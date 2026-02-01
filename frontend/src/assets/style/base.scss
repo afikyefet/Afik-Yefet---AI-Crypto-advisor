@@ -27,10 +27,7 @@ body::before {
     position: fixed;
     inset: 0;
     z-index: -1;
-    background:
-        radial-gradient(1200px circle at 15% -10%, rgba(34, 211, 238, 0.12), transparent 55%),
-        radial-gradient(900px circle at 85% 0%, rgba(99, 102, 241, 0.12), transparent 50%),
-        var(--bg);
+    background: var(--bg);
 }
 
 #root {
