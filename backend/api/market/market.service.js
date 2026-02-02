@@ -16,7 +16,6 @@ const CRYPTOPANIC_AUTH_TOKEN = process.env.CRYPTOPANIC_AUTH_TOKEN || ''
 const USE_STATIC_NEWS = false
 const STATIC_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicNews.json')
 const NEWS_CACHE_TTL_MS = 1000 * 60 * 60 * 3 // 3 hours
-/** @type {Map<string, { data: object, cachedAt: number }>} */
 const NEWS_CACHE_BY_USER = new Map()
 
 export const marketService = {
@@ -25,8 +24,8 @@ export const marketService = {
     getMeme
 }
 
-function isUserNewsCacheValid(entry) {
-    return entry && entry.data !== null && (Date.now() - entry.cachedAt < NEWS_CACHE_TTL_MS)
+function isUserNewsCacheValid(cache) {
+    return cache && cache.data !== null && (Date.now() - cache.cachedAt < NEWS_CACHE_TTL_MS)
 }
 
 async function getCoinsMarketData(query = {}) {
