@@ -42,9 +42,14 @@ if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve('public')))
 }
 
-app.use(express.static('public'))
+app.options('*', cors(corsOptions))
+
 app.use(express.json())
 app.use(cookieParser())
+
+app.get('/', (req, res) => {
+    res.json({ ok: true, service: 'backend', message: 'API is running' })
+})
 
 app.use('/api/user', userRoutes)
 app.use('/api/auth', authRoutes)
@@ -52,8 +57,8 @@ app.use('/api/market', marketRoutes)
 app.use('/api/ai', aiRoutes)
 
 
-app.get('/*', (req, res) => {
-    res.sendFile(path.resolve('public/index.html'))
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not found' })
 })
 
 const port = process.env.PORT || 3333
