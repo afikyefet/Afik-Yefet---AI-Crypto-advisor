@@ -1,17 +1,17 @@
 import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 import { AccountSidebar } from "../cmps/AccountSidebar";
 import { CoinPrices } from "../cmps/CoinPrices";
 import { DailyInsight } from "../cmps/DailyInsight";
 import { MarketNews } from "../cmps/MarketNews";
 import { MemeButton } from "../cmps/MemeButton";
-import { Onboarding } from "../cmps/Onboarding";
 
 export function Dashboard() {
     const { user } = useSelector(storeState => storeState.userModule)
 
-    // Show onboarding if user hasn't completed it
+    // Redirect to onboarding if user hasn't completed it
     if (user && !user.hasCompletedOnboarding) {
-        return <Onboarding />
+        return <Navigate to="/onboarding" replace />
     }
 
     return (

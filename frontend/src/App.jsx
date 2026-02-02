@@ -6,6 +6,7 @@ import { Preferences } from './cmps/Preferences'
 import { ProtectedRoute } from './cmps/ProtectedRoute'
 import { Dashboard } from './pages/Dashboard'
 import { Login } from './pages/Login'
+import { Onboarding } from './pages/Onboarding'
 import { store } from './store/store'
 
 function App() {
@@ -21,6 +22,11 @@ function App() {
                 <Route path="/" element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/onboarding" element={
+                  <ProtectedRoute>
+                    <Onboarding />
                   </ProtectedRoute>
                 } />
                 <Route path="/preferences" element={

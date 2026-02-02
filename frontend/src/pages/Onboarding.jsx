@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { CONTENT_TYPES, INVESTOR_TYPES, QUICK_PICKS } from '../constants/preferences.constants'
 import { completeOnboarding, updatePreferences } from '../store/actions/user.action'
 
 export function Onboarding() {
+    const navigate = useNavigate()
     const { user } = useSelector(storeState => storeState.userModule)
     const [currentStep, setCurrentStep] = useState(0)
     const [preferences, setPreferences] = useState({
@@ -11,7 +13,6 @@ export function Onboarding() {
         'investor-type': [],
         'content-type': []
     })
-    const [showAdvanced, setShowAdvanced] = useState(false)
     const [searchInput, setSearchInput] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
@@ -98,6 +99,7 @@ export function Onboarding() {
         try {
             await updatePreferences(user._id, preferences)
             await completeOnboarding(user._id)
+            navigate('/')
         } catch (err) {
             console.error('Failed to complete onboarding', err)
         } finally {
@@ -118,7 +120,6 @@ export function Onboarding() {
         }
         return false
     }
-
 
     const currentQuestion = steps[currentStep]
 
