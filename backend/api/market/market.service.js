@@ -16,7 +16,8 @@ const CRYPTOPANIC_AUTH_TOKEN = process.env.CRYPTOPANIC_AUTH_TOKEN || ''
 const USE_STATIC_NEWS = false
 const STATIC_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicNews.json')
 const NEWS_CACHE_TTL_MS = 1000 * 60 * 60 * 3 // 3 hours
-const NEWS_CACHE = { data: null, cachedAt: 0 }
+/** @type {Map<string, { data: object, cachedAt: number }>} */
+const NEWS_CACHE_BY_USER = new Map()
 
 export const marketService = {
     getCoinsMarketData,
@@ -24,8 +25,8 @@ export const marketService = {
     getMeme
 }
 
-function isNewsCacheValid(cache) {
-    return cache.data !== null && (Date.now() - cache.cachedAt < NEWS_CACHE_TTL_MS)
+function isUserNewsCacheValid(entry) {
+    return entry && entry.data !== null && (Date.now() - entry.cachedAt < NEWS_CACHE_TTL_MS)
 }
 
 async function getCoinsMarketData(query = {}) {
@@ -56,9 +57,13 @@ async function getCoinsMarketData(query = {}) {
 }
 
 async function getRelevantNews(userId) {
-    if (isNewsCacheValid(NEWS_CACHE)) return NEWS_CACHE.data
+    const cached = NEWS_CACHE_BY_USER.get(userId)
+    if (isUserNewsCacheValid(cached)) return cached.data
+
     const { filter, currencies, kind } = await aiService.getRelevantNewsFilter(userId)
-    return getNews({ currencies, filter, kind })
+    const data = await getNews({ currencies, filter, kind })
+    NEWS_CACHE_BY_USER.set(userId, { data, cachedAt: Date.now() })
+    return data
 }
 
 async function getNews(query = {}) {
@@ -73,8 +78,6 @@ async function getNews(query = {}) {
                 page: page ? +page : undefined,
                 kind
             })
-            NEWS_CACHE.data = data
-            NEWS_CACHE.cachedAt = Date.now()
             return data
         } catch (err) {
             // API failed — fall back to static file below

@@ -13,7 +13,8 @@ const DAILY_CONTENT_COLLECTION = 'daily_content'
 const CRYPTOPANIC_FILTERS = ['rising', 'hot', 'bullish', 'bearish', 'important', 'saved', 'lol']
 const CRYPTOPANIC_KINDS = ['news', 'media', 'all']
 const RELEVANT_COINS_CACHE_TTL_MS = 1000 * 60 * 60 * 2 // 2 hours
-const RELEVANT_COINS_CACHE = { data: null, cachedAt: 0 }
+
+const RELEVANT_COINS_CACHE_BY_USER = new Map()
 
 export const aiService = {
     getDailyInsight,
@@ -21,8 +22,8 @@ export const aiService = {
     getRelevantCoins
 }
 
-function isNewsCacheValid(cache) {
-    return cache.data !== null && (Date.now() - cache.cachedAt < NEWS_CACHE_TTL_MS)
+function isRelevantCoinsCacheValid(cache) {
+    return cache && cache.data !== null && (Date.now() - cache.cachedAt < RELEVANT_COINS_CACHE_TTL_MS)
 }
 
 async function getDailyInsight(userId, options = {}) {
@@ -66,7 +67,8 @@ function getDateKey(date = new Date()) {
 }
 
 async function getRelevantCoins(userId) {
-    if (isNewsCacheValid(RELEVANT_COINS_CACHE)) return RELEVANT_COINS_CACHE.data
+    const cached = RELEVANT_COINS_CACHE_BY_USER.get(userId)
+    if (isRelevantCoinsCacheValid(cached)) return cached.data
 
     const user = await userService.getById(userId)
     const context = buildCompactUserContext(user)
@@ -78,6 +80,7 @@ async function getRelevantCoins(userId) {
     const userMessage = `User profile:\n${contextStr}\n\nReturn the JSON object only.`
     console.log(contextStr);
 
+    let result = []
     if (OPENROUTER_API_KEY) {
         try {
             const responseText = await openRouterChat(
@@ -91,12 +94,14 @@ async function getRelevantCoins(userId) {
             const parsed = JSON.parse(cleaned)
             loggerService.info('AI coins suggested response', parsed)
             console.log('AI coins suggested response', parsed);
-            if (parsed.coins) return parsed.coins
+            if (parsed.coins) result = parsed.coins
         } catch (error) {
             loggerService.error('AI coins suggested failed, using defaults', error)
         }
     }
-    return []
+
+    RELEVANT_COINS_CACHE_BY_USER.set(userId, { data: result, cachedAt: Date.now() })
+    return result
 }
 
 async function getRelevantNewsFilter(userId) {
