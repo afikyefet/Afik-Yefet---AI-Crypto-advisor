@@ -259,7 +259,7 @@ async function openRouterChat(messages, options = {}) {
     }
 
     const models = Array.isArray(fallbackModels) && fallbackModels.length
-        ? buildModelList(model, fallbackModels)
+        ? buildModelList(model, fallbackModels).slice(0, 3)
         : []
     if (models.length > 1) {
         body.models = models
