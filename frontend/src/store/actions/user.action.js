@@ -1,7 +1,7 @@
 import { aiService } from "../../service/ai.service"
 import { userService } from "../../service/user.service"
 import { SET_CG_RELEVANT_COINS } from "../reducers/coinGecko.reducer"
-import { SET_ISSIGNUP, SET_USER, TOGGLE_ISSIGNUP } from "../reducers/user.reducer"
+import { SET_USER, TOGGLE_ISSIGNUP } from "../reducers/user.reducer"
 import { store } from "../store"
 
 export function login(credentials = {}) {
@@ -38,10 +38,6 @@ export function logout() {
         .catch((err) => {
             console.log('user actions -> Cannot logout', err)
         })
-}
-
-export function setIsSignup(isSignup) {
-    store.dispatch({ type: SET_ISSIGNUP, isSignup })
 }
 
 export function toggleIsSignup() {

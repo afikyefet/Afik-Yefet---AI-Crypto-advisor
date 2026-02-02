@@ -73,9 +73,9 @@ export function DailyInsight() {
 
     function handleVote(vote, e) {
         e.stopPropagation()
-        if (!user?._id || !insightId) return
+        if (!user?._id || !insight) return
         // Pass the entire insight object
-        addVote(user._id, vote, 'insight', insight)
+        addVote(user._id, vote, 'insight', { id: insightId, text: insight })
     }
 
     return (

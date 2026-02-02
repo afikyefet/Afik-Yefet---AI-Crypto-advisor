@@ -11,11 +11,7 @@ const axiosInstance = axios.create({
 })
 
 export const coinGeckoService = {
-    getCoinsMarketData,
-    getPrices,
-    getCoinsList,
-    getSupportedCurrencies,
-    ping
+    getCoinsMarketData
 }
 
 async function getCoinsMarketData(options = {}) {
@@ -37,49 +33,4 @@ async function getCoinsMarketData(options = {}) {
         .catch(error => {
             throw new Error('Failed to get coins market data: ' + error.message)
         })
-}
-
-async function getPrices(options = {}) {
-    const {
-        ids,
-        vs_currencies = 'usd',
-        include_market_cap,
-        include_24hr_vol,
-        include_24hr_change,
-        include_last_updated_at,
-        precision
-    } = options
-
-    if (!ids) throw new Error('Coin ids are required')
-
-    const params = new URLSearchParams()
-    params.append('ids', Array.isArray(ids) ? ids.join(',') : ids)
-    params.append(
-        'vs_currencies',
-        Array.isArray(vs_currencies) ? vs_currencies.join(',') : vs_currencies
-    )
-
-    if (include_market_cap !== undefined) params.append('include_market_cap', String(include_market_cap))
-    if (include_24hr_vol !== undefined) params.append('include_24hr_vol', String(include_24hr_vol))
-    if (include_24hr_change !== undefined) params.append('include_24hr_change', String(include_24hr_change))
-    if (include_last_updated_at !== undefined) params.append('include_last_updated_at', String(include_last_updated_at))
-    if (precision) params.append('precision', precision)
-
-    const response = await axiosInstance.get(`/api/market/prices?${params.toString()}`)
-    return response.data
-}
-
-async function getCoinsList() {
-    const response = await axiosInstance.get('/api/market/coins')
-    return response.data
-}
-
-async function getSupportedCurrencies() {
-    const response = await axiosInstance.get('/api/market/currencies')
-    return response.data
-}
-
-async function ping() {
-    const response = await axiosInstance.get('/api/market/ping')
-    return response.data
 }

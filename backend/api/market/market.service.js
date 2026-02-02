@@ -20,42 +20,12 @@ const NEWS_CACHE = { data: null, cachedAt: 0 }
 
 export const marketService = {
     getCoinsMarketData,
-    getCoinPrices,
-    getCoinsList,
     getRelevantNews,
-    getSupportedCurrencies,
-    pingCoinGecko,
-    getNews,
     getMeme
 }
 
 function isNewsCacheValid(cache) {
     return cache.data !== null && (Date.now() - cache.cachedAt < NEWS_CACHE_TTL_MS)
-}
-
-async function getCoinPrices(query = {}) {
-    const {
-        ids,
-        vs_currencies = 'usd',
-        include_market_cap,
-        include_24hr_vol,
-        include_24hr_change,
-        include_last_updated_at,
-        precision
-    } = query
-
-    if (!ids) throw 'Coin ids are required'
-
-    return coinGeckoService.getCoinPrices({
-        api_key: COINGECKO_API_KEY || undefined,
-        ids,
-        vs_currencies,
-        include_market_cap: toBoolean(include_market_cap),
-        include_24hr_vol: toBoolean(include_24hr_vol),
-        include_24hr_change: toBoolean(include_24hr_change),
-        include_last_updated_at: toBoolean(include_last_updated_at),
-        precision
-    })
 }
 
 async function getCoinsMarketData(query = {}) {
@@ -85,24 +55,11 @@ async function getCoinsMarketData(query = {}) {
     })
 }
 
-async function getCoinsList() {
-    return coinGeckoService.getCoinsList(COINGECKO_API_KEY || null)
-}
-
-async function getSupportedCurrencies() {
-    return coinGeckoService.getSupportedCurrencies(COINGECKO_API_KEY || null)
-}
-
-async function pingCoinGecko() {
-    return coinGeckoService.ping(COINGECKO_API_KEY || null)
-}
-
 async function getRelevantNews(userId) {
     if (isNewsCacheValid(NEWS_CACHE)) return NEWS_CACHE.data
     const { filter, currencies, kind } = await aiService.getRelevantNewsFilter(userId)
     return getNews({ currencies, filter, kind })
 }
-
 
 async function getNews(query = {}) {
     if (!USE_STATIC_NEWS && CRYPTOPANIC_AUTH_TOKEN) {

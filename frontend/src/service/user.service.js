@@ -13,7 +13,6 @@ const axiosInstance = axios.create({
 })
 
 export const userService = {
-    getById,
     login,
     signup,
     logout,
@@ -22,16 +21,6 @@ export const userService = {
     updatePreferences,
     completeOnboarding,
     addVote,
-}
-
-async function getById(userId) {
-    try {
-        const response = await axiosInstance.get(`/api/user/${userId}`)
-        return response.data
-    } catch (err) {
-        console.error('could not get user by id', err)
-        throw err
-    }
 }
 
 async function login({ email, password }) {
