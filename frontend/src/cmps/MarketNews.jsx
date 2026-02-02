@@ -49,7 +49,7 @@ export function MarketNews() {
     return (
         <div className="market-news-container">
             <div className="section-header">
-                <h1>Market News</h1>
+                <h1>AI suggested market news</h1>
                 <span className="section-subtitle">Live headlines tuned to your preferences</span>
             </div>
             <div className="market-news-body">

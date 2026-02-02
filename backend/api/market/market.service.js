@@ -17,7 +17,8 @@ const USE_STATIC_NEWS = false
 const STATIC_NEWS_PATH = path.join(__dirname, '../../public/CryptoPanicNews.json')
 const NEWS_CACHE_TTL_MS = 1000 * 60 * 60 * 3 // 3 hours
 const NEWS_CACHE_BY_USER = new Map()
-
+const COINS_CACHE_TTL_MS = 1000 * 60 * 60 * 3 // 3 hours
+const COINS_CACHE = { data: null, cachedAt: 0 }
 export const marketService = {
     getCoinsMarketData,
     getRelevantNews,
@@ -26,6 +27,10 @@ export const marketService = {
 
 function isUserNewsCacheValid(cache) {
     return cache && cache.data !== null && (Date.now() - cache.cachedAt < NEWS_CACHE_TTL_MS)
+}
+
+function isCoinsCacheValid(cache) {
+    return cache && cache.data !== null && (Date.now() - cache.cachedAt < COINS_CACHE_TTL_MS)
 }
 
 async function getCoinsMarketData(query = {}) {
@@ -44,7 +49,7 @@ async function getCoinsMarketData(query = {}) {
         (Array.isArray(vs_currencies) ? vs_currencies[0] : vs_currencies) ||
         'usd'
 
-    return coinGeckoService.getCoinsMarketData({
+    const options = {
         api_key: COINGECKO_API_KEY || undefined,
         ids: splitList(ids),
         vs_currency: vsCurrency,
@@ -52,7 +57,19 @@ async function getCoinsMarketData(query = {}) {
         per_page: per_page ? +per_page : undefined,
         page: page ? +page : undefined,
         sparkline: toBoolean(sparkline)
-    })
+    }
+
+    try {
+        const data = await coinGeckoService.getCoinsMarketData(options)
+        COINS_CACHE.data = data
+        COINS_CACHE.cachedAt = Date.now()
+        return data
+    } catch (err) {
+        if (COINS_CACHE.data !== null) {
+            return COINS_CACHE.data
+        }
+        throw err
+    }
 }
 
 async function getRelevantNews(userId) {
