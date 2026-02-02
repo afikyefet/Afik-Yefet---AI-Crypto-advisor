@@ -80,6 +80,15 @@
     padding: var(--space-3) 0;
 }
 
+.daily-meme {
+    @include grid-stack(var(--space-5));
+}
+
+.meme-sidebar-actions {
+    @include flex-row(var(--space-5));
+    align-items: center;
+}
+
 @include tablet {
     .account-sidebar {
         position: static;

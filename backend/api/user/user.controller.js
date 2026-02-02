@@ -118,6 +118,12 @@ export async function addVote(req, res) {
     if (type === 'news' && typeof content === 'object' && !content.title && !content.id) {
       return res.status(400).send({ err: 'News content must have a title or id field' })
     }
+    if (type === 'insight' && typeof content === 'object' && !content.id) {
+      return res.status(400).send({ err: 'Insight content must have an id field' })
+    }
+    if (type === 'meme' && typeof content === 'object' && !content.id && !content.imageUrl) {
+      return res.status(400).send({ err: 'Meme content must have an id or imageUrl field' })
+    }
 
     const voteData = { vote, type, content }
     const updatedUser = await userService.addVote(userId, voteData)

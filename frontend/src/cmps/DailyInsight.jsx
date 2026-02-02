@@ -58,13 +58,12 @@ export function DailyInsight() {
     if (status === 'error') displayText = 'Insight is unavailable right now.'
     if (status === 'ready' && !insight) displayText = 'Insight is unavailable right now.'
 
-    // Use title as unique identifier for insight
+    // Date-based unique id (one insight per day)
     const insightId = new Date().toISOString().slice(0, 10)
-    const insightVote = user?.votes?.length > 0 && user?.votes?.find(v => {
+    const insightVote = user?.votes?.find(v => {
         if (v.type !== 'insight') return false
-        // Handle both old format (string) and new format (object)
         const contentId = typeof v.content === 'object'
-            ? (v.content?.title || v.content?.id)
+            ? (v.content?.id ?? v.content?.title)
             : v.content
         return contentId === insightId
     })
@@ -74,7 +73,6 @@ export function DailyInsight() {
     function handleVote(vote, e) {
         e.stopPropagation()
         if (!user?._id || !insight) return
-        // Pass the entire insight object
         addVote(user._id, vote, 'insight', { id: insightId, text: insight })
     }
 

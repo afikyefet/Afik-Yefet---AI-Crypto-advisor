@@ -134,7 +134,6 @@ export function Onboarding() {
                 {currentQuestion.type === 'fav-coins' && (
                     <div className="onboarding-input-section">
                         <div className="quick-picks-section">
-                            <p className="section-label">Level 1 (Recommended quick picks)</p>
                             <div className="quick-picks-grid">
                                 {QUICK_PICKS.map(pick => (
                                     <button
@@ -148,39 +147,24 @@ export function Onboarding() {
                                 ))}
                             </div>
                         </div>
-
-                        <div className="advanced-section">
-                            <button
-                                type="button"
-                                className="toggle-advanced"
-                                onClick={() => setShowAdvanced(!showAdvanced)}
-                            >
-                                {showAdvanced ? '▼' : '▶'} Add by text
-                            </button>
-
-                            {showAdvanced && (
-                                <div className="advanced-options">
-                                    <div className="search-add-section">
-                                        <p className="section-label">Search and add</p>
-                                        <div className="search-input-group">
-                                            <input
-                                                type="text"
-                                                value={searchInput}
-                                                onChange={(e) => setSearchInput(e.target.value)}
-                                                placeholder="Enter coin ID (e.g., bitcoin, ethereum)"
-                                                onKeyPress={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        e.preventDefault()
-                                                        handleAddCustomCoin()
-                                                    }
-                                                }}
-                                            />
-                                            <button type="button" onClick={handleAddCustomCoin}>Add</button>
-                                        </div>
-                                        <p className="helper-text">Tip: Use CoinGecko coin IDs (lowercase, e.g., "bitcoin" not "BTC")</p>
-                                    </div>
-                                </div>
-                            )}
+                        <div className="search-add-section">
+                            <p className="section-label">Search and add</p>
+                            <div className="search-input-group">
+                                <input
+                                    type="text"
+                                    value={searchInput}
+                                    onChange={(e) => setSearchInput(e.target.value)}
+                                    placeholder="Enter coin ID (e.g., bitcoin, ethereum)"
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault()
+                                            handleAddCustomCoin()
+                                        }
+                                    }}
+                                />
+                                <button type="button" onClick={handleAddCustomCoin}>Add</button>
+                            </div>
+                            <p className="helper-text">Tip: Use CoinGecko coin IDs (lowercase, e.g., "bitcoin" not "BTC")</p>
                         </div>
 
                         {preferences['fav-coins'].length > 0 && (

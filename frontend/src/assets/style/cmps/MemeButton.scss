@@ -57,6 +57,17 @@
     }
 }
 
+.meme-actions-row {
+    @include flex-row(var(--space-5));
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.meme-card-votes {
+    @include flex-row(var(--space-3));
+}
+
 .meme-status {
     @include grid-stack(var(--space-5));
     align-items: start;

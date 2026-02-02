@@ -128,13 +128,16 @@ async function addVote(userId, voteData) {
         const votes = user.votes || []
 
         // Get unique identifier from content object
-        // For coins: use content.id
-        // For news: use content.title or content.id
+        // For coins: content.id | For news: content.title or content.id | For insight: content.id | For meme: content.id or content.imageUrl
         let contentId
         if (voteData.type === 'coin') {
             contentId = voteData.content?.id || voteData.content
         } else if (voteData.type === 'news') {
             contentId = voteData.content?.title || voteData.content?.id || voteData.content
+        } else if (voteData.type === 'insight') {
+            contentId = voteData.content?.id || voteData.content?.title || voteData.content
+        } else if (voteData.type === 'meme') {
+            contentId = voteData.content?.id || voteData.content?.imageUrl || voteData.content?.title || voteData.content
         } else {
             contentId = voteData.content?.id || voteData.content?.title || voteData.content
         }
@@ -143,12 +146,15 @@ async function addVote(userId, voteData) {
         const existingVoteIndex = votes.findIndex(v => {
             if (v.type !== voteData.type) return false
 
-            // Check by unique identifier
             let existingContentId
             if (v.type === 'coin') {
                 existingContentId = v.content?.id || v.content
             } else if (v.type === 'news') {
                 existingContentId = v.content?.title || v.content?.id || v.content
+            } else if (v.type === 'insight') {
+                existingContentId = v.content?.id || v.content?.title || v.content
+            } else if (v.type === 'meme') {
+                existingContentId = v.content?.id || v.content?.imageUrl || v.content?.title || v.content
             } else {
                 existingContentId = v.content?.id || v.content?.title || v.content
             }

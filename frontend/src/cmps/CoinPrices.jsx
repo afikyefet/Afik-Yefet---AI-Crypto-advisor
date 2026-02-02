@@ -118,7 +118,7 @@ export function CoinPrices() {
         <div className="coin-prices-container">
             <div className="section-header">
                 <div>
-                    <h1>Coin Prices</h1>
+                    <h1>{isLoading ? 'Loading...' : showAll ? 'All' : 'Top AI suggested'} {isLoading ? '' : 'Coin Prices'}</h1>
                     <span className="section-subtitle">Real-time market snapshot</span>
                 </div>
                 <div className="section-header-actions">

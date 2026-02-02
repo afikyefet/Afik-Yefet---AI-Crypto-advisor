@@ -222,6 +222,8 @@ function extractVoteLabel(vote) {
     if (!vote) return null
     if (vote.type === 'coin') return vote.content?.name || vote.content?.id || vote.content
     if (vote.type === 'news') return vote.content?.title || vote.content?.id || vote.content
+    if (vote.type === 'insight') return vote.content?.id || vote.content?.text
+    if (vote.type === 'meme') return vote.content?.title || vote.content?.id || vote.content?.imageUrl
     return vote.content?.name || vote.content?.title || vote.content?.id || vote.content
 }
 

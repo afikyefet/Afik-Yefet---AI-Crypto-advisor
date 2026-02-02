@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { memeService } from "../service/meme.service"
-
+import { addVote } from "../store/actions/user.action"
 
 export function AccountSidebar() {
     const { user } = useSelector(storeState => storeState.userModule)
@@ -26,6 +26,21 @@ export function AccountSidebar() {
         loadMeme()
     }, [loadMeme])
 
+    const memeId = meme?.imageUrl
+    const memeVote = memeId && user?.votes?.find(v => {
+        if (v.type !== 'meme') return false
+        const contentId = typeof v.content === 'object'
+            ? (v.content?.id ?? v.content?.imageUrl ?? v.content?.title)
+            : v.content
+        return contentId === memeId
+    })
+
+    function handleMemeVote(vote, e) {
+        e.stopPropagation()
+        if (!user?._id || !meme) return
+        addVote(user._id, vote, 'meme', { id: meme.imageUrl, title: meme.title, imageUrl: meme.imageUrl })
+    }
+
     if (!user) return null
 
     const preferences = user.preferences || {
@@ -47,11 +62,33 @@ export function AccountSidebar() {
                         </div>
                         <div className="meme-meta">
                             <h3>{meme.title}</h3>
-                            <p>{meme.description}</p>
+                            {meme.description && <p>{meme.description}</p>}
                         </div>
-                        <button type="button" className="btn-text" onClick={loadMeme}>
-                            New meme
-                        </button>
+                        <div className="meme-sidebar-actions">
+                            {user && (
+                                <div className="meme-card-votes" onClick={(e) => e.stopPropagation()}>
+                                    <button
+                                        type="button"
+                                        className={`vote-btn vote-up ${memeVote?.vote === 'up' ? 'active' : ''}`}
+                                        onClick={(e) => handleMemeVote('up', e)}
+                                        title="Thumbs up"
+                                    >
+                                        <span className="material-icons">thumb_up</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`vote-btn vote-down ${memeVote?.vote === 'down' ? 'active' : ''}`}
+                                        onClick={(e) => handleMemeVote('down', e)}
+                                        title="Thumbs down"
+                                    >
+                                        <span className="material-icons">thumb_down</span>
+                                    </button>
+                                </div>
+                            )}
+                            <button type="button" className="btn-text" onClick={loadMeme}>
+                                New meme
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
