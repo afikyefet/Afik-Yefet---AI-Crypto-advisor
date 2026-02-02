@@ -96,12 +96,11 @@
         flex-direction: column;
         width: 100%;
         max-width: 100%;
-        min-height: 100vh;
-        min-height: 100dvh;
-        padding: var(--space-9) var(--space-7) 140px;
+        height: 100vh;
+        padding: var(--space-9) var(--space-7) 100px;
         border-radius: 0;
+        max-height: 100vh;
         overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
 
         h2 {
             font-size: var(--text-3xl);
@@ -110,16 +109,16 @@
 
     .onboarding-actions {
         position: fixed;
-        bottom: env(safe-area-inset-bottom, 0);
+        bottom: 0;
         left: 0;
         right: 0;
         padding: var(--space-7);
-        padding-bottom: max(var(--space-7), env(safe-area-inset-bottom, 0));
         background: linear-gradient(180deg, transparent 0%, rgba(12, 18, 26, 0.98) 20%, rgba(12, 18, 26, 0.98) 100%);
+        @include glass(10px);
         border-top: 1px solid var(--border);
         flex-direction: column;
         gap: var(--space-4);
-        z-index: var(--z-overlay);
+        z-index: var(--z-sticky);
     }
 
     .btn-main,

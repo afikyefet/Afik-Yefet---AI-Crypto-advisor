@@ -11,7 +11,7 @@ export async function login(req, res) {
 
         res.cookie('loginToken', loginToken, { sameSite: 'None', secure: true, httpOnly: true })
 
-        res.json(user)
+        res.json({ user, token: loginToken })
     } catch (err) {
         loggerService.error('Failed to Login ' + err)
         const errorMsg = typeof err === 'string' ? err : 'Failed to Login'
@@ -29,7 +29,7 @@ export async function signup(req, res) {
         const loginToken = authService.getLoginToken(user)
         res.cookie('loginToken', loginToken, { sameSite: 'None', secure: true, httpOnly: true })
 
-        res.json(user)
+        res.json({ user, token: loginToken })
     } catch (err) {
         loggerService.error('Failed to signup ' + err)
         const errorMsg = typeof err === 'string' ? err : 'Failed to signup'

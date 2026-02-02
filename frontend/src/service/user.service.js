@@ -2,6 +2,7 @@ import axios from 'axios'
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3333'
 const STORAGE_KEY_LOGGEDIN = 'loggedinUser'
+const STORAGE_KEY_TOKEN = 'authToken'
 
 // Configure axios to send credentials (cookies) with requests
 const axiosInstance = axios.create({
@@ -11,6 +12,11 @@ const axiosInstance = axios.create({
         'Content-Type': 'application/json'
     }
 })
+
+const storedToken = sessionStorage.getItem(STORAGE_KEY_TOKEN)
+if (storedToken) {
+    axiosInstance.defaults.headers.common.Authorization = `Bearer ${storedToken}`
+}
 
 export const userService = {
     login,
@@ -26,7 +32,9 @@ export const userService = {
 async function login({ email, password }) {
     try {
         const response = await axiosInstance.post('/api/auth/login', { email, password })
-        const user = response.data
+        const data = response.data
+        const user = data.user || data
+        if (data.token) _setAuthToken(data.token)
         _setLoggedinUser({
             ...user,
             preferences: user.preferences || { 'fav-coins': [], 'investor-type': [], 'content-type': [] },
@@ -43,7 +51,9 @@ async function login({ email, password }) {
 async function signup({ email, password, name }) {
     try {
         const response = await axiosInstance.post('/api/auth/signup', { email, password, name })
-        const user = response.data
+        const data = response.data
+        const user = data.user || data
+        if (data.token) _setAuthToken(data.token)
         _setLoggedinUser({
             ...user,
             preferences: user.preferences || { 'fav-coins': [], 'investor-type': [], 'content-type': [] },
@@ -60,10 +70,12 @@ async function signup({ email, password, name }) {
 async function logout() {
     try {
         await axiosInstance.post('/api/auth/logout')
+        _setAuthToken(null)
         sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN)
         return Promise.resolve()
     } catch (err) {
         // Even if backend call fails, clear local storage
+        _setAuthToken(null)
         sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN)
         return Promise.resolve()
     }
@@ -84,6 +96,16 @@ function _setLoggedinUser(user) {
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN, JSON.stringify(userToSave))
     return userToSave
+}
+
+function _setAuthToken(token) {
+    if (token) {
+        sessionStorage.setItem(STORAGE_KEY_TOKEN, token)
+        axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`
+    } else {
+        sessionStorage.removeItem(STORAGE_KEY_TOKEN)
+        delete axiosInstance.defaults.headers.common.Authorization
+    }
 }
 
 function getEmptyCredentials() {
