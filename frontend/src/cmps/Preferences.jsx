@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import { CONTENT_TYPES, INVESTOR_TYPES, QUICK_PICKS } from '../constants/preferences.constants'
 import { updatePreferences } from '../store/actions/user.action'
 
 export function Preferences() {
+    const navigate = useNavigate()
     const { user } = useSelector(storeState => storeState.userModule)
     const [preferences, setPreferences] = useState({
         'fav-coins': [],
@@ -117,6 +119,14 @@ export function Preferences() {
     if (!user) {
         return (
             <div className="preferences-container">
+                <button
+                    type="button"
+                    className="btn-back"
+                    onClick={() => navigate('/')}
+                    aria-label="Back to dashboard"
+                >
+                    ← Back to Dashboard
+                </button>
                 <div className="preferences-empty">
                     <h1>Preferences</h1>
                     <p>Please log in to update your preferences.</p>
@@ -127,6 +137,14 @@ export function Preferences() {
 
     return (
         <div className="preferences-container">
+            <button
+                type="button"
+                className="btn-back"
+                onClick={() => navigate('/')}
+                aria-label="Back to dashboard"
+            >
+                ← Back to Dashboard
+            </button>
             <div className="preferences-header">
                 <div>
                     <h1>Preferences</h1>

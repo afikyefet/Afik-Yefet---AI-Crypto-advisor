@@ -5,6 +5,21 @@
 // Form components are shared via _forms.scss
 // ============================================
 
+.btn-back {
+    align-self: flex-start;
+    padding: var(--space-2) 0;
+    font-size: var(--text-base);
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+
+    &:hover {
+        color: var(--text);
+    }
+}
+
 .preferences-container {
     @include grid-stack(var(--space-9));
     padding: var(--space-12) var(--content-padding) var(--space-14);
