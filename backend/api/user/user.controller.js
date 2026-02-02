@@ -99,7 +99,7 @@ export async function updateUserPreferences(req, res) {
     if (preferences['fav-coins'] && !Array.isArray(preferences['fav-coins'])) {
       return res.status(400).send({ err: 'fav-coins must be an array' })
     }
-    
+
     // investor-type must be an array
     if (preferences['investor-type'] !== undefined) {
       if (!Array.isArray(preferences['investor-type'])) {
@@ -177,7 +177,7 @@ export async function addVote(req, res) {
       return res.status(400).send({ err: 'Vote must be "up" or "down"' })
     }
 
-    if (type !== 'coin' && type !== 'news') {
+    if (type !== 'coin' && type !== 'news' && type !== 'insight' && type !== 'meme') {
       return res.status(400).send({ err: 'Type must be "coin" or "news"' })
     }
 
