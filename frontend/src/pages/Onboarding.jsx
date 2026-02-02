@@ -199,11 +199,6 @@ export function Onboarding() {
                                 </button>
                             ))}
                         </div>
-                        {preferences['investor-type'].length > 0 && (
-                            <p className="selection-count">
-                                Selected: {preferences['investor-type'].length} / 1
-                            </p>
-                        )}
                     </div>
                 )}
 
@@ -222,11 +217,6 @@ export function Onboarding() {
                                 </button>
                             ))}
                         </div>
-                        {preferences['content-type'].length > 0 && (
-                            <p className="selection-count">
-                                Selected: {preferences['content-type'].length} / 1
-                            </p>
-                        )}
                     </div>
                 )}
 
