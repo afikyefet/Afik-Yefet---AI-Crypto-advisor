@@ -6,6 +6,15 @@ import {
 } from '../reducers/cryptoPanic.reducer'
 import { store } from '../store'
 
+export function loadStaticNews() {
+    return cryptoPanicService.getStaticNews()
+        .then((news) => {
+            store.dispatch({ type: SET_CP_RELEVANT_NEWS, relevantNews: news })
+            return news
+        })
+        .catch(() => { })
+}
+
 export function loadRelevantNews(options = {}) {
     store.dispatch({ type: SET_CP_LOADING, isLoading: true })
     store.dispatch({ type: SET_CP_ERROR, error: null })

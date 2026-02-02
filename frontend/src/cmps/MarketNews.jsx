@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 // import { aiService } from "../service/ai.service" // AI BYPASSED
-import { loadRelevantNews } from "../store/actions/cryptoPanic.action"
+import { loadRelevantNews, loadStaticNews } from "../store/actions/cryptoPanic.action"
 import { addVote } from "../store/actions/user.action"
 import { DetailsModal } from "./DetailsModal"
 import { NewsCard } from "./NewsCard"
@@ -12,6 +12,7 @@ export function MarketNews() {
     const [selectedNews, setSelectedNews] = useState(null)
 
     useEffect(() => {
+        loadStaticNews()
         loadRelevantNews({ userId: user?._id })
     }, [user?._id])
 

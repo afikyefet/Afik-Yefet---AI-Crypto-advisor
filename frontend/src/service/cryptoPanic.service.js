@@ -11,7 +11,13 @@ const axiosInstance = axios.create({
 })
 
 export const cryptoPanicService = {
-    getRelevantNews
+    getRelevantNews,
+    getStaticNews
+}
+
+async function getStaticNews() {
+    const response = await axiosInstance.get('/api/market/news/static')
+    return response.data
 }
 
 async function getRelevantNews(options = {}) {

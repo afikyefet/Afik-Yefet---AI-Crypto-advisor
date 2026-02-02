@@ -11,6 +11,16 @@ export async function getCoinsMarketData(req, res) {
     }
 }
 
+export async function getStaticNews(req, res) {
+    try {
+        const data = await marketService.getStaticNews()
+        res.send(data)
+    } catch (err) {
+        loggerService.error('Cannot get static news', err)
+        res.status(400).send({ err: 'Cannot get static news' })
+    }
+}
+
 export async function getRelevantNews(req, res) {
     try {
         const data = await marketService.getRelevantNews(req.loggedinUser._id)

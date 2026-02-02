@@ -22,7 +22,13 @@ const COINS_CACHE = { data: null, cachedAt: 0 }
 export const marketService = {
     getCoinsMarketData,
     getRelevantNews,
+    getStaticNews,
     getMeme
+}
+
+function getStaticNews() {
+    const fileContent = fs.readFileSync(STATIC_NEWS_PATH, 'utf8')
+    return JSON.parse(fileContent)
 }
 
 function isUserNewsCacheValid(cache) {
