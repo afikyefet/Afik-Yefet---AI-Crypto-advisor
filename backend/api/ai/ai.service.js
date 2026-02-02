@@ -9,11 +9,11 @@ import { loggerService } from '../../services/logger.service.js'
 import { userService } from '../user/user.service.js'
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || ''
-const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-8b-instruct:free'
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct:free'
 const OPENROUTER_INSIGHT_MODEL = process.env.OPENROUTER_INSIGHT_MODEL || ''
 const OPENROUTER_FALLBACK_MODELS = parseModelList(
     process.env.OPENROUTER_FALLBACK_MODELS,
-    ['liquid/lfm-2.5-1.2b-instruct:free']
+    ['mistralai/mistral-small-3.1:free']
 )
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 const OPENROUTER_APP_URL = process.env.OPENROUTER_APP_URL || ''
