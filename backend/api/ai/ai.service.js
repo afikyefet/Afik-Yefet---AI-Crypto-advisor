@@ -10,7 +10,7 @@ import { userService } from '../user/user.service.js'
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || ''
 const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct:free'
-const OPENROUTER_INSIGHT_MODEL = process.env.OPENROUTER_INSIGHT_MODEL || ''
+const OPENROUTER_INSIGHT_MODEL = process.env.OPENROUTER_INSIGHT_MODEL || 'deepseek/deepseek-r1-0528:free'
 const OPENROUTER_FALLBACK_MODELS = parseModelList(
     process.env.OPENROUTER_FALLBACK_MODELS,
     ['mistralai/mistral-small-3.1:free']
