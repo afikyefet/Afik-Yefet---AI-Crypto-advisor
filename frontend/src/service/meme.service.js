@@ -10,6 +10,11 @@ const axiosInstance = axios.create({
     }
 })
 
+const storedToken = sessionStorage.getItem('authToken')
+if (storedToken) {
+    axiosInstance.defaults.headers.common.Authorization = `Bearer ${storedToken}`
+}
+
 export const memeService = {
     getCryptoMeme
 }

@@ -15,9 +15,9 @@ const app = express()
 const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
-            'http://localhost:5173',
-            'http://localhost:5174',
-            'http://127.0.0.1:5173',
+            'https://localhost:5173',
+            'https://localhost:5174',
+            'https://127.0.0.1:5173',
             'https://afik-yefet-ai-crypto-advisor.onrender.com',
             'https://afik-yefet-ai-crypto-advisor.vercel.app',
             '*'

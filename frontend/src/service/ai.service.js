@@ -8,6 +8,11 @@ const axiosInstance = axios.create({
     headers: { 'Content-Type': 'application/json' }
 })
 
+const storedToken = sessionStorage.getItem('authToken')
+if (storedToken) {
+    axiosInstance.defaults.headers.common.Authorization = `Bearer ${storedToken}`
+}
+
 export const aiService = {
     getDailyInsight,
     getRelevantCoins
